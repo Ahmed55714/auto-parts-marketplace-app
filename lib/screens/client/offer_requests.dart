@@ -146,15 +146,15 @@ class _OfferRequestsState extends State<OfferRequests> {
                       ),
                     ),
                     Expanded(child: MyList()),
-                    SizedBox(height: 8),
-                    CustomButton(
-                        text: 'Save Pdf',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ReportClient()));
-                        }),
+                    // SizedBox(height: 8),
+                    // CustomButton(
+                    //     text: 'Save Pdf',
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) => ReportClient()));
+                    //     }),
                   ],
                 ),
               ),

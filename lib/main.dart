@@ -1,6 +1,9 @@
 // ignore_for_file: equal_keys_in_map
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/report_client.dart';
 
 import 'screens/client/Bottom_nav.dart';
@@ -20,22 +23,33 @@ import 'screens/vendor/orders_rate.dart';
 
 import 'screens/vendor/profile.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+
+  User? user = FirebaseAuth.instance.currentUser;
+
+  runApp(MyApp(user: user));
+
+  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final User? user;
+  const MyApp({
+    super.key,required this.user,
+  });
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+
+
   @override
   Widget build(BuildContext context) {
+    String initialRoute = widget.user != null ? '/signup' : '/';
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter App',
@@ -44,8 +58,8 @@ class _MyAppState extends State<MyApp> {
         //  colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const OnboardingScreen(),
-      initialRoute: '/',
+      // home: const OnboardingScreen(),
+      initialRoute: initialRoute,
       onGenerateRoute: (settings) {
         final routes = <String, WidgetBuilder>{
           '/': (context) => const OnboardingScreen(),
@@ -54,7 +68,7 @@ class _MyAppState extends State<MyApp> {
                 verificationId: settings.arguments as String,
                 value: settings.arguments as String,
               ),
-          '/signup': (context) => const SignUp(),
+          '/signup': (context) => SignUp(),
           '/clientmap': (context) => const ClientMap(),
           '/vendormap': (context) => const VendorMap(),
           '/RegisterationForm': (context) => const RegistrationForm(),

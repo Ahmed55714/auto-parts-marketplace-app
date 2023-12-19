@@ -58,7 +58,6 @@ class _SignInState extends State<SignIn> {
               builder: (context) => VerificationScreen(
                 verificationId: verificationId,
                 value: fullNumber,
-                
               ),
             ),
           );
@@ -145,7 +144,8 @@ class _SignInState extends State<SignIn> {
                                   });
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      right: 10, left: 10),
                                   child: SvgPicture.asset(
                                     "assets/images/Vector2.svg",
                                     width: 10,

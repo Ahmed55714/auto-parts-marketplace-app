@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:work2/constants/colors.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
+import '../vendor/Bottom_nav.dart';
 import 'offer_requests.dart';
 
 class CarForm extends StatefulWidget {
@@ -73,11 +74,10 @@ class _CarFormState extends State<CarForm> {
               padding: const EdgeInsets.all(5.0),
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      // BackButtonDeep(),
+                       BackButtonDeep(),
                     ],
                   ),
                   const Text(
@@ -91,10 +91,10 @@ class _CarFormState extends State<CarForm> {
                   const SizedBox(height: 10),
                   buildTextField('Needed car piece', NeededController,
                       TextInputType.text, 'Enter the car piece'),
-                  buildTextField('Car type', typeController, TextInputType.text,
+                   buildCarTypeField('Car type', typeController, 
                       'Enter your car type'),
-                  buildTextField('Car model', modelController,
-                      TextInputType.text, 'Enter your car model'),
+                   buildCarTypeField('Car model', modelController,
+                       'Enter your car model'),
                   buildTextField('Chassis number', ChassisController,
                       TextInputType.number, 'Enter your chassis number'),
                   const Padding(

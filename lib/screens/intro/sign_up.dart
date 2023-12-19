@@ -43,16 +43,16 @@ class SignUp extends StatelessWidget {
             ),
             const SizedBox(height: 59),
             CustomButton2(text: 'Sign up as Client', onPressed: () {
-              Navigator.pushNamed(context, '/clientmap');
+              Navigator.pushReplacementNamed(context, '/clientmap');
             }),
             const SizedBox(height: 12),
             CustomButton2(
                 text: 'Sign up as service provider', onPressed: () {
-              Navigator.pushNamed(context, '/vendormap');
+              Navigator.pushReplacementNamed(context, '/vendormap');
                 }),
             const SizedBox(height: 12),
             CustomButton2(text: 'Special Client', onPressed: () {
-              Navigator.pushNamed(context, '/clientmap');
+              Navigator.pushReplacementNamed(context, '/clientmap');
             })
           ],
         ),

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import '../../widgets/custom_button.dart';
 
@@ -64,17 +65,16 @@ class _VerificationScreenState extends State<VerificationScreen> {
     );
 
     try {
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      // Navigate to the signup screen or another screen
-      Navigator.pushNamed(context,
-          '/signup'); // Replace '/signup' with your desired destination route
-    } on FirebaseAuthException catch (e) {
-      // Show a snackbar with the error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.message}')),
-      );
-    }
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    Navigator.pushNamed(context, '/signup');
+
+  } on FirebaseAuthException catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: ${e.message}')),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +131,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       String completeOTP = _otpControllers
                           .map((controller) => controller.text)
                           .join();
-                      print(completeOTP);
+                   
                       verifyOTP(completeOTP);
                     },
                   ),
