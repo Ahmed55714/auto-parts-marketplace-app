@@ -2,15 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
+import '../../getx/auth.dart';
 import '../../widgets/custom_button.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String verificationId;
-  final String value;
+
+  final String phoneNumber;
+
   VerificationScreen(
-      {super.key, required this.verificationId, required this.value});
+      {super.key, required this.verificationId, required this.phoneNumber});
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
@@ -21,11 +25,12 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController phoneController = TextEditingController();
-
+  final AuthController authController = Get.find<AuthController>();
   final _otpControllers = List.generate(6, (_) => TextEditingController());
 
   Future<void> resendOTP(String value) async {
     try {
+      authController.verifyPhoneNumber(widget.phoneNumber);
       await sendNewOTP(value);
 
       // Show a message to the user indicating that the OTP has been resent
@@ -65,16 +70,15 @@ class _VerificationScreenState extends State<VerificationScreen> {
     );
 
     try {
-    await FirebaseAuth.instance.signInWithCredential(credential);
+      await FirebaseAuth.instance.signInWithCredential(credential);
 
-    Navigator.pushNamed(context, '/signup');
-
-  } on FirebaseAuthException catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: ${e.message}')),
-    );
+      Navigator.pushNamed(context, '/signup');
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.message}')),
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -99,20 +103,23 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     SizedBox(height: 16),
                     // TitleWidget(number: Text(number))
                     Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(12.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: 290,
-                            height: 70,
-                            child: Text(
-                              'We sent you the 6 digit code to  Enter the code below to confirm your phone number',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Roboto',
-                                  color: Colors.grey),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: 290,
+                              height: 75,
+                              child: Text(
+                                'We sent you the 6 digit code to  Enter the code below to confirm your phone number',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Roboto',
+                                    color: Colors.grey),
+                              ),
                             ),
                           ),
                         ],
@@ -131,8 +138,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       String completeOTP = _otpControllers
                           .map((controller) => controller.text)
                           .join();
-                   
-                      verifyOTP(completeOTP);
+                      authController.verifyOtp(widget.verificationId,
+                          completeOTP, widget.phoneNumber);
                     },
                   ),
                 ),
@@ -152,7 +159,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          resendOTP(widget.value);
+                          resendOTP(widget.phoneNumber);
                         },
                         child: const Text(
                           "Resend",

@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:work2/constants/colors.dart';
 import 'package:work2/widgets/custom_button.dart';
 
+import '../../getx/auth.dart';
 import 'verification.dart';
 
 class SignIn extends StatefulWidget {
@@ -21,6 +23,9 @@ class _SignInState extends State<SignIn> {
   final TextEditingController phoneController = TextEditingController();
   String? phoneNumberError;
   String? verificationId;
+
+    final AuthController authController = Get.put(AuthController());
+
 
   void validatePhoneNumber(String value) async {
     String? value = phoneController.text;
@@ -41,31 +46,32 @@ class _SignInState extends State<SignIn> {
         phoneNumberError = null;
       });
       final fullNumber = '${countryCode?.dialCode ?? ''}$value';
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: fullNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          // Auto-retrieval or instant verification
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          // Handle error
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          // Save the verification ID and navigate to the verification screen
-          verificationId = verificationId;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => VerificationScreen(
-                verificationId: verificationId,
-                value: fullNumber,
-              ),
-            ),
-          );
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          // Auto retrieval timeout
-        },
-      );
+      authController.verifyPhoneNumber(fullNumber);
+      // await FirebaseAuth.instance.verifyPhoneNumber(
+      //   phoneNumber: fullNumber,
+      //   verificationCompleted: (PhoneAuthCredential credential) async {
+      //     // Auto-retrieval or instant verification
+      //   },
+      //   verificationFailed: (FirebaseAuthException e) {
+      //     // Handle error
+      //   },
+      //   codeSent: (String verificationId, int? resendToken) {
+      //     // Save the verification ID and navigate to the verification screen
+      //     verificationId = verificationId;
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (context) => VerificationScreen(
+      //           verificationId: verificationId,
+      //           value: fullNumber,
+      //         ),
+      //       ),
+      //     );
+      //   },
+      //   codeAutoRetrievalTimeout: (String verificationId) {
+      //     // Auto retrieval timeout
+      //   },
+      // );
     }
   }
 
@@ -107,7 +113,7 @@ class _SignInState extends State<SignIn> {
                   const SizedBox(height: 16),
                   Container(
                     width: 358.0,
-                    height: 130.0,
+                    height: 148.0,
                     padding: const EdgeInsets.fromLTRB(0.0, 11.0, 0.0, 1.0),
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -144,8 +150,7 @@ class _SignInState extends State<SignIn> {
                                   });
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: 10, left: 10),
+                                  padding: const EdgeInsets.all(10.0),
                                   child: SvgPicture.asset(
                                     "assets/images/Vector2.svg",
                                     width: 10,
@@ -198,7 +203,7 @@ class _SignInState extends State<SignIn> {
 
                         // Second TextField (below the line)
                         Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.all(8),
                           child: TextFormField(
                             keyboardType: TextInputType.phone,
                             maxLines: 1,
@@ -252,7 +257,7 @@ class _SignInState extends State<SignIn> {
                         if (formKey.currentState!.validate() &&
                             phoneNumberError == null) {
                           validatePhoneNumber(value);
-
+                        //authController.verifyPhoneNumber(phoneController.text);
                           //Navigator.pushNamed(context, '/Verification');
                         }
                       }),

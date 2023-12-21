@@ -1,11 +1,16 @@
 // ignore_for_file: equal_keys_in_map
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:work2/getx/regestration.dart';
+
 import 'package:work2/screens/client/report_client.dart';
 
+import 'getx/auth.dart';
 import 'screens/client/Bottom_nav.dart';
 import 'screens/client/car_form.dart';
 import 'screens/client/map_client.dart';
@@ -26,31 +31,66 @@ import 'screens/vendor/profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  HttpOverrides.global = MyHttpOverrides();
+  Get.put(AuthController());
+  Get.put(RegesterController());
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
+  final userType = prefs.getString('user_type');
 
-  User? user = FirebaseAuth.instance.currentUser;
+  String initialRoute = '/';
 
-  runApp(MyApp(user: user));
+  if (token != null) {
+    if (userType == 'client') {
+      initialRoute = '/clientmapNav';
+    } else if (userType == 'vendor') {
+      initialRoute = '/vendormapNav';
+    } else {
+      initialRoute = '/signup';
+    }
+  }
 
-  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  runApp(MyApp(initialRoute: initialRoute));
+
+  // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
 }
 
 class MyApp extends StatefulWidget {
-  final User? user;
-  const MyApp({
-    super.key,required this.user,
-  });
+  final String initialRoute;
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
+// @override
+// void initState()
+// {
+//   super.initState();
+//   _checkToken();
+//
+// }
+// void _checkToken() async {
+//   final AuthController authController = Get.put(AuthController());//
+//   String? token = await authController.getToken();//
+//   String? userType = await authController.getUserType();//
+//  setState(() {//
+//     if (token != null) {//
+//       if (userType == 'client') {//
+//         initialRoute = '/clientmapNav';//
+//       } else if (userType == 'vendor') {//
+//         initialRoute = '/vendormapNav';//
+//      } else {//
+//         initialRoute = '/signup';//
+//       }//
+//     }//
+//   });//
+// }
 
   @override
   Widget build(BuildContext context) {
-    String initialRoute = widget.user != null ? '/signup' : '/';
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter App',
       theme: ThemeData(
@@ -59,18 +99,19 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       // home: const OnboardingScreen(),
-      initialRoute: initialRoute,
+      initialRoute: widget.initialRoute,
       onGenerateRoute: (settings) {
         final routes = <String, WidgetBuilder>{
           '/': (context) => const OnboardingScreen(),
           '/signin': (context) => SignIn(),
           '/verification': (context) => VerificationScreen(
                 verificationId: settings.arguments as String,
-                value: settings.arguments as String,
+                phoneNumber: settings.arguments as String,
               ),
           '/signup': (context) => SignUp(),
-          '/clientmap': (context) => const ClientMap(),
-          '/vendormap': (context) => const VendorMap(),
+          '/cclientmap': (context) => const ClientMap(),
+          '/vendormapNav': (context) => const VendorMap(),
+          '/clientmapNav': (context) => const ClintNavBar(),
           '/RegisterationForm': (context) => const RegistrationForm(),
           '/offerform': (context) => const OfferForm(),
           '/ordersrate': (context) => const MyOrders_rate(),
@@ -78,7 +119,6 @@ class _MyAppState extends State<MyApp> {
           '/myaccount': (context) => const MyAccount(),
           '/profile': (context) => const MyProfile(),
           '/CarForm': (context) => const CarForm(),
-          '/clientmap': (context) => const ClintNavBar(),
           '/Report': (context) => const ReportClient(),
         };
         final builder = routes[settings.name];
@@ -99,5 +139,14 @@ class _MyAppState extends State<MyApp> {
         );
       },
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

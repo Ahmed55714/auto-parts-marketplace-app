@@ -14,7 +14,8 @@ class ClintNavBar extends StatefulWidget {
 }
 
 class _ClintNavBarState extends State<ClintNavBar> {
-  int _currentIndex = 0;
+  // Set the initial index to 1 to start from ClientMap screen
+  int _currentIndex = 1;
 
   final List<Widget> _screens = [
     OrdersClient(),
@@ -37,7 +38,6 @@ class _ClintNavBarState extends State<ClintNavBar> {
               width: 30,
             ),
             label: '',
-            
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(

@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType; 
   final String? Function(String?)? validator; 
   final Widget? suffixIcon;
+  
 
   CustomTextField({
     Key? key,
@@ -26,6 +27,7 @@ class CustomTextField extends StatelessWidget {
       child: Container(
         height: fieldHeight,
         child: TextFormField(
+          
           controller: controller,
           keyboardType: keyboardType, // Use keyboardType
           decoration: InputDecoration(

@@ -23,15 +23,28 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   // Text editing controllers
   final nameController = TextEditingController();
-  final phoneNumberController = TextEditingController();
+  //final phoneNumberController = TextEditingController();
   final emailController = TextEditingController();
   final carTypeController = TextEditingController();
   final locationController = TextEditingController();
+  final cartypeController = TextEditingController();
+
+
+   List<String> carTypes = []; // List to store car types
+
+  void _addCarType() {
+    if (cartypeController.text.isNotEmpty) {
+      setState(() {
+        carTypes.add(cartypeController.text);
+        cartypeController.clear();
+      });
+    }
+  }
 
   @override
   void dispose() {
     nameController.dispose();
-    phoneNumberController.dispose();
+   // phoneNumberController.dispose();
     emailController.dispose();
     carTypeController.dispose();
     locationController.dispose();
@@ -80,11 +93,69 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   const SizedBox(height: 10),
                   buildTextField('Name', nameController, TextInputType.text,
                       'Enter your name'),
-                  buildTextField('Phone Number', phoneNumberController,
-                      TextInputType.number, 'Enter your phone number'),
+                  // buildTextField('Phone Number', phoneNumberController,
+                  //     TextInputType.number, 'Enter your phone number'),
                   buildTextField('Email', emailController,
                       TextInputType.emailAddress, 'Enter your email'),
-                  buildCarTypeField(),
+
+                      Row(
+                    children: [
+                      Expanded(
+                        child: buildTextField('Car type', cartypeController,
+                            TextInputType.text, 'Enter your Car type'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.add,
+                              color: greyColor,
+                              size: 35,
+                            ),
+                            onPressed: _addCarType,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  for (var carType in carTypes)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 16),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: greyColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                carType,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'BahijTheSansArabic',
+                                  color: deepPurple,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 10),
+                 
                   buildTextField('Location', locationController,
                       TextInputType.text, 'Enter your location'),
                   buildImagePicker('Tax Certificate', _pickImage),
@@ -130,33 +201,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  Widget buildCarTypeField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: 'Car type',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        const SizedBox(height: 8),
-        CustomTextField(
-          labelText: 'Placeholder',
-          controller: carTypeController,
-          keyboardType: TextInputType.text,
-          suffixIcon: SvgPicture.asset('assets/images/arrow-down.svg',
-              height: 24, width: 24),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter Car type';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
+  
 
   Widget buildImagePicker(String label, VoidCallback onTap) {
     return GestureDetector(

@@ -7,68 +7,6 @@ import 'map_vendor.dart';
 import 'my_account.dart';
 import 'orders.dart';
 
-// Custom Bottom Navigation Bar Widget
-// class CustomBottomNavigationBar extends StatelessWidget {
-//   final int currentIndex;
-//   final Function(int) onItemTapped;
-
-//   CustomBottomNavigationBar({
-//     Key? key,
-//     required this.currentIndex,
-//     required this.onItemTapped,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Theme(
-//       data: ThemeData(
-//         splashColor: Colors.transparent,
-//         highlightColor: Colors.transparent,
-//       ),
-//       child: BottomNavigationBar(
-//         type: BottomNavigationBarType.fixed,
-//         showSelectedLabels: false,
-//         showUnselectedLabels: false,
-//         backgroundColor: Colors.white,
-//         items: <BottomNavigationBarItem>[
-//           BottomNavigationBarItem(
-//             icon: SvgPicture.asset(
-//               currentIndex == 0
-//                   ? 'assets/images/note-textt.svg'
-//                   : 'assets/images/note-text.svg',
-//               height: 26,
-//               width: 26,
-//             ),
-//             label: '',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: SvgPicture.asset(
-//               currentIndex == 1
-//                   ? 'assets/images/homee.svg'
-//                   : 'assets/images/home.svg',
-//               height: 26,
-//               width: 26,
-//             ),
-//             label: '',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: SvgPicture.asset(
-//               currentIndex == 2
-//                   ? 'assets/images/userr.svg'
-//                   : 'assets/images/user.svg',
-//               height: 26,
-//               width: 26,
-//             ),
-//             label: '',
-//           ),
-//         ],
-//         currentIndex: currentIndex,
-//         selectedItemColor: Colors.deepPurple,
-//         onTap: onItemTapped,
-//       ),
-//     );
-//   }
-// }
 
 class VendorMap extends StatefulWidget {
   const VendorMap({super.key});
@@ -78,7 +16,8 @@ class VendorMap extends StatefulWidget {
 }
 
 class _VendorMapState extends State<VendorMap> {
-  int _currentIndex = 0;
+  // Set the initial index to 1 to start from MyMap screen
+  int _currentIndex = 1;
 
   final List<Widget> _screens = [
     const MyOrders(),
@@ -90,7 +29,7 @@ class _VendorMapState extends State<VendorMap> {
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-          height: 70,
+        height: 70,
         items: [
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -140,6 +79,7 @@ class _VendorMapState extends State<VendorMap> {
     );
   }
 }
+
 
 class BackButtonDeep extends StatelessWidget {
   const BackButtonDeep({

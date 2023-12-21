@@ -40,17 +40,20 @@ class OnboardingScreen extends StatelessWidget {
                           fontFamily: 'BakbakOne'),
                     ),
                     const SizedBox(height: 5),
-                    Container(
-                      width: 305,
-                      height: 42,
-                      child: const Text(
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            fontFamily: 'BahijTheSansArabic'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 305,
+                        height: 50,
+                        child: const Text(
+                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              fontFamily: 'BahijTheSansArabic'),
+                        ),
                       ),
                     ),
                   ],

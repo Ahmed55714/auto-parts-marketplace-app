@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:work2/screens/client/car_form.dart';
+import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
-import 'car_form.dart';
 import 'registration_form_client.dart';
 
 class ClientMap extends StatefulWidget {
@@ -17,6 +21,8 @@ class ClientMap extends StatefulWidget {
 }
 
 class _ClientMapState extends State<ClientMap> {
+  final RegesterController regesterController = Get.find<RegesterController>();
+
   bool hasVisitedRegistrationScreen = false;
 
   @override
@@ -26,10 +32,10 @@ class _ClientMapState extends State<ClientMap> {
         child: Stack(
           children: [
             const CustomGoogleMap(),
-            Column(
+            const Column(
               children: [
-                const CustomSearchBar(),
-                Spacer(), // This will push the button to the bottom of the screen
+                CustomSearchBar(),
+                Spacer(),
               ],
             ),
             Positioned(
@@ -38,26 +44,7 @@ class _ClientMapState extends State<ClientMap> {
               right: 20,
               child: CustomButton(
                 text: 'Order Now',
-                onPressed: () {
-                   if (!hasVisitedRegistrationScreen) {
-                  // Navigate to the registration screen for the first time
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => RegistrationFormClinet(),
-                  )).then((result) {
-                    // When returning from the registration screen, set the flag
-                    // to true to indicate that it has been visited.
-                    setState(() {
-                      hasVisitedRegistrationScreen = true;
-                    });
-                  });
-                } else {
-                  // Navigate to another screen when the button is pressed again.
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => CarForm(),
-                  ));
-                }
-                 
-                },
+                onPressed: () => regesterController.navigateBasedClint(context),
               ),
             ),
           ],
@@ -113,7 +100,8 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
             CameraUpdate.newCameraPosition(
               CameraPosition(
                 bearing: 0,
-                target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+                target: LatLng(
+                    _currentLocation!.latitude!, _currentLocation!.longitude!),
                 zoom: 17.0,
               ),
             ),
@@ -139,8 +127,6 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
       ),
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      
-      
     );
   }
 }
@@ -164,7 +150,8 @@ class CustomSearchBar extends StatelessWidget {
           ),
           prefixIcon: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: SvgPicture.asset('assets/images/filled.svg', height: 24, width: 24),
+            child: SvgPicture.asset('assets/images/filled.svg',
+                height: 24, width: 24),
           ),
         ),
       ),

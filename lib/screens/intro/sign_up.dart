@@ -1,11 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:work2/widgets/custom_button.dart';
 
 import '../../constants/colors.dart';
+import '../../getx/auth.dart';
 
-
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  final AuthController authController = Get.find<AuthController>();
+
+  void handleSignUp(String userType) async {
+    // Call the postType method from AuthController
+    await authController.postType(userType);
+    
+
+    // After posting the type, navigate to the next screen based on userType
+    if (userType == 'client') {
+      Navigator.pushNamed(context, '/clientmapNav');
+      authController.saveUserType('client');
+    } else if (userType == 'vendor') {
+      Navigator.pushNamed(context, '/vendormapNav');
+      authController.saveUserType('vendor');
+    } else if (userType == 'special_client') {
+      // Replace '/specialclientmap' with the actual route you wish to navigate to
+      Navigator.pushNamed(context, '/clientmapNav');
+      authController.saveUserType('client');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +47,6 @@ class SignUp extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
-                  
                   color: Colors.deepPurple,
                 ),
               ),
@@ -31,7 +57,6 @@ class SignUp extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Roboto',
-             
                 color: greyColor,
               ),
             ),
@@ -42,18 +67,23 @@ class SignUp extends StatelessWidget {
               width: 194,
             ),
             const SizedBox(height: 59),
-            CustomButton2(text: 'Sign up as Client', onPressed: () {
-              Navigator.pushReplacementNamed(context, '/clientmap');
-            }),
-            const SizedBox(height: 12),
             CustomButton2(
-                text: 'Sign up as service provider', onPressed: () {
-              Navigator.pushReplacementNamed(context, '/vendormap');
+                text: 'Sign up as Client',
+                onPressed: () {
+                  handleSignUp('client');
                 }),
             const SizedBox(height: 12),
-            CustomButton2(text: 'Special Client', onPressed: () {
-              Navigator.pushReplacementNamed(context, '/clientmap');
-            })
+            CustomButton2(
+                text: 'Sign up as service provider',
+                onPressed: () {
+                  handleSignUp('vendor');
+                }),
+            const SizedBox(height: 12),
+            CustomButton2(
+                text: 'Special Client',
+                onPressed: () {
+                  handleSignUp('special_client');
+                })
           ],
         ),
       ),
