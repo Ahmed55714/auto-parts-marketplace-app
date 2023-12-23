@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
               ),
           '/signup': (context) => SignUp(),
           '/cclientmap': (context) => const ClientMap(),
-          '/vendormapNav': (context) => const VendorMap(),
+          '/vendormapNav': (context) =>  VendorMap(),
           '/clientmapNav': (context) => const ClintNavBar(),
           '/RegisterationForm': (context) => const RegistrationForm(),
           '/offerform': (context) => const OfferForm(),

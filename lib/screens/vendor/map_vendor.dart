@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
+import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
 import 'Registration_form.dart';
 
-
 class MyMap extends StatefulWidget {
+  
   const MyMap({super.key});
 
   @override
@@ -17,7 +22,33 @@ class MyMap extends StatefulWidget {
 }
 
 class _ClientMapState extends State<MyMap> {
-    bool hasVisitedRegistrationScreen = false;
+  final RegesterController regesterController = Get.find<RegesterController>();
+   Future<String> fetchCompleteRegistrationStatus() async {
+    var url = Uri.parse('https://slfsparepart.com/api/user');
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        return jsonResponse['complete_registration'].toString();
+        
+      } else {
+        throw Exception('Failed to load registration status');
+      }
+    } catch (e) {
+      throw Exception('Error occurred: $e');
+    }
+  }
+  bool hasVisitedRegistrationScreen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,35 +63,26 @@ class _ClientMapState extends State<MyMap> {
                 Spacer(), // This will push the button to the bottom of the screen
               ],
             ),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: CustomButton(
-                text: 'Order Now',
-                onPressed: () {
-
-                   if (!hasVisitedRegistrationScreen) {
-                  // Navigate to the registration screen for the first time
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => RegistrationForm(),
-                  )).then((result) {
-                    // When returning from the registration screen, set the flag
-                    // to true to indicate that it has been visited.
-                    setState(() {
-                      hasVisitedRegistrationScreen = true;
-                    });
-                  });
-                } else {
-                  // Navigate to another screen when the button is pressed again.
-                  // Navigator.push(context, MaterialPageRoute(
-                  //   builder: (context) => CarForm(),
-                  // ));
-                }
-                 
-                },
-              ),
-            ),
+           FutureBuilder<String>(
+            future: fetchCompleteRegistrationStatus(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(); // Optionally, return a loading indicator
+              } else if (snapshot.hasData && snapshot.data == "0") {
+                return Positioned(
+                  bottom: 20,
+                  left: 20,
+                  right: 20,
+                  child: CustomButton(
+                    text: 'My Order',
+                    onPressed: () => regesterController.navigateBasedVendor(context),
+                  ),
+                );
+              } else {
+                return Container(); // Return an empty container if status is not "1"
+              }
+            },
+          ),
           ],
         ),
       ),
@@ -114,7 +136,8 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
             CameraUpdate.newCameraPosition(
               CameraPosition(
                 bearing: 0,
-                target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+                target: LatLng(
+                    _currentLocation!.latitude!, _currentLocation!.longitude!),
                 zoom: 17.0,
               ),
             ),
@@ -140,8 +163,6 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
       ),
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      
-      
     );
   }
 }
@@ -165,7 +186,8 @@ class CustomSearchBar extends StatelessWidget {
           ),
           prefixIcon: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: SvgPicture.asset('assets/images/filled.svg', height: 24, width: 24),
+            child: SvgPicture.asset('assets/images/filled.svg',
+                height: 24, width: 24),
           ),
         ),
       ),

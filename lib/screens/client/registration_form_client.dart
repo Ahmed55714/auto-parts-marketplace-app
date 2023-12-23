@@ -317,30 +317,33 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
   }
 
   Widget buildCarTypeField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: 'Car type',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        const SizedBox(height: 8),
-        CustomTextField(
-          labelText: 'Placeholder',
-          controller: carTypeController,
-          keyboardType: TextInputType.text,
-          suffixIcon: SvgPicture.asset('assets/images/arrow-down.svg',
-              height: 24, width: 24),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter Car type';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 8),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: 'Car type',
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          const SizedBox(height: 8),
+          CustomTextField(
+            labelText: 'Placeholder',
+            controller: carTypeController,
+            keyboardType: TextInputType.text,
+            suffixIcon: SvgPicture.asset('assets/images/arrow-down.svg',
+                height: 24, width: 24),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter Car type';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 
@@ -460,8 +463,8 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
             if (_formKey.currentState!.validate()) {
                String selectedCarTypeId = carTypeController.text;
               // Assuming you have latitude and longitude as separate variables
-              String latitude = 'Your_latitude_value';
-              String longitude = 'Your_longitude_value';
+              String latitude = locationController.text.split(',')[0];
+              String longitude = locationController.text.split(',')[1];
 
               // Call the API to register the client
               await regesterController.postClientRegistration(

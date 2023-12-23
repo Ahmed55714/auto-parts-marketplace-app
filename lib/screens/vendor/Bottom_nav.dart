@@ -16,7 +16,7 @@ class VendorMap extends StatefulWidget {
 }
 
 class _VendorMapState extends State<VendorMap> {
-  // Set the initial index to 1 to start from MyMap screen
+ 
   int _currentIndex = 1;
 
   final List<Widget> _screens = [

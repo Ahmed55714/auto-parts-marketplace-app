@@ -1,100 +1,197 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
+import 'package:http/http.dart' as http;
 
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
-import 'Bottom_nav.dart';
 import 'offer_form.dart';
 
-class MyOrders extends StatelessWidget {
+class RegistrationVerificationStatus {
+  final String completeRegistration;
+  final String isVerified;
+
+  RegistrationVerificationStatus(
+      {required this.completeRegistration, required this.isVerified});
+}
+
+class MyOrders extends StatefulWidget {
   const MyOrders({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-             
-            SizedBox(height: 20),
-              const Center(
+  State<MyOrders> createState() => _MyOrdersState();
+}
+
+class _MyOrdersState extends State<MyOrders> {
+  Future<RegistrationVerificationStatus>
+      fetchCompleteRegistrationStatus() async {
+    var url = Uri.parse('https://slfsparepart.com/api/user');
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        return RegistrationVerificationStatus(
+          completeRegistration:
+              jsonResponse['complete_registration'].toString(),
+          isVerified: jsonResponse['is_verified'].toString(),
+        );
+      } else {
+        throw Exception('Failed to load registration status');
+      }
+    } catch (e) {
+      throw Exception('Error occurred: $e');
+    }
+  }
+
+ @override
+Widget build(BuildContext context) {
+  return FutureBuilder<RegistrationVerificationStatus>(
+    future: fetchCompleteRegistrationStatus(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      } else if (snapshot.hasError) {
+        return Scaffold(
+          body: Center(child: Text('Error: ${snapshot.error}')),
+        );
+      } else if (snapshot.hasData) {
+        var status = snapshot.data!;
+        if (status.completeRegistration == "1" && status.isVerified == "1") {
+          return buildOrdersLayout();
+        } else if (status.completeRegistration == "1" && status.isVerified == "0") {
+          return const Scaffold(
+            body: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Text(
-                  'Orders',
+                  'Your application is under review, please wait for the approval',
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: deepPurple,
-                  ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: deepPurple),
                 ),
               ),
-
-              const SizedBox(height: 16),
-              const SizedBox(height: 16),
-              const Padding(
-                padding: EdgeInsets.only(left: 16),
+            ),
+          );
+        } else if (status.completeRegistration == "0" && status.isVerified == "0") {
+          return const Scaffold(
+            body: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Text(
-                  'Order 03654',
+                  'Registration to be able to see orders',
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: deepPurple,
-                  ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: deepPurple),
                 ),
               ),
+            ),
+          );
+        }
+      }
+      return const Scaffold(
+        body: Center(child: Text('No data available')),
+      );
+    },
+  );
+}
 
-              orderDetails('', ''),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: CustomButton3(text: 'Aceept', onPressed: () {}),
-                  ),
-                  CustomButton4(text: 'Decline', onPressed: () {}),
-                ],
-              ),
-              const CancelOrderSection(),
-              orderDetails('03654', 'Pending'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CustomButton5(text: 'Out for delivery', onPressed: () {}),
-                ],
-              ),
-              const CancelOrderSection(),
 
-              // Second Order Details
-              orderDetails('03655', 'Accepted'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CustomButton(
-                      text: 'Make an Offer',
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OfferForm()));
-                      }),
-                ],
+  Widget buildOrdersLayout() {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            const Center(
+              child: Text(
+                'Orders',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: deepPurple,
+                ),
               ),
-              const CancelOrderSection(),
+            ),
 
-              // Third Order Details
-              orderDetails('03656', 'Out for delivery'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CustomButton5(text: 'Out for delivery', onPressed: () {}),
-                ],
+            const SizedBox(height: 16),
+            const SizedBox(height: 16),
+            const Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Text(
+                'Order 03654',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: deepPurple,
+                ),
               ),
-              const CancelOrderSection(),
+            ),
 
-              // Fourth Order Details
-            ],
-          ),
+            orderDetails('', ''),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: CustomButton3(text: 'Aceept', onPressed: () {}),
+                ),
+                CustomButton4(text: 'Decline', onPressed: () {}),
+              ],
+            ),
+            const CancelOrderSection(),
+            orderDetails('03654', 'Pending'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomButton5(text: 'Out for delivery', onPressed: () {}),
+              ],
+            ),
+            const CancelOrderSection(),
+
+            // Second Order Details
+            orderDetails('03655', 'Accepted'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomButton(
+                    text: 'Make an Offer',
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => const OfferForm()));
+                    }),
+              ],
+            ),
+            const CancelOrderSection(),
+
+            // Third Order Details
+            orderDetails('03656', 'Out for delivery'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomButton5(text: 'Out for delivery', onPressed: () {}),
+              ],
+            ),
+            const CancelOrderSection(),
+
+            // Fourth Order Details
+          ],
         ),
       ),
     );
