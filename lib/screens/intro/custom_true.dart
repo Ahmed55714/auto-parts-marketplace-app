@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:work2/screens/vendor/Bottom_nav.dart';
 import 'package:work2/widgets/custom_button.dart';
 
 import '../client/map_client.dart';
@@ -19,7 +20,7 @@ class TrueScreen extends StatelessWidget {
               SizedBox(
                   height: 24.0), // Provides space between the icon and the text
               Text(
-                'We got your feed back!',
+                'We got your request!',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -29,7 +30,7 @@ class TrueScreen extends StatelessWidget {
               Container(
                 width: 300,
                 child: Text(
-                  'adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
+                  'The request is being reviewed and will be responded to as soon as possible.',
                   textAlign: TextAlign.center,
                   
                   style: TextStyle(
@@ -55,7 +56,7 @@ class TrueScreen extends StatelessWidget {
                 Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ClientMap(),
+                builder: (context) => VendorMap(),
                 // const CarForm(),
               ),
             );

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -63,6 +64,20 @@ class _RegistrationFormState extends State<RegistrationForm> {
     }
   }
 
+  Future<void> _pickImage1() async {
+    final List<XFile>? pickedImages = await _picker.pickMultiImage();
+    if (pickedImages != null) {
+      setState(() => _images.addAll(pickedImages));
+    }
+  }
+
+  Future<void> _pickImage2() async {
+    final List<XFile>? pickedImages = await _picker.pickMultiImage();
+    if (pickedImages != null) {
+      setState(() => _images.addAll(pickedImages));
+    }
+  }
+
   void _removeImage(int index) {
     setState(() => _images.removeAt(index));
   }
@@ -103,69 +118,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   buildTextField('Email', emailController,
                       TextInputType.emailAddress, 'Enter your email'),
                   buildCarTypeField1(),
-                  //     Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: buildTextField('Car type', cartypeController,
-                  //           TextInputType.text, 'Enter your Car type'),
-                  //     ),
-                  //     Padding(
-                  //       padding: const EdgeInsets.only(right: 16),
-                  //       child: Container(
-                  //         margin: const EdgeInsets.only(left: 0),
-                  //         decoration: BoxDecoration(
-                  //           border: Border.all(color: Colors.grey),
-                  //           borderRadius: BorderRadius.circular(12),
-                  //         ),
-                  //         child: IconButton(
-                  //           icon: const Icon(
-                  //             Icons.add,
-                  //             color: greyColor,
-                  //             size: 35,
-                  //           ),
-                  //           onPressed: _addCarType,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-
-                  // for (var carType in carTypes)
-                  //   Padding(
-                  //     padding: const EdgeInsets.only(left: 16.0, right: 16),
-                  //     child: Container(
-                  //       margin: const EdgeInsets.only(top: 8),
-                  //       padding: const EdgeInsets.all(8),
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         border: Border.all(color: greyColor),
-                  //         borderRadius: BorderRadius.circular(12),
-                  //       ),
-                  //       child: Padding(
-                  //         padding: const EdgeInsets.all(8.0),
-                  //         child: Row(
-                  //           children: [
-                  //             Text(
-                  //               carType,
-                  //               style: const TextStyle(
-                  //                 fontSize: 16,
-                  //                 fontWeight: FontWeight.w700,
-                  //                 fontFamily: 'BahijTheSansArabic',
-                  //                 color: deepPurple,
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
                   const SizedBox(height: 10),
 
                   buildTextFieldLocation('Location', locationController,
                       TextInputType.text, 'Enter your location', context),
                   buildImagePicker('Tax Certificate', _pickImage),
-                  buildImagePicker('Commercial Register', _pickImage),
-                  buildImagePicker('Municipality Certificate', _pickImage),
+                  buildImagePicker('Commercial Register', _pickImage1),
+                  buildImagePicker('Municipality Certificate', _pickImage2),
                   buildImagesDisplay(),
                   buildAgreementSwitch(),
                   buildSubmitButton(context),
@@ -223,50 +182,46 @@ class _RegistrationFormState extends State<RegistrationForm> {
         ),
         const SizedBox(height: 8),
         Obx(() {
-          if (regesterController.isLoading.isTrue) {
-            return CircularProgressIndicator();
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: MultiSelectDialogField(
-                items: regesterController.carTypes
-                    .map((car) => MultiSelectItem(car['id'], car['name']))
-                    .toList(),
-                title: Text("Car Types"),
-                selectedColor: deepPurple,
-                decoration: BoxDecoration(
-                  color: deepPurple.withOpacity(0.1),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  border: Border.all(
-                    color: deepPurple,
-                    width: 2,
-                  ),
-                ),
-                buttonIcon: Icon(
-                  Icons.car_rental,
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MultiSelectDialogField(
+              items: regesterController.carTypes
+                  .map((car) =>
+                      MultiSelectItem(car['id'].toString(), car['name']))
+                  .toList(),
+              title: Text("Car Types"),
+              selectedColor: deepPurple,
+              decoration: BoxDecoration(
+                color: deepPurple.withOpacity(0.1),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                border: Border.all(
                   color: deepPurple,
+                  width: 2,
                 ),
-                buttonText: Text(
-                  "Select Car Types",
-                  style: TextStyle(
-                    color: Colors.blue[800],
-                    fontSize: 16,
-                  ),
-                ),
-                onConfirm: (List<dynamic> values) {
-                  // Make sure the parameter name matches the usage.
-                  regesterController.selectedCarTypes.value =
-                      List<String>.from(values.map((e) => e.toString()));
-                },
-                validator: (values) {
-                  if (values == null || values.isEmpty) {
-                    return "Please select one or more car types";
-                  }
-                  return null;
-                },
               ),
-            );
-          }
+              buttonIcon: Icon(
+                Icons.car_rental,
+                color: deepPurple,
+              ),
+              buttonText: Text(
+                "Select Car Types",
+                style: TextStyle(
+                  color: deepPurple,
+                  fontSize: 16,
+                ),
+              ),
+              onConfirm: (List selectedValues) {
+                carTypes = selectedValues as List<String>;
+                print(regesterController.carTypes);
+              },
+              validator: (values) {
+                if (values == null || values.isEmpty) {
+                  return "Please select one or more car types";
+                }
+                return null;
+              },
+            ),
+          );
         }),
         const SizedBox(height: 8),
       ],
@@ -336,27 +291,42 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  Widget buildImagePicker(String label, VoidCallback onTap) {
+  Widget buildImagePicker(String label, VoidCallback pickImage) {
+    bool hasImage = _images.isNotEmpty; // Check if images list is not empty
     return GestureDetector(
-      onTap: onTap,
+      onTap: pickImage,
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey),
+            border: Border.all(
+                color: hasImage
+                    ? Colors.grey
+                    : Colors.red), // Red border if no image selected
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label,
-                  style: const TextStyle(
-                      fontSize: 16,
-                      color: greyColor,
-                      fontFamily: 'BahijTheSansArabic')),
-              SvgPicture.asset('assets/images/gallery.svg',
-                  height: 24, width: 24),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: hasImage
+                      ? Colors.grey
+                      : Colors.red, // Red text if no image selected
+                  fontFamily: 'BahijTheSansArabic',
+                ),
+              ),
+              SvgPicture.asset(
+                'assets/images/gallery.svg',
+                height: 24,
+                width: 24,
+                color: hasImage
+                    ? null
+                    : Colors.red, // Red icon if no image selected
+              ),
             ],
           ),
         ),
@@ -462,6 +432,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 print('Invalid location format');
                 return;
               }
+
               try {
                 await regesterController.postVendorRegistration(
                   name: nameController.text,
@@ -471,6 +442,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   longitude: latLong[1].trim(),
                   images: _images,
                 );
+                print(carTypes);
+                print(_images);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

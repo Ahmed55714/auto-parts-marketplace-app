@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,7 +51,9 @@ class RegesterController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
         var data = jsonDecode(response.body);
+        print(data);
         print(response.body);
+        print('Response body: ${response.request}');
       } else {
         // Handle error
         print('Failed to register client');
@@ -61,12 +67,10 @@ class RegesterController extends GetxController {
     }
   }
 
+//vendor
+  //var selectedCarTypes = <String>[].obs;
 //client
   var carTypes = <Map<String, dynamic>>[].obs;
-
-//vendor
-    var selectedCarTypes = <String>[].obs;
-
 
   Future<void> fetchCarTypes() async {
     final Uri apiEndpoint =
@@ -110,11 +114,11 @@ class RegesterController extends GetxController {
           'Authorization': 'Bearer $authToken',
         },
       );
-      print('Response status: ${response.statusCode}');
+
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
-        print('Response body: ${response.body}');
 
         String completeRegistration = jsonResponse['complete_registration'];
 
@@ -124,6 +128,7 @@ class RegesterController extends GetxController {
             context,
             MaterialPageRoute(builder: (context) => const CarForm()),
           );
+          print('Response body: ${response.body}');
         } else if (completeRegistration == "0") {
           Navigator.push(
             context,
@@ -153,7 +158,6 @@ class RegesterController extends GetxController {
           'Authorization': 'Bearer $authToken',
         },
       );
-      print('Response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
@@ -162,80 +166,22 @@ class RegesterController extends GetxController {
         String completeRegistration = jsonResponse['complete_registration'];
         String isVerified = jsonResponse['is_verified'];
 
-          if (completeRegistration == "0") {
-            // If number is 1, navigate to FirstScreen
+        if (completeRegistration == "0") {
+          // If number is 1, navigate to FirstScreen
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const RegistrationForm()),
-            
-            );
-          } 
-        } else {
-          // Handle non-200 responses
-          print('Request failed with status: ${response.body}.');
+            context,
+            MaterialPageRoute(builder: (context) => const RegistrationForm()),
+          );
+        }
+      } else {
+        // Handle non-200 responses
+        print('Request failed with status: ${response.body}.');
       }
     } catch (e) {
       // Handle any exceptions
       print('Error occurred: $e');
     }
   }
-
-  // Future<void> postVendorRegistration({
-  //   required String name,
-  //   required String email,
-  //   required List<String> carTypeIds,
-  //   required String latitude,
-  //   required String longitude,
-  //   required List<XFile> images,
-  // }) async {
-  //   final Uri apiEndpoint =
-  //       Uri.parse("https://slfsparepart.com/api/vendor/register");
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final String? authToken = prefs.getString('auth_token');
-  //   isLoading(true);
-
-  //   List<String> base64Images = [];
-  //   for (XFile image in images) {
-  //     final bytes = await image.readAsBytes();
-  //     String imgBase64Str = base64Encode(bytes);
-  //     base64Images.add(imgBase64Str);
-  //   }
-
-  //   try {
-  //     final response = await http.post(
-  //       apiEndpoint,
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Authorization': 'Bearer $authToken',
-  //       },
-  //       body: {
-  //         'name': name,
-  //         'email': email,
-  //         'cars[]': carTypeIds,
-  //         'lat': latitude,
-  //         'long': longitude,
-  //         'files': base64Images,
-  //       },
-  //     );
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       // Handle success
-  //       var data = jsonDecode(response.body);
-  //       print(data);
-
-  //       print(response.body);
-  //     } else {
-  //       // Handle error
-  //       print('Failed to register client');
-  //       print(response.body);
-  //     }
-  //   } catch (e) {
-  //     // Handle any exceptions here
-  //     print('Error occurred while registering client: $e');
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
 
   Future<void> postVendorRegistration({
     required String name,
@@ -251,37 +197,40 @@ class RegesterController extends GetxController {
     final String? authToken = prefs.getString('auth_token');
     isLoading(true);
 
-    List<String> base64Images = [];
-    for (XFile image in images) {
-      final bytes = await image.readAsBytes();
-      String imgBase64Str = base64Encode(bytes);
-      base64Images.add(imgBase64Str);
-    }
-
-    // Construct the request body as a Map
-    Map<String, dynamic> requestBody = {
-      'name': name,
-      'email': email,
-      'cars': carTypeIds, // Assuming the API expects an array for car types
-      'lat': latitude,
-      'long': longitude,
-      'files': base64Images, // Assuming the API expects an array for files
-    };
-
     try {
-      final response = await http.post(
-        apiEndpoint,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-        body: json.encode(requestBody), // Encode the Map as a JSON string
-      );
+      final request = http.MultipartRequest('POST', apiEndpoint)
+        ..headers['Accept'] = 'application/json'
+        ..headers['Authorization'] = 'Bearer $authToken'
+        ..fields['name'] = name
+        ..fields['email'] = email
+        ..fields['lat'] = latitude
+        ..fields['long'] = longitude;
+
+      // Add car type IDs to the request as individual fields
+      for (var i = 0; i < carTypeIds.length; i++) {
+        request.fields['cars[$i]'] = carTypeIds[i];
+      }
+
+      // Add images to the request as multipart files
+      for (var image in images) {
+        final mimeTypeData =
+            lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
+        var multipartFile = await http.MultipartFile.fromPath(
+          'files[]', // This is the field name that the server expects for files
+          image.path,
+          contentType: MediaType(mimeTypeData![0], mimeTypeData[1]),
+        );
+        request.files.add(multipartFile);
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
-        var data = jsonDecode(response.body);
-        print(data);
+        var jsonResponse = json.decode(response.body);
+        print('Response body: ${response.body}');
+        print(jsonResponse);
       } else {
         // Handle error
         print('Failed to register client');
@@ -290,9 +239,9 @@ class RegesterController extends GetxController {
     } catch (e) {
       // Handle any exceptions here
       print('Error occurred while registering client: $e');
+      print(e);
     } finally {
       isLoading(false);
     }
   }
-
 }

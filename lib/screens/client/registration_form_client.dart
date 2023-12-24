@@ -475,6 +475,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                 latitude: latitude,
                 longitude: longitude,
               );
+   
               Navigator.push(
                 context,
                 MaterialPageRoute(
