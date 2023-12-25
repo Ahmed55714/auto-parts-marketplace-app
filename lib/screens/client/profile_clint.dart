@@ -1,13 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:work2/constants/colors.dart';
+import '../../getx/regestration.dart';
+import '../../getx/update_profile.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_continer.dart';
 import '../../widgets/custom_textFaild.dart';
+import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
-import 'Bottom_nav.dart';
+import 'map_client.dart';
 
 class ProfileClient extends StatefulWidget {
   const ProfileClient({Key? key}) : super(key: key);
@@ -18,6 +22,8 @@ class ProfileClient extends StatefulWidget {
 
 class _MyProfileState extends State<ProfileClient> {
   bool isAgreed = false;
+  final UpdateProfileController updateController =
+      Get.put(UpdateProfileController());
 
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
@@ -26,12 +32,20 @@ class _MyProfileState extends State<ProfileClient> {
   final nameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final emailController = TextEditingController();
+  final streetController = TextEditingController();
+  final buildingController = TextEditingController();
+  final floorController = TextEditingController();
+  final aptController = TextEditingController();
 
   @override
   void dispose() {
     nameController.dispose();
     phoneNumberController.dispose();
     emailController.dispose();
+    streetController.dispose();
+    buildingController.dispose();
+    floorController.dispose();
+    aptController.dispose();
 
     super.dispose();
   }
@@ -97,12 +111,9 @@ class _MyProfileState extends State<ProfileClient> {
                             border:
                                 Border.all(color: Colors.deepPurple, width: 2),
                             shape: BoxShape.circle,
-                            image: DecorationImage(
+                            image: const DecorationImage(
                               fit: BoxFit.cover,
-                              image: _image == null
-                                  ? const AssetImage(
-                                      'path/to/placeholder/image')
-                                  : FileImage(_image!) as ImageProvider,
+                              image: AssetImage('assets/images/pic.jpg'),
                             ),
                           ),
                         ),
@@ -153,7 +164,7 @@ class _MyProfileState extends State<ProfileClient> {
                       Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
-                          'Adresses',
+                          'Addresses',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -245,7 +256,9 @@ class _MyProfileState extends State<ProfileClient> {
                   ),
                   CustomButtongrey(
                     text: '+ Add address',
-                    onPressed: () {},
+                    onPressed: () {
+                      _showEditAddressBottomSheet(context);
+                    },
                   ),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
@@ -255,6 +268,116 @@ class _MyProfileState extends State<ProfileClient> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showEditAddressBottomSheet(BuildContext context) {
+    final GlobalKey<FormState> _bottomSheetFormKey = GlobalKey<FormState>();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          maxChildSize: 0.9,
+          builder: (_, controller) => Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _bottomSheetFormKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const Text(
+                        'Edit Address',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: deepPurple),
+                      ),
+                      // Use an empty container to center the title if there is no right-side icon.
+                      Container(width: 48, height: 48),
+                    ],
+                  ),
+                  const Divider(),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16.0),
+                          child: Container(
+                            height: 200,
+                            color: Colors.grey[300], // Placeholder for the map
+                            child: const CustomGoogleMap(),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        buildTextField(
+                            'Street', streetController, TextInputType.text),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: buildTextField('Building',
+                                  buildingController, TextInputType.text),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: buildTextField(
+                                  'Floor', floorController, TextInputType.text),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: buildTextField(
+                                  'Apt', aptController, TextInputType.text),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        CustomButton(
+                            text: 'save',
+                            onPressed: () async {
+                              if (_bottomSheetFormKey.currentState!
+                                  .validate()) {
+                                await updateController.createAdress(
+                                  name:
+                                      'Name from some input if necessary', // If you need the name from the user input, make sure to include it here
+                                  street: streetController.text,
+                                  building: buildingController.text,
+                                  floor: floorController.text,
+                                  apartment: aptController.text,
+                                  lat:
+                                      'Latitude from map', // If you need the latitude from a map widget, make sure to retrieve it
+                                  long:
+                                      'Longitude from map', // If you need the longitude from a map widget, make sure to retrieve it
+                                );
+
+                                // Once the API call is done, hide the loading indicator
+                                Navigator.pop(
+                                    context); // Pop the loading dialog
+                                Navigator.pop(context); // Pop the bottom sheet
+                              }
+                            }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -353,46 +476,20 @@ class _MyProfileState extends State<ProfileClient> {
         const SizedBox(height: 27),
         CustomButton(
           text: 'Save',
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {}
-            showDialog(
-              context: context,
-              barrierDismissible:
-                  false, // This ensures the dialog cannot be dismissed by tapping outside
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Center(
-                    child: Icon(
-                      Icons.check_circle, // Success icon
-                      color: Colors.green,
-                      size: 60,
-                    ),
-                  ),
-                  content: CustomText(
-                    text: 'You\'re Successfuly Resgistered',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  actions: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomButton2(
-                          text: 'Edit',
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        const SizedBox(height: 7),
-                        CustomButton(
-                          text: 'Home page',
-                          onPressed: () {},
-                        )
-                      ],
-                    ),
-                  ],
-                );
-              },
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              await updateController.updateProfile(
+                name: nameController.text,
+                email: emailController.text,
+                phone: phoneNumberController.text,
+              );
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => updateTrueScreen(),
+                // const CarForm(),
+              ),
             );
           },
         ),

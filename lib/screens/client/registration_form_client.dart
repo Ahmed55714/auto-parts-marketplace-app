@@ -463,8 +463,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
             if (_formKey.currentState!.validate()) {
                String selectedCarTypeId = carTypeController.text;
               // Assuming you have latitude and longitude as separate variables
-              String latitude = locationController.text.split(',')[0];
-              String longitude = locationController.text.split(',')[1];
+              var latLong = locationController.text.split(',');
 
               // Call the API to register the client
               await regesterController.postClientRegistration(
@@ -472,8 +471,8 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                 email: emailController.text,
                 birthDate: dateController.text,
                 carTypeId: selectedCarTypeId,
-                latitude: latitude,
-                longitude: longitude,
+                latitude: latLong[0].trim(),
+                longitude: latLong[1].trim(),
               );
    
               Navigator.push(

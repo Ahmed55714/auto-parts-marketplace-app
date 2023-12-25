@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:work2/constants/colors.dart';
 
-class CustomSelection extends StatelessWidget {
+import '../getx/update_profile.dart';
+
+class CustomSelection extends StatefulWidget {
   final int index;
   final bool isSelected;
   final String title;
@@ -18,9 +21,18 @@ class CustomSelection extends StatelessWidget {
   });
 
   @override
+  State<CustomSelection> createState() => _CustomSelectionState();
+}
+
+class _CustomSelectionState extends State<CustomSelection> {
+  final UpdateProfileController updateController =
+      Get.find<UpdateProfileController>();
+  List<Address> addresses = [];
+  int selectedContainerIndex = -1;
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -28,35 +40,33 @@ class CustomSelection extends StatelessWidget {
           width: double.infinity,
           height: 102,
           decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.white,
+            color: widget.isSelected ? Colors.white : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isSelected ? deepPurple : greyColor,
+              color: widget.isSelected ? deepPurple : greyColor,
               width: 1.0,
             ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-               Padding(
+              Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: AnimatedContainer(
                   width: 20,
                   height: 20,
                   decoration: BoxDecoration(
-
-                    color: isSelected ? deepPurple : greyColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(60),
-                      bottomLeft: Radius.circular(60),
-                      topRight: Radius.circular(60),
-                      bottomRight: Radius.circular(10),
-                    )
-                  ),
+                      color: widget.isSelected ? deepPurple : greyColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(60),
+                        bottomLeft: Radius.circular(60),
+                        topRight: Radius.circular(60),
+                        bottomRight: Radius.circular(10),
+                      )),
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.fastOutSlowIn,
                   child: Visibility(
-                    visible: isSelected,
+                    visible: widget.isSelected,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: AnimatedContainer(
@@ -77,19 +87,18 @@ class CustomSelection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  
                   Container(
-                    margin: const EdgeInsets.only( top: 19),
+                    margin: const EdgeInsets.only(top: 19),
                     child: Row(
                       children: [
                         Container(
                           margin: const EdgeInsets.only(left: 23),
                           child: Text(
-                            title,
+                            widget.title,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: isSelected ? deepPurple : greyColor,
+                              color: widget.isSelected ? deepPurple : greyColor,
                             ),
                           ),
                         ),
@@ -99,11 +108,11 @@ class CustomSelection extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.only(left: 30, top: 9),
                     child: Text(
-                      description,
+                      widget.description,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: isSelected ? deepPurple : greyColor,
+                        color: widget.isSelected ? deepPurple : greyColor,
                       ),
                     ),
                   ),
@@ -115,13 +124,13 @@ class CustomSelection extends StatelessWidget {
                   width: 16,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: isSelected ? deepPurple : greyColor,
+                    color: widget.isSelected ? deepPurple : greyColor,
                     borderRadius: BorderRadius.circular(60),
                   ),
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.fastOutSlowIn,
                   child: Visibility(
-                    visible: isSelected,
+                    visible: widget.isSelected,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: AnimatedContainer(
@@ -145,7 +154,6 @@ class CustomSelection extends StatelessWidget {
     );
   }
 }
-
 
 class CustomSelection1 extends StatelessWidget {
   final int index;
@@ -183,15 +191,11 @@ class CustomSelection1 extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-               
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                
-               
                 children: [
-                  
                   Container(
-                    margin: const EdgeInsets.only( top: 0),
+                    margin: const EdgeInsets.only(top: 0),
                     child: Row(
                       children: [
                         Container(

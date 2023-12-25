@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/getx/regestration.dart';
+import 'package:work2/getx/update_profile.dart';
 
 import 'package:work2/screens/client/report_client.dart';
 
@@ -34,6 +35,7 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
   Get.put(AuthController());
   Get.put(RegesterController());
+  Get.put(UpdateProfileController());
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
   final userType = prefs.getString('user_type');
