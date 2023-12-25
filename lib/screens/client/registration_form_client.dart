@@ -23,6 +23,7 @@ class RegistrationFormClinet extends StatefulWidget {
 
 class _RegistrationFormState extends State<RegistrationFormClinet> {
   bool isAgreed = false;
+  
   List<XFile> _images = [];
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
@@ -135,38 +136,41 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
           if (regesterController.isLoading.isTrue) {
             return CircularProgressIndicator();
           } else {
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'Select Car Type',
-                    border: InputBorder.none, // No border
-                    // To align the label text and the dropdown arrow icon
-                    contentPadding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+            return Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Select Car Type',
+                      border: InputBorder.none, // No border
+                      // To align the label text and the dropdown arrow icon
+                      contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                    ),
+                    value: carTypeController.text.isEmpty
+                        ? null
+                        : carTypeController.text,
+                    onChanged: (String? newValue) {
+                      carTypeController.text = newValue ?? '';
+                    },
+                    items: regesterController.carTypes.map((car) {
+                      return DropdownMenuItem<String>(
+                        value: car['id'].toString(),
+                        child: Text(car['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter Car type';
+                      }
+                      return null;
+                    },
                   ),
-                  value: carTypeController.text.isEmpty
-                      ? null
-                      : carTypeController.text,
-                  onChanged: (String? newValue) {
-                    carTypeController.text = newValue ?? '';
-                  },
-                  items: regesterController.carTypes.map((car) {
-                    return DropdownMenuItem<String>(
-                      value: car['id'].toString(),
-                      child: Text(car['name']),
-                    );
-                  }).toList(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter Car type';
-                    }
-                    return null;
-                  },
                 ),
               ),
             );
@@ -232,10 +236,11 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         return Future.error(
             'Location permissions are permanently denied, we cannot request permissions.');
       }
-
+      
       // When permissions are granted, get the current location
       Position position = await Geolocator.getCurrentPosition();
       controller.text = "${position.latitude}, ${position.longitude}";
+      
     }
 
     return Column(
@@ -461,7 +466,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
           text: 'Register',
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-               String selectedCarTypeId = carTypeController.text;
+              String selectedCarTypeId = carTypeController.text;
               // Assuming you have latitude and longitude as separate variables
               var latLong = locationController.text.split(',');
 
@@ -474,7 +479,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                 latitude: latLong[0].trim(),
                 longitude: latLong[1].trim(),
               );
-   
+
               Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -23,6 +23,7 @@ import 'screens/vendor/Bottom_nav.dart';
 import 'screens/vendor/Registration_form.dart';
 import 'screens/vendor/Report.dart';
 
+import 'screens/vendor/chat/screens/mobile_chat_screen.dart';
 import 'screens/vendor/my_account.dart';
 import 'screens/vendor/offer_form.dart';
 import 'screens/vendor/orders_rate.dart';
@@ -122,6 +123,7 @@ class _MyAppState extends State<MyApp> {
           '/profile': (context) => const MyProfile(),
           '/CarForm': (context) => const CarForm(),
           '/Report': (context) => const ReportClient(),
+          
         };
         final builder = routes[settings.name];
         if (builder == null) {

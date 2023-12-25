@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../constants/colors.dart';
+import 'chat/screens/mobile_layout_screen.dart';
 import 'profile.dart';
 
 class MyAccount extends StatelessWidget {
@@ -12,16 +13,30 @@ class MyAccount extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const Padding(
+             Padding(
               padding: EdgeInsets.only(top: 20),
               child: Center(
-                child: Text(
-                  'My account',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: deepPurple,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'My account',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: deepPurple,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MobileLayoutScreen()));
+                      },
+                      icon: const Icon(
+                        Icons.notifications,
+                        color: deepPurple,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -33,8 +48,11 @@ class MyAccount extends StatelessWidget {
                   const _ProfileIcon(),
                   const SizedBox(width: 10),
                   _ProfileInfo(
-                      onTap: () =>   Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyProfile()),))
+                      onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyProfile()),
+                          ))
                 ],
               ),
             ),

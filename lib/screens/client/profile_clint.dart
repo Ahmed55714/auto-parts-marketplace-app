@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import '../../getx/regestration.dart';
 import '../../getx/update_profile.dart';
@@ -12,6 +14,7 @@ import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
 import 'map_client.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileClient extends StatefulWidget {
   const ProfileClient({Key? key}) : super(key: key);
@@ -21,6 +24,74 @@ class ProfileClient extends StatefulWidget {
 }
 
 class _MyProfileState extends State<ProfileClient> {
+  List<Address> addresses = [];
+  int selectedContainerIndex = -1;
+
+  Future<void> fetchAddresses() async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/user/addresses");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonList = jsonDecode(response.body);
+        setState(() {
+          addresses = jsonList.map((json) => Address.fromJson(json)).toList();
+        });
+      } else {
+        // Handle error
+        print('Failed to fetch addresses');
+        print(response.body);
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while fetching addresses: $e');
+    }
+  }
+
+  Future<void> deleteAddress(int addressId) async {
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/user/addresses/$addressId/delete");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      final response = await http.post(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        fetchAddresses();
+      } else {
+        // Handle error
+        print('Failed to delete address');
+        print(response.body);
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while deleting address: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAddresses();
+  }
+
   bool isAgreed = false;
   final UpdateProfileController updateController =
       Get.put(UpdateProfileController());
@@ -36,6 +107,7 @@ class _MyProfileState extends State<ProfileClient> {
   final buildingController = TextEditingController();
   final floorController = TextEditingController();
   final aptController = TextEditingController();
+  final namePlaceController = TextEditingController();
 
   @override
   void dispose() {
@@ -46,6 +118,7 @@ class _MyProfileState extends State<ProfileClient> {
     buildingController.dispose();
     floorController.dispose();
     aptController.dispose();
+    namePlaceController.dispose();
 
     super.dispose();
   }
@@ -63,7 +136,6 @@ class _MyProfileState extends State<ProfileClient> {
     }
   }
 
-  int selectedContainerIndex = -1;
   void selectContainer(int index) {
     setState(() {
       selectedContainerIndex = (selectedContainerIndex == index) ? -1 : index;
@@ -174,85 +246,36 @@ class _MyProfileState extends State<ProfileClient> {
                       ),
                     ],
                   ),
-                  CustomSelection(
-                    index: 0,
-                    isSelected: selectedContainerIndex == 0,
-                    title: "Home",
-                    description: "ST - Building - Floor",
-                    onTap: () {
-                      selectContainer(0);
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(right: 16, bottom: 30),
-                        child: GestureDetector(
-                          child: const Text(
-                            'Edit',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: deepPurple,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(right: 16, bottom: 30),
-                        child: GestureDetector(
-                          child: const Text(
-                            'Delete',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: deepPurple,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  CustomSelection(
-                    index: 1,
-                    isSelected: selectedContainerIndex == 1,
-                    title: "Home",
-                    description: "ST - Building - Floor",
-                    onTap: () {
-                      selectContainer(1);
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(right: 16, bottom: 30),
-                        child: GestureDetector(
-                          child: const Text(
-                            'Edit',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: deepPurple,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(right: 16, bottom: 30),
-                        child: GestureDetector(
-                          child: const Text(
-                            'Delete',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: deepPurple,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  SizedBox(
+                    height: 250,
+                    child: ListView.builder(
+                      itemCount: addresses.length,
+                      itemBuilder: (context, index) {
+                        final address = addresses[index];
+                        return CustomSelection(
+                          index: index,
+                          isSelected: selectedContainerIndex == index,
+                          title: address.name, // Name from API
+                          description:
+                              "${address.street} - ${address.building} - ${address.floor} - ${address.apartment}", // Address details from API
+                          onTap: () {
+                            setState(() {
+                              selectedContainerIndex = index;
+                            });
+                          },
+                          addressId: address.id ??0, 
+                          onDelete: () {
+
+                            if (address.id != null) {
+                              deleteAddress(address.id);
+                            } else {
+                             
+                              print("Address ID is null.");
+                            }
+                          },
+                        );
+                      },
+                    ),
                   ),
                   CustomButtongrey(
                     text: '+ Add address',
@@ -322,6 +345,8 @@ class _MyProfileState extends State<ProfileClient> {
                             child: const CustomGoogleMap(),
                           ),
                         ),
+                        buildTextField(
+                            'Name', namePlaceController, TextInputType.text),
                         const SizedBox(height: 16),
                         buildTextField(
                             'Street', streetController, TextInputType.text),
@@ -330,20 +355,18 @@ class _MyProfileState extends State<ProfileClient> {
                           children: [
                             Expanded(
                               child: buildTextField('Building',
-                                  buildingController, TextInputType.text),
+                                  buildingController, TextInputType.number),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: buildTextField(
-                                  'Floor', floorController, TextInputType.text),
+                              child: buildTextField('Floor', floorController,
+                                  TextInputType.number),
                             ),
                             const SizedBox(width: 16),
-                            Expanded(
-                              child: buildTextField(
-                                  'Apt', aptController, TextInputType.text),
-                            ),
                           ],
                         ),
+                        buildTextField(
+                            'Apt', aptController, TextInputType.number),
                         const SizedBox(height: 16),
                         CustomButton(
                             text: 'save',
@@ -351,16 +374,13 @@ class _MyProfileState extends State<ProfileClient> {
                               if (_bottomSheetFormKey.currentState!
                                   .validate()) {
                                 await updateController.createAdress(
-                                  name:
-                                      'Name from some input if necessary', // If you need the name from the user input, make sure to include it here
+                                  name: namePlaceController.text,
                                   street: streetController.text,
                                   building: buildingController.text,
                                   floor: floorController.text,
                                   apartment: aptController.text,
-                                  lat:
-                                      'Latitude from map', // If you need the latitude from a map widget, make sure to retrieve it
-                                  long:
-                                      'Longitude from map', // If you need the longitude from a map widget, make sure to retrieve it
+                                  lat: 'Latitude from map',
+                                  long: 'Longitude from map',
                                 );
 
                                 // Once the API call is done, hide the loading indicator
@@ -393,7 +413,7 @@ class _MyProfileState extends State<ProfileClient> {
         ),
         const SizedBox(height: 8),
         CustomTextField(
-          labelText: 'Placeholder',
+          labelText: 'Enter $label',
           controller: controller,
           keyboardType: type,
           validator: (value) {
@@ -495,6 +515,216 @@ class _MyProfileState extends State<ProfileClient> {
         ),
         const SizedBox(height: 15),
       ],
+    );
+  }
+}
+
+class Address {
+  final int id;
+  final String name;
+  final String street;
+  final String building;
+  final String floor;
+  final String apartment;
+
+  Address({
+    required this.id,
+    required this.name,
+    required this.street,
+    required this.building,
+    required this.floor,
+    required this.apartment,
+  });
+
+  static Address fromJson(Map<String, dynamic> json) {
+    return Address(
+      id: json['id'],
+      name: json['name'],
+      street: json['street'],
+      building: json['building'],
+      floor: json['floor'],
+      apartment: json['apartment'],
+    );
+  }
+}
+
+class CustomSelection extends StatefulWidget {
+  final int index;
+  final bool isSelected;
+  final String title;
+  final String description;
+  final VoidCallback onTap;
+  final int addressId;
+  final VoidCallback onDelete;
+
+  CustomSelection({
+    required this.index,
+    required this.isSelected,
+    required this.title,
+    required this.description,
+    required this.onTap,
+    required this.addressId,
+    required this.onDelete,
+  });
+
+  @override
+  State<CustomSelection> createState() => _CustomSelectionState();
+}
+
+class _CustomSelectionState extends State<CustomSelection> {
+  final UpdateProfileController updateController =
+      Get.find<UpdateProfileController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 20),
+          width: double.infinity,
+          height: 130,
+          decoration: BoxDecoration(
+            color: widget.isSelected ? Colors.white : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: widget.isSelected ? deepPurple : greyColor,
+              width: 1.0,
+            ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: AnimatedContainer(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                          color: widget.isSelected ? deepPurple : greyColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(60),
+                            bottomLeft: Radius.circular(60),
+                            topRight: Radius.circular(60),
+                            bottomRight: Radius.circular(10),
+                          )),
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.fastOutSlowIn,
+                      child: Visibility(
+                        visible: widget.isSelected,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: AnimatedContainer(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(60),
+                            ),
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.fastOutSlowIn,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 19),
+                        child: Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 23),
+                              child: Container(
+                                width: 150,
+                                child: Text(
+                                  widget.title,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: widget.isSelected
+                                        ? deepPurple
+                                        : greyColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 30, top: 9),
+                        child: Text(
+                          widget.description,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: widget.isSelected ? deepPurple : greyColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 80.0),
+                    child: AnimatedContainer(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: widget.isSelected ? deepPurple : greyColor,
+                        borderRadius: BorderRadius.circular(60),
+                      ),
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.fastOutSlowIn,
+                      child: Visibility(
+                        visible: widget.isSelected,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: AnimatedContainer(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(60),
+                            ),
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.fastOutSlowIn,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 16, bottom: 10),
+                    child: GestureDetector(
+                      onTap: widget.onDelete,
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -105,6 +105,60 @@ Future<void> createAdress({
       isLoading(false);
     }
   }
+
+  Future<void> deleteAdress({
+    required String name,
+    required String street,
+    required int building,
+    required int floor,
+    required int apartment,
+    required String lat,
+    required String long,
+  }) async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/user/addresses/create");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+    isLoading(true);
+    try {
+      final response = await http.post(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: {
+          'name': name,
+          'street': street,
+          'building': building,
+          'floor': floor,
+          'apartment': apartment,
+          'lat': lat,
+          'long': long,
+        },
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Handle success
+        var data = jsonDecode(response.body);
+        print(data);
+    
+        print('Response body: ${response.request}');
+      } else {
+        // Handle error
+        print('Failed to register client');
+        print(response.body);
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while registering client: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  
+  
+  }
   // Future<void> getAddress() async {
   //   final Uri apiEndpoint =
   //       Uri.parse("https://slfsparepart.com/api/user/addresses");
@@ -139,41 +193,41 @@ Future<void> createAdress({
   //     isLoading(false);
   //   }
   // }
-Future<List<Address>> getAddress() async {
-    final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/user/addresses");
-    final prefs = await SharedPreferences.getInstance();
-    final String? authToken = prefs.getString('auth_token');
+// Future<List<Address>> getAddress() async {
+//     final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/user/addresses");
+//     final prefs = await SharedPreferences.getInstance();
+//     final String? authToken = prefs.getString('auth_token');
 
-    isLoading(true);
-    try {
-      final response = await http.get(
-        apiEndpoint,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-      );
+//     isLoading(true);
+//     try {
+//       final response = await http.get(
+//         apiEndpoint,
+//         headers: {
+//           'Accept': 'application/json',
+//           'Authorization': 'Bearer $authToken',
+//         },
+//       );
 
-      if (response.statusCode == 200) {
-        List<dynamic> jsonData = jsonDecode(response.body);
-        List<Address> addresses = jsonData.map((json) => Address.fromJson(json)).toList();
-        return addresses;
-      } else {
-        // Handle error
-        print('Failed to get addresses: ${response.body}');
-        return []; // Return an empty list in case of error
-      }
-    } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while fetching addresses: $e');
-      return []; // Return an empty list in case of error
-    } finally {
-      isLoading(false);
-    }
-  }
+//       if (response.statusCode == 200) {
+//         List<dynamic> jsonData = jsonDecode(response.body);
+//         List<Address> addresses = jsonData.map((json) => Address.fromJson(json)).toList();
+//         return addresses;
+//       } else {
+//         // Handle error
+//         print('Failed to get addresses: ${response.body}');
+//         return []; // Return an empty list in case of error
+//       }
+//     } catch (e) {
+//       // Handle any exceptions here
+//       print('Error occurred while fetching addresses: $e');
+//       return []; // Return an empty list in case of error
+//     } finally {
+//       isLoading(false);
+//     }
+//   }
   
 
-}
+
 
 
 
@@ -209,37 +263,37 @@ Future<List<Address>> getAddress() async {
   // }
 
 
-  class Address {
-  final int id;
-  final String name;
-  final String street;
-  final String building;
-  final String floor;
-  final String apartment;
-  final String lat;
-  final String long;
+  // class Address {
+  // final int id;
+  // final String name;
+  // final String street;
+  // final String building;
+  // final String floor;
+  // final String apartment;
+  // final String lat;
+  // final String long;
 
-  Address({
-    required this.id,
-    required this.name,
-    required this.street,
-    required this.building,
-    required this.floor,
-    required this.apartment,
-    required this.lat,
-    required this.long,
-  });
+  // Address({
+  //   required this.id,
+  //   required this.name,
+  //   required this.street,
+  //   required this.building,
+  //   required this.floor,
+  //   required this.apartment,
+  //   required this.lat,
+  //   required this.long,
+  // });
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      id: json['id'],
-      name: json['name'],
-      street: json['street'],
-      building: json['building'],
-      floor: json['floor'],
-      apartment: json['apartment'],
-      lat: json['lat'],
-      long: json['long'],
-    );
-  }
-}
+  // factory Address.fromJson(Map<String, dynamic> json) {
+  //   return Address(
+  //     id: json['id'],
+  //     name: json['name'],
+  //     street: json['street'],
+  //     building: json['building'],
+  //     floor: json['floor'],
+  //     apartment: json['apartment'],
+  //     lat: json['lat'],
+  //     long: json['long'],
+  //   );
+  // }
+//}

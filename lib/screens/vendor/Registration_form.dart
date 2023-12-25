@@ -25,6 +25,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   bool _isLoading = false;
 
   List<XFile> _images = [];
+  
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
 
@@ -63,19 +64,27 @@ class _RegistrationFormState extends State<RegistrationForm> {
       setState(() => _images.addAll(pickedImages));
     }
   }
+  
 
-  Future<void> _pickImage1() async {
-    final List<XFile>? pickedImages = await _picker.pickMultiImage();
-    if (pickedImages != null) {
-      setState(() => _images.addAll(pickedImages));
+  String? validateTaxCertificate(List<XFile> images) {
+    if (images.isEmpty) {
+      return 'Tax Certificate is required';
     }
+    return null;
   }
 
-  Future<void> _pickImage2() async {
-    final List<XFile>? pickedImages = await _picker.pickMultiImage();
-    if (pickedImages != null) {
-      setState(() => _images.addAll(pickedImages));
+  String? validateCommercialRegister(List<XFile> images) {
+    if (images.isEmpty) {
+      return 'Commercial Register is required';
     }
+    return null;
+  }
+
+  String? validateMunicipalityCertificate(List<XFile> images) {
+    if (images.isEmpty) {
+      return 'Municipality Certificate is required';
+    }
+    return null;
   }
 
   void _removeImage(int index) {
@@ -122,9 +131,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
                   buildTextFieldLocation('Location', locationController,
                       TextInputType.text, 'Enter your location', context),
-                  buildImagePicker('Tax Certificate', _pickImage),
-                  buildImagePicker('Commercial Register', _pickImage1),
-                  buildImagePicker('Municipality Certificate', _pickImage2),
+                  buildImagePicker('Tax Certificate', _pickImage, validateTaxCertificate),
+                  buildImagePicker('Commercial Register', _pickImage, validateCommercialRegister),
+                  buildImagePicker('Municipality Certificate', _pickImage, validateMunicipalityCertificate),
                   buildImagesDisplay(),
                   buildAgreementSwitch(),
                   buildSubmitButton(context),
@@ -183,7 +192,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         const SizedBox(height: 8),
         Obx(() {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 16, right: 16),
             child: MultiSelectDialogField(
               items: regesterController.carTypes
                   .map((car) =>
@@ -291,48 +300,68 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  Widget buildImagePicker(String label, VoidCallback pickImage) {
+  Widget buildImagePicker(String label, VoidCallback pickImage,
+      String? Function(List<XFile> images) validator) {
     bool hasImage = _images.isNotEmpty; // Check if images list is not empty
-    return GestureDetector(
-      onTap: pickImage,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-                color: hasImage
-                    ? Colors.grey
-                    : Colors.red), // Red border if no image selected
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 16,
+    String? errorText = validator(_images);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: pickImage,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
                   color: hasImage
                       ? Colors.grey
-                      : Colors.red, // Red text if no image selected
-                  fontFamily: 'BahijTheSansArabic',
+                      : Colors.red, // Red border if no image selected
                 ),
               ),
-              SvgPicture.asset(
-                'assets/images/gallery.svg',
-                height: 24,
-                width: 24,
-                color: hasImage
-                    ? null
-                    : Colors.red, // Red icon if no image selected
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: hasImage
+                          ? Colors.grey
+                          : Colors.red, // Red text if no image selected
+                      fontFamily: 'BahijTheSansArabic',
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/gallery.svg',
+                    height: 24,
+                    width: 24,
+                    color: hasImage
+                        ? null
+                        : Colors.red, // Red icon if no image selected
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(
+              errorText,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          ),
+      ],
     );
   }
+  
 
   Widget buildImagesDisplay() {
     return Padding(
