@@ -51,14 +51,22 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
             ),
-            const Text(
-              'Lorem ipsum dolor sit amet, consectetur ',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Roboto',
-                color: greyColor,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 250,
+                  child: const Text(
+                    'Welecome to SLF please choose your account type to continue. ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Roboto',
+                      color: greyColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 53),
             Image.asset(
@@ -74,7 +82,7 @@ class _SignUpState extends State<SignUp> {
                 }),
             const SizedBox(height: 12),
             CustomButton2(
-                text: 'Sign up as service provider',
+                text: 'Sign up as service vendor',
                 onPressed: () {
                   handleSignUp('vendor');
                 }),

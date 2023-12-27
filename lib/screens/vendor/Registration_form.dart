@@ -24,10 +24,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
   bool isAgreed = false;
   bool _isLoading = false;
 
-  List<XFile> _images = [];
-  
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
+  List<List<XFile?>> _images = [[], [], []];
 
   // Text editing controllers
   final nameController = TextEditingController();
@@ -36,6 +35,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final carTypeController = TextEditingController();
   final locationController = TextEditingController();
   final cartypeController = TextEditingController();
+  final locationdoneController = TextEditingController();
 
   List<String> carTypes = []; // List to store car types
 
@@ -55,40 +55,44 @@ class _RegistrationFormState extends State<RegistrationForm> {
     emailController.dispose();
     carTypeController.dispose();
     locationController.dispose();
+    cartypeController.dispose();
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final List<XFile>? pickedImages = await _picker.pickMultiImage();
-    if (pickedImages != null) {
-      setState(() => _images.addAll(pickedImages));
+  Future<void> _pickImage(int fieldIndex) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _images[fieldIndex].add(image);
+      });
     }
   }
-  
 
-  String? validateTaxCertificate(List<XFile> images) {
-    if (images.isEmpty) {
-      return 'Tax Certificate is required';
-    }
-    return null;
-  }
-
-  String? validateCommercialRegister(List<XFile> images) {
-    if (images.isEmpty) {
-      return 'Commercial Register is required';
+  String? validateField1() {
+    if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
+      return 'Please upload an image for Tax Certificate';
     }
     return null;
   }
 
-  String? validateMunicipalityCertificate(List<XFile> images) {
-    if (images.isEmpty) {
-      return 'Municipality Certificate is required';
+  String? validateField2() {
+    if (_images[1].isEmpty || _images[1].any((xFile) => xFile == null)) {
+      return 'Please upload an image for Commercial Register';
     }
     return null;
   }
 
-  void _removeImage(int index) {
-    setState(() => _images.removeAt(index));
+  String? validateField3() {
+    if (_images[2].isEmpty || _images[2].any((xFile) => xFile == null)) {
+      return 'Please upload an image for Municipality Certificate';
+    }
+    return null;
+  }
+
+  void _removeImage(int fieldIndex, XFile image) {
+    setState(() {
+      _images[fieldIndex].remove(image);
+    });
   }
 
   @override
@@ -129,12 +133,60 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   buildCarTypeField1(),
                   const SizedBox(height: 10),
 
-                  buildTextFieldLocation('Location', locationController,
-                      TextInputType.text, 'Enter your location', context),
-                  buildImagePicker('Tax Certificate', _pickImage, validateTaxCertificate),
-                  buildImagePicker('Commercial Register', _pickImage, validateCommercialRegister),
-                  buildImagePicker('Municipality Certificate', _pickImage, validateMunicipalityCertificate),
-                  buildImagesDisplay(),
+                  buildTextFieldLocation(
+                      'Location',
+                      locationdoneController,
+                      locationController,
+                      TextInputType.text,
+                      'Enter your location',
+                      context),
+                  buildImagePicker('Tax Certificate', 0),
+
+                  if (validateField1() != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          Text(validateField1()!,
+                              style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 10),
+                  buildImagePicker('Commercial Register', 1),
+
+                  if (validateField2() != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          Text(validateField2()!,
+                              style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 10),
+                  buildImagePicker('Municipality Certificate', 2),
+
+                  if (validateField3() != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          Text(validateField3()!,
+                              style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      buildImagesDisplay(0),
+                      buildImagesDisplay(1),
+                      buildImagesDisplay(2),
+                    ],
+                  ),
+
                   buildAgreementSwitch(),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
@@ -237,8 +289,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  Widget buildTextFieldLocation(String label, TextEditingController controller,
-      TextInputType type, String? text, BuildContext context) {
+  Widget buildTextFieldLocation(
+      String label,
+      TextEditingController controller,
+      TextEditingController locationController,
+      TextInputType type,
+      String? text,
+      BuildContext context) {
     // Function to get current location
     Future<void> _getCurrentLocation() async {
       bool serviceEnabled;
@@ -268,7 +325,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
       // When permissions are granted, get the current location
       Position position = await Geolocator.getCurrentPosition();
-      controller.text = "${position.latitude}, ${position.longitude}";
+      setState(() {
+        // Update the locationController with latitude and longitude
+        locationController.text = '${position.latitude}, ${position.longitude}';
+        // Update the display controller with "Done"
+        controller.text = 'Done';
+      });
     }
 
     return Column(
@@ -300,18 +362,16 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  Widget buildImagePicker(String label, VoidCallback pickImage,
-      String? Function(List<XFile> images) validator) {
+  Widget buildImagePicker(String label, int fieldIndex) {
     bool hasImage = _images.isNotEmpty; // Check if images list is not empty
-    String? errorText = validator(_images);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: pickImage,
+          onTap: () => _pickImage(fieldIndex),
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 5),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               decoration: BoxDecoration(
@@ -348,54 +408,86 @@ class _RegistrationFormState extends State<RegistrationForm> {
             ),
           ),
         ),
-        if (errorText != null)
-          Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              errorText,
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            ),
-          ),
       ],
     );
   }
-  
 
-  Widget buildImagesDisplay() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16.0, left: 16),
-      child: Wrap(
-        children: List.generate(_images.length, (index) {
-          return Stack(
-            alignment: Alignment.topRight,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.file(
-                    File(_images[index].path),
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
+  // Widget buildImagesDisplay() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(right: 16.0, left: 16),
+  //     child: Wrap(
+  //       children: List.generate(_images.length, (index) {
+  //         return Stack(
+  //           alignment: Alignment.topRight,
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: ClipRRect(
+  //                 borderRadius: BorderRadius.circular(20),
+  //                 child: Image.file(
+  //                   File(_images[index].path),
+  //                   width: 100,
+  //                   height: 100,
+  //                   fit: BoxFit.cover,
+  //                 ),
+  //               ),
+  //             ),
+  //             Positioned(
+  //               top: 0,
+  //               right: 0,
+  //               child: GestureDetector(
+  //                 onTap: () => _removeImage(index),
+  //                 child: SvgPicture.asset('assets/images/cancel.svg',
+  //                     width: 24, height: 24),
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       }),
+  //     ),
+  //   );
+  // }
+
+  Widget buildImagesDisplay(int fieldIndex) {
+    return Wrap(
+      children: _images[fieldIndex].map((image) {
+        return image != null
+            ? Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.file(
+                        File(image.path),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap: () => _removeImage(index),
-                  child: SvgPicture.asset('assets/images/cancel.svg',
-                      width: 24, height: 24),
-                ),
-              ),
-            ],
-          );
-        }),
-      ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => _removeImage(fieldIndex, image),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : SizedBox();
+      }).toList(),
     );
   }
 
@@ -450,7 +542,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
         CustomButton(
           text: 'Register',
           onPressed: () async {
-            if (_formKey.currentState!.validate()) {
+            if (_formKey.currentState!.validate() &&
+                validateField1() == null &&
+                validateField2() == null &&
+                validateField3() == null) {
               setState(() {
                 _isLoading = true; // Start loading
               });
@@ -461,6 +556,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 print('Invalid location format');
                 return;
               }
+              List<XFile> flattenedImages = _images
+                  .expand((xFiles) => xFiles)
+                  .where((xFile) => xFile != null)
+                  .cast<XFile>()
+                  .toList();
 
               try {
                 await regesterController.postVendorRegistration(
@@ -469,10 +569,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   carTypeIds: carTypes,
                   latitude: latLong[0].trim(),
                   longitude: latLong[1].trim(),
-                  images: _images,
+                  images: flattenedImages,
                 );
-                print(carTypes);
-                print(_images);
+
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(

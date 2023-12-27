@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:work2/screens/client/car_form.dart';
+
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
-import 'registration_form_client.dart';
+
 
 class ClientMap extends StatefulWidget {
   const ClientMap({super.key});

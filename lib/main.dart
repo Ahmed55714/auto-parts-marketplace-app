@@ -1,5 +1,7 @@
+
 // ignore_for_file: equal_keys_in_map
 import 'dart:io';
+
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,6 @@ import 'screens/vendor/Bottom_nav.dart';
 import 'screens/vendor/Registration_form.dart';
 import 'screens/vendor/Report.dart';
 
-import 'screens/vendor/chat/screens/mobile_chat_screen.dart';
 import 'screens/vendor/my_account.dart';
 import 'screens/vendor/offer_form.dart';
 import 'screens/vendor/orders_rate.dart';
@@ -33,6 +34,7 @@ import 'screens/vendor/profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await initialization(null);
   HttpOverrides.global = MyHttpOverrides();
   Get.put(AuthController());
   Get.put(RegesterController());
@@ -57,6 +59,12 @@ void main() async {
 
   // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
 }
+
+Future initialization(BuildContext? context) async {
+  // Load resources
+  await Future.delayed(const Duration(seconds: 3));
+}
+
 
 class MyApp extends StatefulWidget {
   final String initialRoute;
