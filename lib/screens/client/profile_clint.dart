@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
-import '../../getx/regestration.dart';
+
 import '../../getx/update_profile.dart';
 import '../../widgets/custom_button.dart';
-import '../../widgets/custom_continer.dart';
+
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';

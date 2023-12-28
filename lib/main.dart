@@ -1,7 +1,5 @@
-
 // ignore_for_file: equal_keys_in_map
 import 'dart:io';
-
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +12,7 @@ import 'package:work2/getx/update_profile.dart';
 import 'package:work2/screens/client/report_client.dart';
 
 import 'getx/auth.dart';
+import 'getx/orders.dart';
 import 'screens/client/Bottom_nav.dart';
 import 'screens/client/car_form.dart';
 import 'screens/client/map_client.dart';
@@ -39,6 +38,7 @@ void main() async {
   Get.put(AuthController());
   Get.put(RegesterController());
   Get.put(UpdateProfileController());
+  Get.put(OrdersController());
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
   final userType = prefs.getString('user_type');
@@ -64,7 +64,6 @@ Future initialization(BuildContext? context) async {
   // Load resources
   await Future.delayed(const Duration(seconds: 3));
 }
-
 
 class MyApp extends StatefulWidget {
   final String initialRoute;
@@ -121,7 +120,7 @@ class _MyAppState extends State<MyApp> {
               ),
           '/signup': (context) => SignUp(),
           '/cclientmap': (context) => const ClientMap(),
-          '/vendormapNav': (context) =>  VendorMap(),
+          '/vendormapNav': (context) => VendorMap(),
           '/clientmapNav': (context) => const ClintNavBar(),
           '/RegisterationForm': (context) => const RegistrationForm(),
           '/offerform': (context) => const OfferForm(),
@@ -131,7 +130,6 @@ class _MyAppState extends State<MyApp> {
           '/profile': (context) => const MyProfile(),
           '/CarForm': (context) => const CarForm(),
           '/Report': (context) => const ReportClient(),
-          
         };
         final builder = routes[settings.name];
         if (builder == null) {
