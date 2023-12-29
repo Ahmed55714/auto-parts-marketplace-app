@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:work2/screens/vendor/Bottom_nav.dart';
+import 'package:work2/screens/vendor/orders.dart';
 import 'package:work2/widgets/custom_button.dart';
 
 import '../client/account_client.dart';
 import '../client/map_client.dart';
+import '../client/orders_clint.dart';
 
 class TrueScreen extends StatelessWidget {
   @override
@@ -181,7 +183,6 @@ class updateTrueScreen extends StatelessWidget {
   }
 }
 
-
 class TrueOrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -225,16 +226,76 @@ class TrueOrderScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12.0),
               CustomButton(
-                  text: 'Homepage',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ClientMap(),
-                        // const CarForm(),
-                      ),
-                    );
-                  }),
+                text: 'Homepage',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ClientMap(),
+                      // const CarForm(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class TrueOfferScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SvgPicture.asset(
+                'assets/images/true.svg',
+                height: 100,
+                width: 100,
+              ),
+              const SizedBox(
+                  height: 24.0), // Provides space between the icon and the text
+              const Text(
+                'You made an Offer!',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8.0), // Provides space between the texts
+              Container(
+                width: 300,
+                child: const Text(
+                  'Check your orders to see the status of your order from Order page.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
+                ),
+              ),
+              const SizedBox(height: 32.0),
+              
+              
+             
+              CustomButton(
+                text: 'Orders',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyOrders(),
+                      // const CarForm(),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),

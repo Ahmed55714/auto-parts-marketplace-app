@@ -57,51 +57,59 @@ class _ClientMapState extends State<MyMap> {
 
   bool hasVisitedRegistrationScreen = false;
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            FutureBuilder<String>(
-              future: _completeRegistrationStatus,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasData && snapshot.data == "0") {
-                  // If registration is not complete, show the map with the button
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: const CustomGoogleMap(),
-                      ),
-                      CustomButton(
-                        text: 'Complete Registration',
-                        onPressed: () {
-                          // Navigate to the registration screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RegistrationForm(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                } else {
-                  // If registration is complete, just show the map
-                  return const CustomGoogleMap();
-                }
-              },
-            ),
-            const Positioned(
-              top: 20,
-              left: 20,
-              right: 20,
-              child: CustomSearchBar(),
-            ),
-          ],
+        child: FutureBuilder<String>(
+          future: _completeRegistrationStatus,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasData && snapshot.data == "0") {
+              // If registration is not complete
+              return Stack(
+                children: [
+                  const CustomGoogleMap(), // Full-screen map
+                  Positioned(
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    child: CustomButton(
+                      text: 'Complete Registration',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegistrationForm(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const Positioned(
+                    top: 20,
+                    left: 20,
+                    right: 20,
+                    child: CustomSearchBar(),
+                  ),
+                ],
+              );
+            } else {
+              // If registration is complete, just show the map
+              return Stack(
+                children: [
+                  const CustomGoogleMap(), // Full-screen map
+                  const Positioned(
+                    top: 20,
+                    left: 20,
+                    right: 20,
+                    child: CustomSearchBar(),
+                  ),
+                ],
+              );
+            }
+          },
         ),
       ),
     );

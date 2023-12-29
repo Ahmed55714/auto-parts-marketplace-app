@@ -16,6 +16,7 @@ import 'getx/orders.dart';
 import 'screens/client/Bottom_nav.dart';
 import 'screens/client/car_form.dart';
 import 'screens/client/map_client.dart';
+import 'screens/intro/custom_true.dart';
 import 'screens/intro/onboarding_screen.dart';
 import 'screens/intro/sign_in.dart';
 import 'screens/intro/sign_up.dart';
@@ -123,13 +124,16 @@ class _MyAppState extends State<MyApp> {
           '/vendormapNav': (context) => VendorMap(),
           '/clientmapNav': (context) => const ClintNavBar(),
           '/RegisterationForm': (context) => const RegistrationForm(),
-          '/offerform': (context) => const OfferForm(),
+          '/offerform': (context) => OfferForm(
+                orderId: settings.arguments as String,
+          ),
           '/ordersrate': (context) => const MyOrders_rate(),
           '/reprt': (context) => const Report(),
           '/myaccount': (context) => const MyAccount(),
           '/profile': (context) => const MyProfile(),
           '/CarForm': (context) => const CarForm(),
           '/Report': (context) => const ReportClient(),
+          '/TrueOfferScreen': (context) => TrueOfferScreen(),
         };
         final builder = routes[settings.name];
         if (builder == null) {

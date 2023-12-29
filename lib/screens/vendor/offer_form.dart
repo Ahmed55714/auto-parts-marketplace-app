@@ -1,24 +1,29 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:work2/constants/colors.dart';
+import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
+import '../intro/custom_true.dart';
 import 'Bottom_nav.dart';
 
 class OfferForm extends StatefulWidget {
-  const OfferForm({Key? key}) : super(key: key);
-
+  final String orderId;
+const OfferForm({Key? key, required this.orderId}) : super(key: key);
   @override
   _OfferFormState createState() => _OfferFormState();
 }
 
 class _OfferFormState extends State<OfferForm> {
+  final OrdersController ordersController = Get.find<OrdersController>();
+
   bool isAgreed = false;
-  List<XFile> _images = [];
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
+  List<List<XFile?>> _images = [[], [], []];
 
   // Text editing controllers
   final PrieceController = TextEditingController();
@@ -39,15 +44,26 @@ class _OfferFormState extends State<OfferForm> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final List<XFile>? pickedImages = await _picker.pickMultiImage();
-    if (pickedImages != null) {
-      setState(() => _images.addAll(pickedImages));
+  Future<void> _pickImage(int fieldIndex) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _images[fieldIndex].add(image);
+      });
     }
   }
 
-  void _removeImage(int index) {
-    setState(() => _images.removeAt(index));
+  String? validateField1() {
+    if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
+      return 'Please upload an image for license';
+    }
+    return null;
+  }
+
+  void _removeImage(int fieldIndex, XFile image) {
+    setState(() {
+      _images[fieldIndex].remove(image);
+    });
   }
 
   @override
@@ -93,11 +109,23 @@ class _OfferFormState extends State<OfferForm> {
                           fontWeight: FontWeight.w500),
                     ],
                   ),
-                  buildImagePicker('Add photos', _pickImage),
-                  // buildImagePicker('Commercial Register', _pickImage),
-                  // buildImagePicker('Municipality Certificate', _pickImage),
+                  buildImagePicker('Add photos', 0),
+                  if (validateField1() != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          Text(validateField1()!,
+                              style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
 
-                  buildImagesDisplay(),
+                  Row(
+                    children: [
+                      buildImagesDisplay(0),
+                    ],
+                  ),
                   //buildAgreementSwitch(),
                   Row(
                     children: [
@@ -177,96 +205,151 @@ class _OfferFormState extends State<OfferForm> {
       ],
     );
   }
+List<String> carTypeOptions = ['new', 'used'];
+String selectedCarType = 'new'; // default value
+ Widget buildCarTypeField() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomText(
+        text: 'New/Used',
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      SizedBox(height: 8),
+      GestureDetector(
+        onTap: () => _showCarTypeDialog(context),
+        child: AbsorbPointer(
+          child: CustomTextField(
+            labelText: selectedCarType,
+            controller: carTypeController..text = selectedCarType,
+            keyboardType: TextInputType.text,
+            suffixIcon: SvgPicture.asset('assets/images/arrow-down.svg',
+                height: 24, width: 24),
+          ),
+        ),
+      ),
+      SizedBox(height: 8),
+    ],
+  );
+}
 
-  Widget buildCarTypeField() {
+void _showCarTypeDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Select Car Type'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: carTypeOptions.map((String option) {
+            return ListTile(
+              title: Text(option),
+              onTap: () {
+                setState(() {
+                  selectedCarType = option;
+                  carTypeController.text = option;
+                });
+                Navigator.of(context).pop();
+              },
+            );
+          }).toList(),
+        ),
+      );
+    },
+  );
+}
+
+   Widget buildImagePicker(String label, int fieldIndex) {
+    bool hasImage = _images.isNotEmpty; // Check if images list is not empty
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomText(
-          text: 'New/Used',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
+        GestureDetector(
+          onTap: () => _pickImage(fieldIndex),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 5),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: hasImage
+                      ? Colors.grey
+                      : Colors.red, // Red border if no image selected
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: hasImage
+                          ? Colors.grey
+                          : Colors.red, // Red text if no image selected
+                      fontFamily: 'BahijTheSansArabic',
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/gallery.svg',
+                    height: 24,
+                    width: 24,
+                    color: hasImage
+                        ? null
+                        : Colors.red, // Red icon if no image selected
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-        SizedBox(height: 8),
-        CustomTextField(
-          labelText: 'Placeholder',
-          controller: carTypeController,
-          keyboardType: TextInputType.text,
-          suffixIcon: SvgPicture.asset('assets/images/arrow-down.svg',
-              height: 24, width: 24),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter Car type';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: 8),
       ],
     );
   }
 
-  Widget buildImagePicker(String label, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label,
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: greyColor,
-                      fontFamily: 'BahijTheSansArabic')),
-              SvgPicture.asset('assets/images/gallery.svg',
-                  height: 24, width: 24),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildImagesDisplay() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16.0, left: 16),
-      child: Wrap(
-        children: List.generate(_images.length, (index) {
-          return Stack(
-            alignment: Alignment.topRight,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.file(
-                    File(_images[index].path),
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
+  Widget buildImagesDisplay(int fieldIndex) {
+    return Wrap(
+      children: _images[fieldIndex].map((image) {
+        return image != null
+            ? Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.file(
+                        File(image.path),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap: () => _removeImage(index),
-                  child: SvgPicture.asset('assets/images/cancel.svg',
-                      width: 24, height: 24),
-                ),
-              ),
-            ],
-          );
-        }),
-      ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => _removeImage(fieldIndex, image),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : SizedBox();
+      }).toList(),
     );
   }
 
@@ -311,9 +394,26 @@ class _OfferFormState extends State<OfferForm> {
           text: 'Make an Offer',
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              // Handle form submission
+              List<XFile> images = _images
+                  .expand((xFiles) => xFiles)
+                  .whereType<XFile>()
+                  .toList();
+
+              ordersController.OfferForm(
+                orderId: widget.orderId,
+                Piece: PrieceController.text,
+                country: CountryController.text,
+                yearModel: ModelController.text,
+                chassisNumber: carTypeController.text,
+                condition: selectedCarType, // Add your condition value
+                price: PriceController.text,
+                notes: noteController.text,
+                images:images,
+              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => TrueOfferScreen()) );
             }
-            Navigator.pushNamed(context, '/ordersrate');
+            
+            // Navigator.pushNamed(context, '/ordersrate');
           },
         ),
       ],
