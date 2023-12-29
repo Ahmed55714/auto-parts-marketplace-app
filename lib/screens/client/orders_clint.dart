@@ -118,7 +118,10 @@ class _OrdersClientState extends State<OrdersClient> {
   }
 
   final OrdersController orderController = Get.put(OrdersController());
- 
+  
+    List<int> getOrderIds() {
+    return orders.map((order) => order.id).toList();
+  }
   @override
   Widget build(BuildContext context) {
     
@@ -147,12 +150,14 @@ class _OrdersClientState extends State<OrdersClient> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomContainerButton(
+
                       text: "New Request",
                       onPressed: () {
+                        List<int> orderIds = getOrderIds();
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => OfferClient()));
+                                builder: (context) => OfferClient(orderIds: orderIds)));
                       },
                       svgIconPath:
                           'assets/images/+.svg', // Replace with the actual path to your SVG file

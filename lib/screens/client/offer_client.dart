@@ -1,310 +1,137 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/payment.dart';
 
 import '../../constants/colors.dart';
 import '../../widgets/custom_button.dart';
 import '../vendor/Bottom_nav.dart';
+import 'orders_clint.dart';
 import 'vedor_profile.dart';
+import 'package:http/http.dart' as http;
 
 class OfferClient extends StatefulWidget {
-  const OfferClient({Key? key}) : super(key: key);
+  final List<int> orderIds;
+
+  const OfferClient({Key? key, required this.orderIds}) : super(key: key);
 
   @override
-  _OfferRequestsState createState() => _OfferRequestsState();
+  _OfferClientState createState() => _OfferClientState();
 }
 
-class _OfferRequestsState extends State<OfferClient> {
-  final List<String> items = [
-    "Nearest to you",
-    "Best rated",
-    "Highest Prices",
-  ];
+class _OfferClientState extends State<OfferClient> {
+  var offers = <int, List<Offer>>{}.obs;
 
-  final List<IconData> icons = [
-    Icons.home,
-    Icons.explore,
-    Icons.search,
-    Icons.feed,
-    Icons.post_add,
-    Icons.local_activity,
-    Icons.settings,
-    Icons.person,
-  ];
+  @override
+  void initState() {
+    super.initState();
+    fetchAllOffers();
+  }
+
+  Future<void> fetchAllOffers() async {
+    for (var orderId in widget.orderIds) {
+      await fetchOffers(orderId);
+    }
+  }
+
+  Future<void> fetchOffers(int orderId) async {
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/client/orders/${orderId}/offers");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['offers'] is List) {
+          List<dynamic> jsonList = jsonResponse['offers'];
+          var fetchedOffers = jsonList.map((json) => Offer.fromJson(json)).toList();
+          if (fetchedOffers.isNotEmpty) {
+            offers[orderId] = fetchedOffers; // Only add orders with offers
+          }
+        } else {
+          print('Offers key not found or is not a list');
+        }
+      } else {
+        print('Failed to fetch Offers for order $orderId: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred while fetching Offers for order $orderId: $e');
+    }
+  }
 
   int current = 0;
   final PageController pageController = PageController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  BackButtonDeep(),
-                ],
-              ),
+  Widget offerCard(Offer offer) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            CircleAvatar(
+              radius: 40.0,
+              backgroundImage: offer.user.imageUrl.isNotEmpty
+                  ? NetworkImage(offer.user.imageUrl) as ImageProvider<Object>
+                  : AssetImage('assets/images/pic.jpg')
+                      as ImageProvider<Object>, // Local fallback asset
             ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Offer Requests',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: deepPurple,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'Filters',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: deepPurple,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            SizedBox(width: 10.0),
             Expanded(
-              child: Container(
-                width: double.infinity,
-                margin: const EdgeInsets.all(5),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      height: 60,
-                      child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: items.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (ctx, index) {
-                          return Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    current = index;
-                                  });
-                                  pageController.animateToPage(
-                                    current,
-                                    duration: const Duration(milliseconds: 200),
-                                    curve: Curves.ease,
-                                  );
-                                },
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
-                                  margin: const EdgeInsets.all(5),
-                                  width: 125,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: current == index
-                                        ? deepred
-                                        : Colors.white54,
-                                    borderRadius: current == index
-                                        ? BorderRadius.circular(30)
-                                        : BorderRadius.circular(30),
-                                    border: current == index
-                                        ? Border.all(
-                                            color: Colors.red, width: 1.5)
-                                        : null,
-                                  ),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          items[index],
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w400,
-                                            color: current == index
-                                                ? Colors.red
-                                                : Colors.grey.shade400,
-                                          ),
-                                        ),
-                                        if (index == items.length - 1)
-                                          Icon(
-                                            Icons.arrow_drop_down,
-                                            color: current == index
-                                                ? Colors.red
-                                                : Colors.grey.shade400,
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Needed car piece: ${offer.piece}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                  Text(
+                    'Car type: ${offer.yearModel}',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    'Piece condition: ${offer.condition}',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    'Near places: ${offer.country}',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    'Price: ${offer.price}',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    'Address: ${offer.notes}', // Assuming 'notes' contains address information
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Row(
+                    children: List.generate(
+                      5,
+                      (index) => Icon(
+                        index < (offer.user.avgRating ?? 0)
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: Colors.yellow,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VenforProfile(), 
-                        ),
-                      );
-                      
-                      },
-                      child: const Card(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        'url_to_the_image'), 
-                                    radius: 40.0, 
-                                  ),
-                                  SizedBox(
-                                      height:
-                                          4.0), // Space between the avatar and the text
-                                  Text('Ahmed Said', // The text under the avatar
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                ],
-                              ),
-                              SizedBox(
-                                  width:
-                                      10.0), // Spacing between the avatar column and the text column
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                     Row(
-                                      children: [
-                                        Text('Needed car piece ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,fontSize: 16, color: deepPurple )),
-                                      
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Car type ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500)),
-                                        Text('Placeholder ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Roboto')),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Piece type ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500)),
-                                        Text('Placeholder ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Roboto')),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Piece details ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500)),
-                                        Text('Placeholder ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Roboto')),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Near places ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500)),
-                                        Text('Placeholder ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Roboto')),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Price ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500)),
-                                        Text('Placeholder ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Roboto')),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Address ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500)),
-                                        Text('Placeholder ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Roboto')),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Icon(Icons.star, color: Colors.yellow),
-                                        Icon(Icons.star, color: Colors.yellow),
-                                        Icon(Icons.star, color: Colors.yellow),
-                                        Icon(Icons.star, color: Colors.yellow),
-                                        Icon(Icons.star_border),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ), SizedBox(height: 10),
-                     Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: CustomButton3(text: 'Aceept', onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Payment(),
-                        ),
-                      );
-                    }),
                   ),
-                  CustomButton4(text: 'Decline', onPressed: () {}),
                 ],
-              ),
-                  ],
-                ),
               ),
             ),
           ],
@@ -312,6 +139,131 @@ class _OfferRequestsState extends State<OfferClient> {
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [BackButton()],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Offer Requests',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.deepPurple)),
+                ],
+              ),
+              SizedBox(height: 16),
+              Padding(
+                padding: EdgeInsets.only(left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text('Offers',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.deepPurple)),
+                  ],
+                ),
+              ),
+              Obx(() {
+                List<Widget> orderWidgets = [];
+                offers.forEach((orderId, offersList) {
+                  orderWidgets.add(Text("Offers for Order : $orderId",
+                      style: TextStyle(fontWeight: FontWeight.w500)));
+                  orderWidgets.addAll(offersList
+                      .map((offer) => GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => VenforProfile()));
+                            },
+                            child: offerCard(offer),
+                          ))
+                      .toList());
+                });
+                return Column(children: orderWidgets);
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
+class Offer {
+  final int id;
+  final String piece;
+  final String country;
+  final String yearModel;
+  final String condition;
+  final String price;
+  final String notes;
+  final String isAccepted;
+  final User user;
 
+  Offer({
+    required this.id,
+    required this.piece,
+    required this.country,
+    required this.yearModel,
+    required this.condition,
+    required this.price,
+    required this.notes,
+    required this.isAccepted,
+    required this.user,
+  });
+
+  factory Offer.fromJson(Map<String, dynamic> json) {
+    return Offer(
+      id: json['id'] as int,
+      piece: json['piece'] as String,
+      country: json['country'] as String,
+      yearModel: json['year_model'] as String,
+      condition: json['condition'] as String,
+      price: json['price'] as String,
+      notes: json['notes'] as String,
+      isAccepted: json['is_accepted'] as String,
+      user: User.fromJson(json['user'] as Map<String, dynamic>),
+    );
+  }
+}
+
+class User {
+  final int id;
+  final String name;
+  final String imageUrl;
+  final double? avgRating;
+
+  User({
+    required this.id,
+    required this.name,
+    required this.imageUrl,
+    this.avgRating,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      imageUrl: json['image_url'] as dynamic,
+      avgRating: json['avg_rating'] != null
+          ? (json['avg_rating'] as num?)?.toDouble()
+          : null,
+    );
+  }
+}
