@@ -14,14 +14,21 @@ class ClintNavBar extends StatefulWidget {
 }
 
 class _ClintNavBarState extends State<ClintNavBar> {
-  // Set the initial index to 1 to start from ClientMap screen
   int _currentIndex = 1;
 
-  final List<Widget> _screens = [
-    OrdersClient(),
-    ClientMap(),
-    AccountClient(),
-  ];
+  // Function to create the widget based on the index
+  Widget _createScreen(int index) {
+    switch (index) {
+      case 0:
+        return OrdersClient();
+      case 1:
+        return ClientMap();
+      case 2:
+        return AccountClient();
+      default:
+        return OrdersClient(); // Default case
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +77,7 @@ class _ClintNavBarState extends State<ClintNavBar> {
       tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
           builder: (BuildContext context) {
-            return _screens[index];
+            return _createScreen(index); // Create a new screen each time
           },
         );
       },

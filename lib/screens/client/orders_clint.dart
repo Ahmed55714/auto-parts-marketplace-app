@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:work2/screens/client/car_form.dart';
 import '../../constants/colors.dart';
 import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
@@ -16,7 +17,6 @@ import 'bottom_cheet.dart';
 import 'offer_client.dart';
 
 class OrdersClient extends StatefulWidget {
-  
   const OrdersClient({super.key});
 
   @override
@@ -24,44 +24,42 @@ class OrdersClient extends StatefulWidget {
 }
 
 class _OrdersClientState extends State<OrdersClient> {
+  var orders = <Order>[].obs;
   
- var orders = <Order>[].obs;
   int selectedContainerIndex = -1;
 
-  Future<void> fetchOrders() async {
-    final Uri apiEndpoint =
-        Uri.parse("https://slfsparepart.com/api/client/orders?");
-    final prefs = await SharedPreferences.getInstance();
-    final String? authToken = prefs.getString('auth_token');
+ Future<List<Order>> fetchOrders() async {
+  final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/client/orders?");
+  final prefs = await SharedPreferences.getInstance();
+  final String? authToken = prefs.getString('auth_token');
 
-    try {
-      final response = await http.get(
-        apiEndpoint,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-      );
+  try {
+    final response = await http.get(
+      apiEndpoint,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
 
-      if (response.statusCode == 200) {
-        print('Response data: ${response.body}');
-         List<dynamic> jsonList = jsonDecode(response.body);
-        var fetchedOrders = jsonList.map((json) => Order.fromJson(json)).toList();
-        orders.assignAll(fetchedOrders); // Correctly assign to RxList
-      } else {
-        // Handle error
-        print('Failed to fetch orders');
-        print(response.body);
-      }
-    } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while fetching orders: $e');
+    if (response.statusCode == 200) {
+      List<dynamic> jsonList = jsonDecode(response.body);
+      var fetchedOrders = jsonList.map((json) => Order.fromJson(json)).toList();
+      return fetchedOrders; // Return the list of orders here
+    } else {
+      // Handle error
+      print('Failed to fetch orders: ${response.body}');
+      throw Exception('Failed to load orders');
     }
+  } catch (e) {
+    // Handle any exceptions here
+    print('Error occurred while fetching orders: $e');
+    throw Exception('Error fetching orders');
   }
+}
 
   Future<void> _refresh() async {
     await fetchOrders();
-
   }
 
   Future<void> cancelOrder(String cancelReason, int orderId) async {
@@ -118,13 +116,13 @@ class _OrdersClientState extends State<OrdersClient> {
   }
 
   final OrdersController orderController = Get.put(OrdersController());
-  
-    List<int> getOrderIds() {
+
+  List<int> getOrderIds() {
     return orders.map((order) => order.id).toList();
   }
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
@@ -145,19 +143,15 @@ class _OrdersClientState extends State<OrdersClient> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomContainerButton(
-
                       text: "New Request",
                       onPressed: () {
-                        List<int> orderIds = getOrderIds();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OfferClient(orderIds: orderIds)));
+                        //List<int> orderIds = getOrderIds();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => CarForm()));
                       },
                       svgIconPath:
                           'assets/images/+.svg', // Replace with the actual path to your SVG file
@@ -165,18 +159,30 @@ class _OrdersClientState extends State<OrdersClient> {
                   ],
                 ),
                 const SizedBox(height: 16),
+
                 //...orders.map((order) => orderDetails(order)).toList(),
 
-               Obx(() => 
-                  ListView.builder(
-                    itemCount: orders.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return orderDetails(orders[index]);
-                    },
-                  ),
-                ),
+               FutureBuilder<List<Order>>(
+                future: fetchOrders(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No orders available'));
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return orderDetails(snapshot.data![index]);
+                      },
+                    );
+                  }
+                },
+              ),
               ],
             ),
           ),
@@ -275,6 +281,27 @@ class _OrdersClientState extends State<OrdersClient> {
                   );
                 },
               ),
+        SizedBox(height: 10),
+        order.status != 'Canceled'
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomContainerButton(
+                    svgIconPath: 'assets/images/offerr.svg',
+                    text: "Check Offers",
+                    onPressed: () {
+                      //List<int> orderIds = getOrderIds();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  OfferClient(orderIds: [order.id])));
+                    },
+                    // Replace with the actual path to your SVG file
+                  ),
+                ],
+              )
+            : Container(),
       ],
     );
   }

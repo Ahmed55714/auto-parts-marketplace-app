@@ -24,6 +24,8 @@ class ProfileClient extends StatefulWidget {
 }
 
 class _MyProfileState extends State<ProfileClient> {
+  String? _imageURL;
+
   List<Address> addresses = [];
   int selectedContainerIndex = -1;
 
@@ -86,10 +88,43 @@ class _MyProfileState extends State<ProfileClient> {
     }
   }
 
+  Future<void> fetchProfilePic() async {
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/user"); // Replace with your API endpoint
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final userData = jsonDecode(response.body);
+        final imageUrl = userData['image_url'];
+        setState(() {
+          _imageURL = imageUrl; // Store the image URL in a variable.
+        });
+      } else {
+        // Handle error
+        print('Failed to fetch user data');
+        print(response.body);
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while fetching user data: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     fetchAddresses();
+    fetchProfilePic();
   }
 
   bool isAgreed = false;
@@ -183,9 +218,10 @@ class _MyProfileState extends State<ProfileClient> {
                             border:
                                 Border.all(color: Colors.deepPurple, width: 2),
                             shape: BoxShape.circle,
-                            image: const DecorationImage(
+                            image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: AssetImage('assets/images/pic.jpg'),
+                              image: NetworkImage(_imageURL ??
+                                  'YOUR_DEFAULT_IMAGE_URL_HERE'), // Use the image URL here, or provide a default URL.
                             ),
                           ),
                         ),
@@ -195,7 +231,7 @@ class _MyProfileState extends State<ProfileClient> {
                           child: Container(
                             width: 22,
                             height: 22,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white,
                             ),
@@ -263,13 +299,11 @@ class _MyProfileState extends State<ProfileClient> {
                               selectedContainerIndex = index;
                             });
                           },
-                          addressId: address.id ??0, 
+                          addressId: address.id ?? 0,
                           onDelete: () {
-
                             if (address.id != null) {
                               deleteAddress(address.id);
                             } else {
-                             
                               print("Address ID is null.");
                             }
                           },
