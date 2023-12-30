@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
+import 'chat/screens/mobile_layout_screen.dart';
 import 'offer_form.dart';
 
 class RegistrationVerificationStatus {
@@ -64,7 +65,7 @@ class _MyOrdersState extends State<MyOrders> {
   var orders = <Order>[].obs;
   int selectedContainerIndex = -1;
 
-  Future<void> fetchOrders() async {
+  Future<List<Order>> fetchOrders() async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/vendor/orders");
     final prefs = await SharedPreferences.getInstance();
@@ -84,15 +85,17 @@ class _MyOrdersState extends State<MyOrders> {
         List<dynamic> jsonList = jsonDecode(response.body);
         var fetchedOrders =
             jsonList.map((json) => Order.fromJson(json)).toList();
-        orders.assignAll(fetchedOrders); // Correctly assign to RxList
+        return fetchedOrders; // Return the list of orders
       } else {
         // Handle error
         print('Failed to fetch orders');
         print(response.body);
+        throw Exception('Failed to load orders');
       }
     } catch (e) {
       // Handle any exceptions here
       print('Error occurred while fetching orders: $e');
+      throw Exception('Error occurred while fetching orders');
     }
   }
 
@@ -131,48 +134,68 @@ class _MyOrdersState extends State<MyOrders> {
     }
   }
 
-  // Future<void> cancelOrder(String cancelReason, int orderId) async {
-  //   final Uri apiEndpoint =
-  //       Uri.parse("https://slfsparepart.com/api/client/orders/$orderId/cancel");
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final String? authToken = prefs.getString('auth_token');
+  Future<void> updateOrderStatus(int orderId) async {
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/vendor/orders/${orderId}/update");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
 
-  //   try {
-  //     final response = await http.post(
-  //       apiEndpoint,
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Authorization': 'Bearer $authToken',
-  //       },
-  //       body: {'cancel_reason': cancelReason},
-  //     );
+    try {
+      final response = await http.post(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: {
+          'status': 'Out for Delivery',
+        },
+      );
 
-  //     if (response.statusCode == 200) {
-  //       final Map<String, dynamic> responseData = jsonDecode(response.body);
-  //       print(responseData);
-  //       if (responseData['status'] == true) {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(
-  //             content: Text('Order $orderId has been cancelled successfully'),
-  //           ),
-  //         );
-  //         fetchOrders();
-  //       }
-  //     } else {
-  //       // Handle error
-  //       print('Failed to cancel order. Status code: ${response.statusCode}');
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Failed to cancel order')),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     // Handle any exceptions here
-  //     print('Error occurred while cancelling order: $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error occurred while cancelling order')),
-  //     );
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        print('Order status updated to "Out for Delivery" successfully');
+        print(response.body);
+        await fetchOrders();
+      } else {
+        print(
+            'Failed to update order status. Status code: ${response.statusCode}');
+        print(response.body);
+      }
+    } catch (e) {
+      print('Error occurred while updating order status: $e');
+    }
+  }
+
+  Future<void> markOrderAsDelivered(int orderId) async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/vendor/orders/$orderId/update");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      final response = await http.post(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: {
+          'status': 'Delivered',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print('Order status updated to "Delivered" successfully');
+        print(response.body);
+      } else {
+        print(
+            'Failed to update order status to "Delivered". Status code: ${response.statusCode}');
+        print(response.body);
+      }
+    } catch (e) {
+      print('Error occurred while updating order status to "Delivered": $e');
+    }
+  }
 
   @override
   void initState() {
@@ -197,31 +220,70 @@ class _MyOrdersState extends State<MyOrders> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 20),
-                const Center(
-                  child: Text(
-                    'Orders',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: deepPurple,
-                    ),
+
+                Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Orders',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MobileLayoutScreen()));
+                              },
+                              icon: const Icon(
+                                Icons.notifications,
+                                color: deepPurple,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                const SizedBox(height: 16),
-
                 //...orders.map((order) => orderDetails(order)).toList(),
 
-                Obx(
-                  () => ListView.builder(
-                    itemCount: orders.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return orderDetails(orders[index]);
-                    },
-                  ),
-                ),
+                FutureBuilder<List<Order>>(
+                  future: fetchOrders(), // Replace with your future function
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // While waiting for data, show a circular progress indicator
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      // If there's an error, display an error message
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      // If data is available, build the ListView.builder
+                      var orders = snapshot.data!;
+                      return ListView.builder(
+                        itemCount: orders.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return orderDetails(orders[index]);
+                        },
+                      );
+                    } else {
+                      // Handle other cases here (e.g., when data is null)
+                      return Center(child: Text('No data available'));
+                    }
+                  },
+                )
               ],
             ),
           ),
@@ -231,6 +293,9 @@ class _MyOrdersState extends State<MyOrders> {
   }
 
   Widget orderDetails(Order order) {
+    bool isOrderAccepted = order.status == 'Accepted';
+    bool isOrderOutForDelivery = order.status == 'Out for Delivery';
+    bool isOrderDelivered = order.status == 'Delivered';
     return Column(
       children: [
         Padding(
@@ -301,25 +366,58 @@ class _MyOrdersState extends State<MyOrders> {
             ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomButton3(text: 'Accept', onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OfferForm(orderId: order.id.toString()),
-                ),
-              );
-            }),
-            SizedBox(width: 20),
-            CustomButton4(
+        if (isOrderAccepted)
+          CustomButton(
+            text: 'Out for delivery',
+            onPressed: () {
+              updateOrderStatus(order.id);
+              setState(() {});
+            },
+          )
+        else if (isOrderOutForDelivery)
+          CustomButton(
+            text: 'Delivered',
+            onPressed: () async {
+              await markOrderAsDelivered(order.id);
+
+              setState(() {});
+            },
+          )
+        else if (isOrderDelivered)
+          // Display a message or UI element indicating that the order is already delivered
+          Text(
+            'Order is already delivered',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: deepPurple,
+            ),
+          )
+        else
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomButton3(
+                text: 'Accept',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          OfferForm(orderId: order.id.toString()),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(width: 20),
+              CustomButton4(
                 text: 'Decline',
                 onPressed: () {
                   declineOrder(order.id);
-                })
-          ],
-        ),
+                },
+              ),
+            ],
+          ),
       ],
     );
   }
@@ -441,6 +539,7 @@ class OrderDetailLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color textColor = _getTextColorBasedOnStatus(placeholder);
     bool isLocationLine =
         title == 'Near places' && placeholder == 'Show Location';
     bool isImageLine = title == 'Car Licence' && placeholder == 'Show Image';
@@ -526,14 +625,26 @@ class OrderDetailLine extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w300,
-                          color:
-                              isCanceledStatus ? Colors.red : Colors.grey[600],
+                          color: textColor,
                         ),
                       ),
           ),
         ),
       ],
     );
+  }
+}
+
+Color _getTextColorBasedOnStatus(String status) {
+  switch (status) {
+    case 'Accepted':
+    case 'Delivered':
+    case 'Out for Delivery':
+      return Colors.green;
+    case 'Canceled':
+      return Colors.red;
+    default:
+      return Colors.grey[600]!;
   }
 }
 

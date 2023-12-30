@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/getx/regestration.dart';
 import 'package:work2/getx/update_profile.dart';
 
-import 'package:work2/screens/client/report_client.dart';
+import 'package:work2/screens/client/Complain_client.dart';
 
 import 'getx/auth.dart';
 import 'getx/orders.dart';
@@ -73,29 +73,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-// @override
-// void initState()
-// {
-//   super.initState();
-//   _checkToken();
-//
-// }
-// void _checkToken() async {
-//   final AuthController authController = Get.put(AuthController());//
-//   String? token = await authController.getToken();//
-//   String? userType = await authController.getUserType();//
-//  setState(() {//
-//     if (token != null) {//
-//       if (userType == 'client') {//
-//         initialRoute = '/clientmapNav';//
-//       } else if (userType == 'vendor') {//
-//         initialRoute = '/vendormapNav';//
-//      } else {//
-//         initialRoute = '/signup';//
-//       }//
-//     }//
-//   });//
-// }
 
   @override
   Widget build(BuildContext context) {

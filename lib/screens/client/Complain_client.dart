@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
-import 'package:work2/screens/vendor/Bottom_nav.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
+import '../vendor/Bottom_nav.dart';
 import 'package:http/http.dart' as http;
 
-class Report extends StatefulWidget {
-  const Report({Key? key}) : super(key: key);
+import 'account_client.dart';
+
+class ReportClient extends StatefulWidget {
+  const ReportClient({Key? key}) : super(key: key);
 
   @override
   _ReportState createState() => _ReportState();
 }
 
-class _ReportState extends State<Report> {
-    final _formKey = GlobalKey<FormState>();
+class _ReportState extends State<ReportClient> {
+  final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final dateController = TextEditingController();
   final reportController = TextEditingController();

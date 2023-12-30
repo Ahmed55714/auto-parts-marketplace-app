@@ -7,7 +7,6 @@ import 'map_vendor.dart';
 import 'my_account.dart';
 import 'orders.dart';
 
-
 class VendorMap extends StatefulWidget {
   const VendorMap({super.key});
 
@@ -16,14 +15,23 @@ class VendorMap extends StatefulWidget {
 }
 
 class _VendorMapState extends State<VendorMap> {
- 
   int _currentIndex = 1;
 
-  final List<Widget> _screens = [
-    const MyOrders(),
-    MyMap(),
-    MyAccount(),
-  ];
+  // Function to create the widget based on the index
+  Widget _createScreen(int index) {
+    switch (index) {
+      case 0:
+        return MyOrders();
+
+      case 1:
+        return MyMap();
+      case 2:
+        return MyAccount();
+      default:
+        return MyOrders();
+      // Default case
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +80,13 @@ class _VendorMapState extends State<VendorMap> {
       tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
           builder: (BuildContext context) {
-            return _screens[index];
+            return _createScreen(index); // Create a new screen each time
           },
         );
       },
     );
   }
 }
-
 
 class BackButtonDeep extends StatelessWidget {
   const BackButtonDeep({
@@ -121,7 +128,8 @@ class BackButtonDeep extends StatelessWidget {
 class BackButtonDeep1 extends StatelessWidget {
   final Function onTap;
   const BackButtonDeep1({
-    Key? key, required this.onTap,
+    Key? key,
+    required this.onTap,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -137,7 +145,7 @@ class BackButtonDeep1 extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-             onTap;
+              onTap;
             },
             child: Container(
               decoration: BoxDecoration(

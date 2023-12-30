@@ -8,6 +8,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType; 
   final String? Function(String?)? validator; 
   final Widget? suffixIcon;
+    final int? maxLines; // Add this line
+
   
 
   CustomTextField({
@@ -18,6 +20,9 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text, // Default keyboardType is text
     this.validator, 
      this.suffixIcon, 
+         this.maxLines, // Add this line
+
+     
   }) : super(key: key);
 
   @override
@@ -30,6 +35,8 @@ class CustomTextField extends StatelessWidget {
           
           controller: controller,
           keyboardType: keyboardType, // Use keyboardType
+                maxLines: maxLines, // Use it here
+
           decoration: InputDecoration(
             labelText: labelText,
             labelStyle: TextStyle(fontFamily: 'Roboto', fontSize: 14,),

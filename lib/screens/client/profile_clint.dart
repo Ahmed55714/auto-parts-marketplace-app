@@ -28,6 +28,8 @@ class _MyProfileState extends State<ProfileClient> {
 
   List<Address> addresses = [];
   int selectedContainerIndex = -1;
+  String? _selectedAddressId;
+
 
   Future<void> fetchAddresses() async {
     final Uri apiEndpoint =
@@ -48,6 +50,9 @@ class _MyProfileState extends State<ProfileClient> {
         List<dynamic> jsonList = jsonDecode(response.body);
         setState(() {
           addresses = jsonList.map((json) => Address.fromJson(json)).toList();
+        if (addresses.isNotEmpty) {
+            selectContainer(0); 
+          }
         });
       } else {
         // Handle error
@@ -59,6 +64,20 @@ class _MyProfileState extends State<ProfileClient> {
       print('Error occurred while fetching addresses: $e');
     }
   }
+void selectContainer(int index) {
+  setState(() {
+    selectedContainerIndex = index;
+    if (index != -1) {
+      saveAddress(addresses[index].fullAddress, addresses[index].id.toString());
+    }
+  });
+}
+
+Future<void> saveAddress(String address, String addressId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('selected_address', address);
+  await prefs.setString('selected_address_id', addressId); // Save the address ID
+}
 
   Future<void> deleteAddress(int addressId) async {
     final Uri apiEndpoint = Uri.parse(
@@ -123,7 +142,11 @@ class _MyProfileState extends State<ProfileClient> {
   @override
   void initState() {
     super.initState();
-    fetchAddresses();
+     fetchAddresses().then((_) {
+    // After fetching addresses, select the first one if the list is not empty.
+    if (addresses.isNotEmpty) {
+      selectContainer(0);
+    } });
     fetchProfilePic();
   }
 
@@ -171,11 +194,6 @@ class _MyProfileState extends State<ProfileClient> {
     }
   }
 
-  void selectContainer(int index) {
-    setState(() {
-      selectedContainerIndex = (selectedContainerIndex == index) ? -1 : index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -282,35 +300,43 @@ class _MyProfileState extends State<ProfileClient> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 250,
-                    child: ListView.builder(
-                      itemCount: addresses.length,
-                      itemBuilder: (context, index) {
-                        final address = addresses[index];
-                        return CustomSelection(
-                          index: index,
-                          isSelected: selectedContainerIndex == index,
-                          title: address.name, // Name from API
-                          description:
-                              "${address.street} - ${address.building} - ${address.floor} - ${address.apartment}", // Address details from API
-                          onTap: () {
-                            setState(() {
-                              selectedContainerIndex = index;
-                            });
-                          },
-                          addressId: address.id ?? 0,
-                          onDelete: () {
-                            if (address.id != null) {
-                              deleteAddress(address.id);
-                            } else {
-                              print("Address ID is null.");
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                 addresses.isEmpty 
+                      ? Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            'Please add an address in your profile.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: deepPurple,
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          height: 250,
+                          child: ListView.builder(
+                            itemCount: addresses.length,
+                            itemBuilder: (context, index) {
+                              final address = addresses[index];
+                              return CustomSelection(
+                                index: index,
+                                isSelected: selectedContainerIndex == index,
+                                title: address.name,
+                                description: "${address.street} - ${address.building} - ${address.floor} - ${address.apartment}",
+                                onTap: () {
+                                  selectContainer(index);
+                                },
+                                addressId: address.id ?? 0,
+                                onDelete: () {
+                                  if (address.id != null) {
+                                    deleteAddress(address.id);
+                                  } else {
+                                    print("Address ID is null.");
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ),
                   CustomButtongrey(
                     text: '+ Add address',
                     onPressed: () {
@@ -570,6 +596,8 @@ class Address {
     required this.apartment,
   });
 
+    String get fullAddress => "$street - $building - $floor - $apartment";
+
   static Address fromJson(Map<String, dynamic> json) {
     return Address(
       id: json['id'],
@@ -590,6 +618,7 @@ class CustomSelection extends StatefulWidget {
   final VoidCallback onTap;
   final int addressId;
   final VoidCallback onDelete;
+  
 
   CustomSelection({
     required this.index,

@@ -1,13 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/Terms_and_conditions.dart';
 import '../../constants/colors.dart';
+import 'Complain_client.dart';
 import 'Profile_clint.dart';
 
 
-class AccountClient extends StatelessWidget {
+class AccountClient extends StatefulWidget {
   const AccountClient({super.key});
 
+  @override
+  State<AccountClient> createState() => _AccountClientState();
+}
+
+class _AccountClientState extends State<AccountClient> {
+    String? _profileImageUrl;
+  String? _profileName;
+
+   @override
+  void initState() {
+    super.initState();
+    _loadProfileInfo();
+  }
+
+  void _loadProfileInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _profileImageUrl = prefs.getString('profile_image_url');
+      _profileName = prefs.getString('profile_name');
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,6 +78,16 @@ class AccountClient extends StatelessWidget {
             const SizedBox(height: 12),
             _buildOptionRow(
                 'assets/images/info-circle.svg', 'Terms and conditions'),
+            const SizedBox(height: 12),
+            const _CustomDivider(),
+           GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ReportClient()),
+        ),
+        child: _buildOptionRow(
+            'assets/images/info-circle.svg', 'Add Complain'),
+      ),
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),

@@ -57,7 +57,7 @@ class _ClientMapState extends State<MyMap> {
 
   bool hasVisitedRegistrationScreen = false;
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -65,42 +65,31 @@ class _ClientMapState extends State<MyMap> {
           future: _completeRegistrationStatus,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasData && snapshot.data == "0") {
-              // If registration is not complete
-              return Stack(
-                children: [
-                  const CustomGoogleMap(), // Full-screen map
-                  Positioned(
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
-                    child: CustomButton(
-                      text: 'Complete Registration',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RegistrationForm(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const Positioned(
-                    top: 20,
-                    left: 20,
-                    right: 20,
-                    child: CustomSearchBar(),
-                  ),
-                ],
+              // If registration is not complete, show the "Complete Registration" button
+              return Positioned(
+                bottom: 20,
+                left: 20,
+                right: 20,
+                child: CustomButton(
+                  text: 'Complete Registration',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RegistrationForm(),
+                      ),
+                    );
+                  },
+                ),
               );
             } else {
-              // If registration is complete, just show the map
+              // If registration is complete, show the map and search bar
               return Stack(
                 children: [
-                  const CustomGoogleMap(), // Full-screen map
-                  const Positioned(
+                  CustomGoogleMap(), // Full-screen map
+                  Positioned(
                     top: 20,
                     left: 20,
                     right: 20,
@@ -115,6 +104,7 @@ class _ClientMapState extends State<MyMap> {
     );
   }
 }
+
 
 class CustomGoogleMap extends StatefulWidget {
   const CustomGoogleMap({super.key});

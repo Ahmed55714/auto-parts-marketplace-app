@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../constants/colors.dart';
+import '../client/Complain_client.dart';
 import 'chat/screens/mobile_layout_screen.dart';
 import 'profile.dart';
 
@@ -27,15 +28,7 @@ class MyAccount extends StatelessWidget {
                         color: deepPurple,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MobileLayoutScreen()));
-                      },
-                      icon: const Icon(
-                        Icons.notifications,
-                        color: deepPurple,
-                      ),
-                    ),
+                    
                   ],
                 ),
               ),
@@ -69,6 +62,16 @@ class MyAccount extends StatelessWidget {
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),
+                       GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ReportClient()),
+        ),
+        child: _buildOptionRow(
+            'assets/images/info-circle.svg', 'Add Complain'),
+      ),
+            const SizedBox(height: 12),
+            const _CustomDivider(),
             _buildOptionRow('assets/images/login.svg', 'Log out'),
           ],
         ),

@@ -17,8 +17,6 @@ import 'package:http/http.dart' as http;
 class OfferClient extends StatefulWidget {
   final List<int> orderIds;
 
-  
-
   const OfferClient({Key? key, required this.orderIds}) : super(key: key);
 
   @override
@@ -28,7 +26,7 @@ class OfferClient extends StatefulWidget {
 class _OfferClientState extends State<OfferClient> {
   var offers = <int, List<Offer>>{}.obs;
 
-   @override
+  @override
   void initState() {
     super.initState();
     fetchAllOffers();
@@ -38,11 +36,8 @@ class _OfferClientState extends State<OfferClient> {
     for (var orderId in widget.orderIds) {
       await fetchOffers(orderId);
     }
-     offers.refresh();
+    offers.refresh();
   }
-
-
-
 
   Future<void> fetchOffers(int orderId) async {
     final Uri apiEndpoint = Uri.parse(
@@ -66,7 +61,7 @@ class _OfferClientState extends State<OfferClient> {
           var fetchedOffers =
               jsonList.map((json) => Offer.fromJson(json)).toList();
           if (fetchedOffers.isNotEmpty) {
-            offers[orderId] = fetchedOffers; 
+            offers[orderId] = fetchedOffers;
             print(response.body);
           }
         } else {
@@ -80,54 +75,55 @@ class _OfferClientState extends State<OfferClient> {
     }
   }
 
- Future<void> declineOffer(int offerId) async {
-  final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/client/orders/offers/$offerId/decline");
-  final prefs = await SharedPreferences.getInstance();
-  final String? authToken = prefs.getString('auth_token');
+  Future<void> declineOffer(int offerId) async {
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/client/orders/offers/$offerId/decline");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
 
-  try {
-    final response = await http.post(
-      apiEndpoint,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $authToken',
-      },
-    );
+    try {
+      final response = await http.post(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      print(responseData);
-      if (responseData['status'] == true) {
-        // Offer has been declined successfully
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Offer $offerId has been declined successfully'),
-          ),
-        );
-        await Future.delayed(Duration(seconds: 1));
-        
-        // Trigger a rebuild of the UI
-        setState(() {
-          offers.removeWhere((orderId, offersList) {
-            return offersList.any((offer) => offer.id == offerId);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        print(responseData);
+        if (responseData['status'] == true) {
+          // Offer has been declined successfully
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Offer $offerId has been declined successfully'),
+            ),
+          );
+          await Future.delayed(Duration(seconds: 1));
+
+          // Trigger a rebuild of the UI
+          setState(() {
+            offers.removeWhere((orderId, offersList) {
+              return offersList.any((offer) => offer.id == offerId);
+            });
           });
-        });
+        }
+      } else {
+        // Handle error
+        print('Failed to decline offer. Status code: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to decline offer')),
+        );
       }
-    } else {
-      // Handle error
-      print('Failed to decline offer. Status code: ${response.statusCode}');
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while declining offer: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to decline offer')),
+        SnackBar(content: Text('Error occurred while declining offer')),
       );
     }
-  } catch (e) {
-    // Handle any exceptions here
-    print('Error occurred while declining offer: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error occurred while declining offer')),
-    );
   }
-}
 
   int current = 0;
   final PageController pageController = PageController();
@@ -144,16 +140,14 @@ class _OfferClientState extends State<OfferClient> {
                 Column(
                   children: [
                     CircleAvatar(
-                      radius: 30,
-                       backgroundImage: NetworkImage(offer.user.imageUrl)
+                        radius: 30,
+                        backgroundImage: NetworkImage(offer.user.imageUrl)),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(offer.user.name),
                     ),
-                     Padding(
-                       padding: const EdgeInsets.all(8.0),
-                       child: Text(offer.user.name),
-                     ),
                   ],
                 ),
-               
                 SizedBox(width: 10.0),
                 Expanded(
                   child: Column(
@@ -194,7 +188,7 @@ class _OfferClientState extends State<OfferClient> {
                             index < (offer.user.avgRating ?? 0)
                                 ? Icons.star
                                 : Icons.star_border,
-                            color: Colors.grey,
+                            color: Colors.orange,
                           ),
                         ),
                       ),
@@ -206,19 +200,36 @@ class _OfferClientState extends State<OfferClient> {
           ),
         ),
         SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-      
-            CustomButton3(text: 'Accept', onPressed: () {}),
-            SizedBox(width: 20),
-            CustomButton4(
+        if (offer.isAccepted == '0') ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomButton3(
+                text: 'Accept',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Payment(offerId: offer.id),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(width: 20),
+              CustomButton4(
                 text: 'Decline',
                 onPressed: () {
                   declineOffer(offer.id);
-                })
-          ],
-        ),
+                },
+              ),
+            ],
+          ),
+        ] else if (offer.isAccepted == '1') ...[
+          CustomButton5(
+            text: 'Accepted Order',
+            onPressed: () {},
+          ),
+        ],
       ],
     );
   }
@@ -276,7 +287,8 @@ class _OfferClientState extends State<OfferClient> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => VenforProfile(userId: offer.user.id)));
+                                        builder: (context) => VenforProfile(
+                                            userId: offer.user.id)));
                               },
                               child: offerCard(offer),
                             ))
@@ -365,13 +377,10 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] as int,
-      name: json['name'] as String,
-      imageUrl: json['image_url'] as dynamic,
-      avgRating: json['avg_rating'] != null
-          ? (json['avg_rating'] as num?)?.toDouble()
-          : null,
+      name: json['name'] as String? ?? '', // Handle potential null
+      imageUrl: json['image_url'] as String? ?? '', // Handle potential null
+      avgRating:
+          (json['avg_rating'] as num?)?.toDouble(), // No need to cast here
     );
   }
 }
-
-

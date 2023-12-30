@@ -363,9 +363,7 @@ class _ChatBottomSheetState extends State<ChatBottomSheet> {
                       ),
                       child: IconButton(
                         icon: Icon(Icons.send, color: Colors.white),
-                        onPressed: () {
-                          // TODO: Implement send message functionality
-                        },
+                        onPressed: () {},
                       ),
                     ),
                   )
@@ -461,6 +459,25 @@ class HorizontalReviewList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (ratings.isEmpty) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left:18),
+            child: Text(
+              'No reviews available',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: greyColor,
+                fontFamily: 'Roboto',
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Container(
       height: 180,
       child: ListView.builder(
@@ -474,7 +491,6 @@ class HorizontalReviewList extends StatelessWidget {
   }
 }
 
-
 class ReviewCard extends StatelessWidget {
   final Ratings rating;
 
@@ -483,60 +499,75 @@ class ReviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int starCount = int.tryParse(rating.stars) ?? 0;
-
-    return Container(
-      width: 350,
-      padding: const EdgeInsets.all(16.0),
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: const Offset(0, 3),
+    bool isReviewEmpty = rating.comment.isEmpty && starCount == 0;
+    if (isReviewEmpty) {
+      return Container(
+        width: 350,
+        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Text(
+          'No reviews available',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: greyColor,
+            fontFamily: 'Roboto',
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            rating.stars,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 24,
+        ),
+      );
+    } else {
+      return Container(
+        width: 350,
+        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(0, 3),
             ),
-          ),
-          Row(
-            children: List.generate(5, (index) {
-              return Icon(
-                index < starCount ? Icons.star : Icons.star_border,
-                color: Colors.orange,
-                size: 20,
-              );
-            }),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Text(
-              rating.comment,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              rating.stars,
               style: TextStyle(
-                fontSize: 16.0,
-                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                fontSize: 24,
               ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
             ),
-          ),
-        ],
-      ),
-    );
+            Row(
+              children: List.generate(5, (index) {
+                return Icon(
+                  index < starCount ? Icons.star : Icons.star_border,
+                  color: Colors.orange,
+                  size: 20,
+                );
+              }),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Text(
+                rating.comment,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontFamily: 'Roboto',
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
-
 
 class VendorProfile {
   final int id;

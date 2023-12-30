@@ -25,38 +25,40 @@ class OrdersClient extends StatefulWidget {
 
 class _OrdersClientState extends State<OrdersClient> {
   var orders = <Order>[].obs;
-  
+
   int selectedContainerIndex = -1;
 
- Future<List<Order>> fetchOrders() async {
-  final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/client/orders?");
-  final prefs = await SharedPreferences.getInstance();
-  final String? authToken = prefs.getString('auth_token');
+  Future<List<Order>> fetchOrders() async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/client/orders?");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
 
-  try {
-    final response = await http.get(
-      apiEndpoint,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $authToken',
-      },
-    );
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      List<dynamic> jsonList = jsonDecode(response.body);
-      var fetchedOrders = jsonList.map((json) => Order.fromJson(json)).toList();
-      return fetchedOrders; // Return the list of orders here
-    } else {
-      // Handle error
-      print('Failed to fetch orders: ${response.body}');
-      throw Exception('Failed to load orders');
+      if (response.statusCode == 200) {
+        List<dynamic> jsonList = jsonDecode(response.body);
+        var fetchedOrders =
+            jsonList.map((json) => Order.fromJson(json)).toList();
+        return fetchedOrders; // Return the list of orders here
+      } else {
+        // Handle error
+        print('Failed to fetch orders: ${response.body}');
+        throw Exception('Failed to load orders');
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while fetching orders: $e');
+      throw Exception('Error fetching orders');
     }
-  } catch (e) {
-    // Handle any exceptions here
-    print('Error occurred while fetching orders: $e');
-    throw Exception('Error fetching orders');
   }
-}
 
   Future<void> _refresh() async {
     await fetchOrders();
@@ -108,11 +110,22 @@ class _OrdersClientState extends State<OrdersClient> {
   @override
   void initState() {
     super.initState();
-    // Fetch orders when the widget is first created
-    fetchOrders();
-    Timer.periodic(Duration(minutes: 5), (Timer timer) {
-      fetchOrders();
+    fetchOrders().then((fetchedOrders) {
+      for (var order in fetchedOrders) {
+        if (order.status == "Delivered" && !order.bottomSheetShown) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => BottomSheetWidget(orderId: order.id),
+            );
+            setState(() {
+              order.bottomSheetShown = true;
+            });
+          });
+        }
+      }
     });
+    Timer.periodic(Duration(minutes: 5), (Timer timer) => fetchOrders());
   }
 
   final OrdersController orderController = Get.put(OrdersController());
@@ -162,27 +175,27 @@ class _OrdersClientState extends State<OrdersClient> {
 
                 //...orders.map((order) => orderDetails(order)).toList(),
 
-               FutureBuilder<List<Order>>(
-                future: fetchOrders(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No orders available'));
-                  } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return orderDetails(snapshot.data![index]);
-                      },
-                    );
-                  }
-                },
-              ),
+                FutureBuilder<List<Order>>(
+                  future: fetchOrders(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No orders available'));
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return orderDetails(snapshot.data![index]);
+                        },
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -190,6 +203,11 @@ class _OrdersClientState extends State<OrdersClient> {
       ),
     );
   }
+
+  //  showModalBottomSheet(
+  //         context: context,
+  //         builder: (context) => BottomSheetWidget(orderId: widget.offerId),
+  //       );
 
   Widget orderDetails(Order order) {
     return Column(
@@ -307,8 +325,6 @@ class _OrdersClientState extends State<OrdersClient> {
   }
 }
 
-
-
 class BottomcancelSheetWidget extends StatefulWidget {
   final int orderId;
   final Function(String, int) onConfirmCancel;
@@ -410,6 +426,9 @@ class OrderDetailLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isAcceptedOrDelivered =
+        placeholder == 'Accepted' || placeholder == 'Delivered';
+    Color textColor = _getTextColorBasedOnStatus(placeholder);
     bool isLocationLine =
         title == 'Near places' && placeholder == 'Show Location';
     bool isImageLine = title == 'Car Licence' && placeholder == 'Show Image';
@@ -437,9 +456,12 @@ class OrderDetailLine extends StatelessWidget {
                 ? InkWell(
                     onTap: () {
                       if (location != null) {
-                       Navigator.push(context, MaterialPageRoute(builder: (context) => LocationViewScreen( 
-                          location: location!)
-                       , settings: RouteSettings(arguments: location)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    LocationViewScreen(location: location!),
+                                settings: RouteSettings(arguments: location)));
                       }
                     },
                     child: Text(
@@ -459,7 +481,12 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl != null && imageUrl!.isNotEmpty) {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ImageViewScreen(), settings: RouteSettings(arguments: imageUrl)));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ImageViewScreen(),
+                                        settings: RouteSettings(
+                                            arguments: imageUrl)));
                               }
                             },
                             child: Text(
@@ -476,7 +503,13 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl2 != null && imageUrl2!.isNotEmpty) {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ImageViewScreen(), settings: RouteSettings(arguments: imageUrl2)));                              }
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ImageViewScreen(),
+                                        settings: RouteSettings(
+                                            arguments: imageUrl2)));
+                              }
                             },
                             child: Text(
                               'Image 2', // Display the second image text
@@ -496,8 +529,7 @@ class OrderDetailLine extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w300,
-                          color:
-                              isCanceledStatus ? Colors.red : Colors.grey[600],
+                          color: textColor,
                         ),
                       ),
           ),
@@ -507,7 +539,17 @@ class OrderDetailLine extends StatelessWidget {
   }
 }
 
-
+Color _getTextColorBasedOnStatus(String status) {
+  switch (status) {
+    case 'Accepted':
+    case 'Delivered':
+      return Colors.green;
+    case 'Canceled':
+      return Colors.red;
+    default:
+      return Colors.grey[600]!;
+  }
+}
 
 class CancelOrderSection extends StatelessWidget {
   const CancelOrderSection({Key? key}) : super(key: key);
@@ -605,7 +647,7 @@ class Order {
   final String pieceDetailName;
   final String? address;
   final List<File> files;
-
+  bool bottomSheetShown = false;
   Order({
     required this.id,
     required this.carPiece,
@@ -623,6 +665,7 @@ class Order {
     required this.pieceDetailName,
     this.address,
     required this.files,
+    this.bottomSheetShown = false,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -645,6 +688,7 @@ class Order {
       files: (json['files'] as List)
           .map((fileJson) => File.fromJson(fileJson))
           .toList(),
+      bottomSheetShown: false,
     );
   }
 }
@@ -666,12 +710,11 @@ class File {
   }
 }
 
-
 class ImageViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageUrl = ModalRoute.of(context)!.settings.arguments as String?;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Image View'),
