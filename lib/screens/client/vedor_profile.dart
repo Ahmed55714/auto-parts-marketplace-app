@@ -1,15 +1,87 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:work2/widgets/custom_button.dart';
+import 'package:http/http.dart' as http;
 
 import '../../constants/colors.dart';
 import '../vendor/Bottom_nav.dart';
 
-class VenforProfile extends StatelessWidget {
-  const VenforProfile({super.key});
+class VenforProfile extends StatefulWidget {
+  final int userId;
+  const VenforProfile({super.key, required this.userId});
+
+  @override
+  State<VenforProfile> createState() => _VenforProfileState();
+}
+
+class _VenforProfileState extends State<VenforProfile> {
+  late Future<VendorProfile> vendorProfileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    vendorProfileFuture = fetchVendorProfile(widget.userId);
+  }
+
+  Future<VendorProfile> fetchVendorProfile(int userId) async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/vendor/$userId/profile");
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? authToken = prefs.getString('auth_token');
+
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return VendorProfile.fromJson(data);
+      } else {
+        print(
+            'Failed to load vendor profile. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load vendor profile. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception caught in fetchVendorProfile: $e');
+      throw Exception('Failed to load vendor profile: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: FutureBuilder<VendorProfile>(
+          future: vendorProfileFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (snapshot.hasData) {
+              return buildProfile(snapshot.data!);
+            } else {
+              return Center(child: Text("No data available"));
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget buildProfile(VendorProfile profile) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -46,12 +118,18 @@ class VenforProfile extends StatelessWidget {
                               Border.all(color: Colors.deepPurple, width: 2),
                           shape: BoxShape.circle,
                         ),
+                        child: ClipOval(
+                          child: Image.network(
+                            profile.imageUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 25),
                   Text(
-                    'Ahmed said',
+                    profile.name,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -75,8 +153,8 @@ class VenforProfile extends StatelessWidget {
                   ),
                   Container(
                     width: 350,
-                    child: const Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu',
+                    child: Text(
+                      profile.summary ?? 'No summary available',
                       style: TextStyle(
                         color: greyColor,
                         fontFamily: 'Roboto',
@@ -101,8 +179,34 @@ class VenforProfile extends StatelessWidget {
                   ),
                   Container(
                     width: 350,
-                    child: const Text(
-                      'map',
+                    height: 200, // Set a height for the map container
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(20), // Rounded corners
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(20), // Rounded corners
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(profile.lat, profile.long),
+                          zoom: 15,
+                        ),
+                        markers: {
+                          Marker(
+                            markerId: MarkerId('vendorLocation'),
+                            position: LatLng(profile.lat, profile.long),
+                          ),
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -120,7 +224,9 @@ class VenforProfile extends StatelessWidget {
                       ],
                     ),
                   ),
-                  HorizontalReviewList(),
+                  HorizontalReviewList(
+                    ratings: profile.ratings,
+                  ),
                   const SizedBox(height: 20),
                   CustomButton(
                       text: 'contact',
@@ -349,32 +455,39 @@ class ChatBubble extends StatelessWidget {
 }
 
 class HorizontalReviewList extends StatelessWidget {
+  final List<Ratings> ratings;
+
+  HorizontalReviewList({required this.ratings});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Set the height to accommodate the ReviewCard's size
       height: 180,
-
       child: ListView.builder(
-        // Set scroll direction to horizontal
         scrollDirection: Axis.horizontal,
-        itemCount: 10, // Number of review cards in the list
+        itemCount: ratings.length,
         itemBuilder: (BuildContext context, int index) {
-          return ReviewCard();
+          return ReviewCard(rating: ratings[index]);
         },
       ),
     );
   }
 }
 
+
 class ReviewCard extends StatelessWidget {
+  final Ratings rating;
+
+  ReviewCard({required this.rating});
+
   @override
   Widget build(BuildContext context) {
+    int starCount = int.tryParse(rating.stars) ?? 0;
+
     return Container(
-      width: 350, // Set a fixed width for each card
+      width: 350,
       padding: const EdgeInsets.all(16.0),
-      margin:
-          const EdgeInsets.symmetric(horizontal: 8.0), // Margin between cards
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
@@ -387,57 +500,98 @@ class ReviewCard extends StatelessWidget {
           ),
         ],
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            '4.0',
+            rating.stars,
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 24,
             ),
           ),
           Row(
-            children: <Widget>[
-              Icon(Icons.star, color: Colors.orange, size: 20),
-              Icon(Icons.star, color: Colors.orange, size: 20),
-              Icon(Icons.star, color: Colors.orange, size: 20),
-              Icon(Icons.star, color: Colors.orange, size: 20),
-              Icon(Icons.star_border, color: Colors.orange, size: 20),
-            ],
+            children: List.generate(5, (index) {
+              return Icon(
+                index < starCount ? Icons.star : Icons.star_border,
+                color: Colors.orange,
+                size: 20,
+              );
+            }),
           ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(top: 8.0),
-              child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontFamily: 'Roboto',
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
+          Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: Text(
+              rating.comment,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontFamily: 'Roboto',
               ),
-            ),
-          ),
-          Text(
-            'Ali',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16.0,
-              fontFamily: 'Roboto',
-            ),
-          ),
-          Text(
-            'Dec 2023',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16.0,
-              fontFamily: 'Roboto',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+
+class VendorProfile {
+  final int id;
+  final String name;
+  final String? summary;
+  final double lat;
+  final double long;
+  final String imageUrl;
+  final double avgRating;
+  final List<Ratings> ratings;
+
+  VendorProfile({
+    required this.id,
+    required this.name,
+    this.summary,
+    required this.lat,
+    required this.long,
+    required this.imageUrl,
+    required this.avgRating,
+    required this.ratings,
+  });
+
+  factory VendorProfile.fromJson(Map<String, dynamic> json) {
+    // Check if 'ratings' is not null and is a List, then map to List<Ratings>
+    var ratingsList = json['ratings'] != null && json['ratings'] is List
+        ? List<Ratings>.from((json['ratings'] as List).map((ratingJson) =>
+            Ratings.fromJson(ratingJson as Map<String, dynamic>)))
+        : <Ratings>[];
+
+    return VendorProfile(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      summary: json['summary'] as String?,
+      lat: json['lat'] != null ? double.parse(json['lat'].toString()) : 0.0,
+      long: json['long'] != null ? double.parse(json['long'].toString()) : 0.0,
+      imageUrl: json['image_url'] as String? ??
+          'https://example.com/default_image.png',
+      avgRating: json['avg_rating'] != null
+          ? double.parse(json['avg_rating'].toString())
+          : 0.0,
+      ratings: ratingsList,
+    );
+  }
+}
+
+class Ratings {
+  final String stars;
+  final String comment;
+
+  Ratings({required this.stars, required this.comment});
+
+  factory Ratings.fromJson(Map<String, dynamic> json) {
+    return Ratings(
+      stars: json['stars'] as String? ?? '0',
+      comment: json['comment'] as String? ?? 'No comment',
     );
   }
 }

@@ -24,11 +24,9 @@ import 'screens/intro/verification.dart';
 import 'screens/vendor/Bottom_nav.dart';
 import 'screens/vendor/Registration_form.dart';
 import 'screens/vendor/Report.dart';
-
 import 'screens/vendor/my_account.dart';
 import 'screens/vendor/offer_form.dart';
 import 'screens/vendor/orders_rate.dart';
-
 import 'screens/vendor/profile.dart';
 
 void main() async {

@@ -307,20 +307,7 @@ class _OrdersClientState extends State<OrdersClient> {
   }
 }
 
-void _showImageDialog(BuildContext context, String? imageUrl) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-          content: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Image.network(
-                imageUrl ?? '',
-                fit: BoxFit.cover,
-              )));
-    },
-  );
-}
+
 
 class BottomcancelSheetWidget extends StatefulWidget {
   final int orderId;
@@ -450,7 +437,9 @@ class OrderDetailLine extends StatelessWidget {
                 ? InkWell(
                     onTap: () {
                       if (location != null) {
-                        _showMapDialog(context, location!);
+                       Navigator.push(context, MaterialPageRoute(builder: (context) => LocationViewScreen( 
+                          location: location!)
+                       , settings: RouteSettings(arguments: location)));
                       }
                     },
                     child: Text(
@@ -470,7 +459,7 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl != null && imageUrl!.isNotEmpty) {
-                                _showImageDialog(context, imageUrl!);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ImageViewScreen(), settings: RouteSettings(arguments: imageUrl)));
                               }
                             },
                             child: Text(
@@ -487,8 +476,7 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl2 != null && imageUrl2!.isNotEmpty) {
-                                _showImageDialog(context, imageUrl2!);
-                              }
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ImageViewScreen(), settings: RouteSettings(arguments: imageUrl2)));                              }
                             },
                             child: Text(
                               'Image 2', // Display the second image text
@@ -519,25 +507,7 @@ class OrderDetailLine extends StatelessWidget {
   }
 }
 
-void _showMapDialog(BuildContext context, LatLng location) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Container(
-          height: 300,
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: location,
-              zoom: 14.0,
-            ),
-            markers: {Marker(markerId: MarkerId('loc'), position: location)},
-          ),
-        ),
-      );
-    },
-  );
-}
+
 
 class CancelOrderSection extends StatelessWidget {
   const CancelOrderSection({Key? key}) : super(key: key);
@@ -692,6 +662,47 @@ class File {
     return File(
       id: json['id'],
       fileUrl: json['file_url'],
+    );
+  }
+}
+
+
+class ImageViewScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final imageUrl = ModalRoute.of(context)!.settings.arguments as String?;
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Image View'),
+      ),
+      body: Center(
+        child: imageUrl != null
+            ? Image.network(imageUrl)
+            : Text('Image not available'),
+      ),
+    );
+  }
+}
+
+class LocationViewScreen extends StatelessWidget {
+  final LatLng location;
+
+  LocationViewScreen({required this.location});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Location View'),
+      ),
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: location,
+          zoom: 14.0,
+        ),
+        markers: {Marker(markerId: MarkerId('loc'), position: location)},
+      ),
     );
   }
 }
