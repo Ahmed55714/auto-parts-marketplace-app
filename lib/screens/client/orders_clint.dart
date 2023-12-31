@@ -15,6 +15,7 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import 'bottom_cheet.dart';
 import 'offer_client.dart';
+import 'order_repo.dart';
 
 class OrdersClient extends StatefulWidget {
   const OrdersClient({super.key});
@@ -44,10 +45,13 @@ class _OrdersClientState extends State<OrdersClient> {
       );
 
       if (response.statusCode == 200) {
-        List<dynamic> jsonList = jsonDecode(response.body);
-        var fetchedOrders =
-            jsonList.map((json) => Order.fromJson(json)).toList();
-        return fetchedOrders; // Return the list of orders here
+        
+              List<dynamic> jsonList = jsonDecode(response.body);
+      return jsonList.map((json) {
+        bool rated = prefs.getBool('order_rated_${json['id']}') ?? false;
+        return Order.fromJson(json).copyWith(rated: rated);
+      }).toList();
+     
       } else {
         // Handle error
         print('Failed to fetch orders: ${response.body}');
@@ -107,26 +111,30 @@ class _OrdersClientState extends State<OrdersClient> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchOrders().then((fetchedOrders) {
-      for (var order in fetchedOrders) {
-        if (order.status == "Delivered" && !order.bottomSheetShown) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => BottomSheetWidget(orderId: order.id),
-            );
+ @override
+void initState() {
+  super.initState();
+  fetchOrders().then((fetchedOrders) {
+    for (var order in fetchedOrders) {
+      if (order.status == "Delivered" && !order.rated) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => BottomSheetWidget(orderId: order.id),
+          ).then((_) {
             setState(() {
-              order.bottomSheetShown = true;
+              order.rated = true;
+              SharedPreferences.getInstance().then((prefs) {
+                prefs.setBool('order_rated_${order.id}', true);
+              });
             });
           });
-        }
+        });
       }
-    });
-    Timer.periodic(Duration(minutes: 5), (Timer timer) => fetchOrders());
-  }
+    }
+  });
+  Timer.periodic(Duration(minutes: 5), (Timer timer) => fetchOrders());
+}
 
   final OrdersController orderController = Get.put(OrdersController());
 
@@ -280,25 +288,34 @@ class _OrdersClientState extends State<OrdersClient> {
             ),
           ),
         ),
-        order.status == 'Canceled'
-            ? CancelOrderSection()
-            : CustomButton2(
-                text: 'Cancel order',
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return BottomcancelSheetWidget(
-                        orderId: order.id,
-                        onConfirmCancel: (cancelReason, orderId) async {
-                          await cancelOrder(cancelReason, orderId);
-                          fetchOrders();
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
+        if (order.status == 'Delivered')
+        CustomButton(
+          text: 'Return Order',
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OrderRepo( orderId: order.id)));
+          },
+        )
+      else if (order.status != 'Canceled')
+        CustomButton2(
+          text: 'Cancel order',
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return BottomcancelSheetWidget(
+                  orderId: order.id,
+                  onConfirmCancel: (cancelReason, orderId) async {
+                    await cancelOrder(cancelReason, orderId);
+                    fetchOrders();
+                  },
+                );
+              },
+            );
+          },
+        ),
         SizedBox(height: 10),
         order.status != 'Canceled'
             ? Row(
@@ -648,6 +665,7 @@ class Order {
   final String? address;
   final List<File> files;
   bool bottomSheetShown = false;
+  bool rated;
   Order({
     required this.id,
     required this.carPiece,
@@ -666,6 +684,7 @@ class Order {
     this.address,
     required this.files,
     this.bottomSheetShown = false,
+    this.rated = false,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -689,9 +708,33 @@ class Order {
           .map((fileJson) => File.fromJson(fileJson))
           .toList(),
       bottomSheetShown: false,
+      rated: json['rated'] ?? false,
+    );
+  }
+   Order copyWith({bool? rated}) {
+    return Order(
+      id: this.id,
+      carPiece: this.carPiece,
+      carModel: this.carModel,
+      chassisNumber: this.chassisNumber,
+      date: this.date,
+      status: this.status,
+      pieceType: this.pieceType,
+      pieceDetail: this.pieceDetail,
+      forGovernment: this.forGovernment,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      carName: this.carName,
+      pieceTypeName: this.pieceTypeName,
+      pieceDetailName: this.pieceDetailName,
+      address: this.address,
+      files: this.files,
+      rated: rated ?? this.rated, // Update the rated field
     );
   }
 }
+
+
 
 class File {
   final int id;

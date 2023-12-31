@@ -1,12 +1,24 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:work2/constants/colors.dart';
+
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
 
 class OrderRepo extends StatefulWidget {
-  const OrderRepo({Key? key}) : super(key: key);
+  int orderId;
+
+  OrderRepo({
+    Key? key,
+    required this.orderId,
+  }) : super(key: key);
 
   @override
   _ReportState createState() => _ReportState();
@@ -17,9 +29,37 @@ class _ReportState extends State<OrderRepo> {
 
   final reportController = TextEditingController();
 
+  Future<void> submitReturnReason(int orderId, String returnReason) async {
+    final Uri apiEndpoint = Uri.parse(
+        'https://slfsparepart.com/api/client/orders/${orderId}/return'); // Replace with your API endpoint
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      final response = await http.post(apiEndpoint, headers: {
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer $authToken', // Assuming you're using token-based authentication
+      }, body: {
+        'return_reason': returnReason,
+      });
+
+      if (response.statusCode == 200) {
+        print('Return reason submitted successfully.');
+        print('Response body: ${response.body}');
+      } else {
+        // Handle error
+        print('Failed to submit return reason: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while submitting return reason: $e');
+    }
+  }
+
   @override
   void dispose() {
-
     reportController.dispose();
     super.dispose();
   }
@@ -53,29 +93,43 @@ class _ReportState extends State<OrderRepo> {
                     ),
                   ),
                   const SizedBox(height: 10),
-
                   Container(
                     width: 310,
                     child: const Text(
-                      'adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim ',
+                      'Please enter the reason for returning the order ',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: greyColor,
-                        fontFamily: 'Roboto'
-                      ),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: greyColor,
+                          fontFamily: 'Roboto'),
                     ),
                   ),
                   const SizedBox(height: 10),
-  
-                
                   CustomMultiLineFormFieldWidget(
                     label: 'Return reason',
                     controller: reportController,
                     type: TextInputType.multiline,
                     text: 'Placeholder',
                   ),
-                  SubmitButtonWidget(formKey: _formKey),
+                  const SizedBox(height: 20),
+                 CustomButton(
+  text: 'Submit',
+  onPressed: () {
+    if (_formKey.currentState!.validate()) {
+      String returnReason = reportController.text;
+      submitReturnReason(widget.orderId, returnReason).then((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TrueReturnScreen(),
+          ),
+        );
+      }).catchError((error) {
+        // Handle or show error
+      });
+    }
+  },
+),
                   const SizedBox(height: 15),
                 ],
               ),
@@ -166,77 +220,6 @@ class CustomMultiLineFormFieldWidget extends StatelessWidget {
           },
         ),
         const SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-class SubmitButtonWidget extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-
-  const SubmitButtonWidget({
-    Key? key,
-    required this.formKey,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 20),
-        CustomButton(
-          text: 'Submit',
-          onPressed: () {
-            if (formKey.currentState!.validate()) {
-              // Handle form submission
-            }
-
-             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>TrueScreen(),
-                // const CarForm(),
-              ),
-            );
-            // showDialog(
-            //   context: context,
-            //   barrierDismissible: false,
-            //   builder: (BuildContext context) {
-            //     return AlertDialog(
-            //       title: Center(
-            //         child: Icon(
-            //           Icons.check_circle,
-            //           color: Colors.green,
-            //           size: 60,
-            //         ),
-            //       ),
-            //       content: Row(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         children: [
-            //           CustomText(
-            //             text: 'Submited',
-            //             fontSize: 16,
-            //             fontWeight: FontWeight.w500,
-            //           ),
-            //         ],
-            //       ),
-            //       actions: <Widget>[
-            //         Column(
-            //           mainAxisAlignment: MainAxisAlignment.center,
-            //           children: [
-            //             const SizedBox(height: 7),
-            //             CustomButton(
-            //               text: 'Home page',
-            //               onPressed: () {},
-            //             )
-            //           ],
-            //         ),
-            //       ],
-            //     );
-            //   },
-            // );
-          },
-        ),
       ],
     );
   }

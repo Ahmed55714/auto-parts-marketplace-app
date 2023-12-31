@@ -59,16 +59,16 @@ print('Response body: ${response.body}');
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.9, // 60% of screen height
+      height: MediaQuery.of(context).size.height * 1.1, // 60% of screen height
 
       child: Container(
         padding: const EdgeInsets.all(6.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               SvgPicture.asset('assets/images/true.svg', height: 80.0),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               const Text(
                 'Your Order has been delivered successfully',
                 textAlign: TextAlign.center,
@@ -112,13 +112,13 @@ print('Response body: ${response.body}');
               ),
               const SizedBox(height: 10.0),
               SizedBox(
-                height: 70,
+                
                 child: CustomTextField(
-                  fieldHeight: 70,
+                 
                   labelText: 'Comment',
                   controller: commentController,
                   keyboardType: TextInputType.multiline,
-                  maxLines: 3,
+                
                 ),
               ),
               CustomButton(

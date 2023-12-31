@@ -419,3 +419,61 @@ class TruePayment extends StatelessWidget {
     );
   }
 }
+
+class TrueReturnScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SvgPicture.asset(
+                'assets/images/true.svg',
+                height: 100,
+                width: 100,
+              ),
+              const SizedBox(
+                  height: 24.0), // Provides space between the icon and the text
+              const Text(
+                'You made an Offer!',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8.0), // Provides space between the texts
+              Container(
+                width: 300,
+                child: const Text(
+                  'Check your orders to see the status of your order from Order page.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
+                ),
+              ),
+              const SizedBox(height: 32.0),
+              
+              
+             
+              CustomButton(
+                text: 'Orders',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrdersClient(),
+                      // const CarForm(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

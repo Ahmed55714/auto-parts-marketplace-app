@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -5,7 +7,7 @@ import 'package:work2/screens/client/Terms_and_conditions.dart';
 import '../../constants/colors.dart';
 import 'Complain_client.dart';
 import 'Profile_clint.dart';
-
+import 'package:http/http.dart' as http;
 
 class AccountClient extends StatefulWidget {
   const AccountClient({super.key});
@@ -15,23 +17,45 @@ class AccountClient extends StatefulWidget {
 }
 
 class _AccountClientState extends State<AccountClient> {
-    String? _profileImageUrl;
-  String? _profileName;
+  String? _imageURL;
+  Future<void> fetchProfilePic() async {
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/user"); // Replace with your API endpoint
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
 
-   @override
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final userData = jsonDecode(response.body);
+        final imageUrl = userData['image_url'];
+        setState(() {
+          _imageURL = imageUrl; // Store the image URL in a variable.
+        });
+      } else {
+        // Handle error
+        print('Failed to fetch user data');
+        print(response.body);
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while fetching user data: $e');
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
-    _loadProfileInfo();
+    fetchProfilePic();
   }
 
-  void _loadProfileInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _profileImageUrl = prefs.getString('profile_image_url');
-      _profileName = prefs.getString('profile_name');
-    });
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,11 +80,26 @@ class _AccountClientState extends State<AccountClient> {
               padding: const EdgeInsets.only(left: 20),
               child: Row(
                 children: [
-                  const _ProfileIcon(),
+                  Container(
+                    width: 80.0,
+                    height: 80.0,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.deepPurple, width: 2),
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(_imageURL ??
+                            'YOUR_DEFAULT_IMAGE_URL_HERE'), // Use the image URL here, or provide a default URL.
+                      ),
+                    ),
+                  ),
                   const SizedBox(width: 10),
                   _ProfileInfo(
-                      onTap: () =>   Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ProfileClient()),))
+                      onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfileClient()),
+                          ))
                 ],
               ),
             ),
@@ -68,8 +107,10 @@ class _AccountClientState extends State<AccountClient> {
             const _CustomDivider(),
             const SizedBox(height: 12),
             GestureDetector(
-              onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => TermsAndConditions()),),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TermsAndConditions()),
+              ),
               child: _buildOptionRow(
                   'assets/images/clipboard-tick.svg', 'Previews Orders'),
             ),
@@ -80,14 +121,14 @@ class _AccountClientState extends State<AccountClient> {
                 'assets/images/info-circle.svg', 'Terms and conditions'),
             const SizedBox(height: 12),
             const _CustomDivider(),
-           GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ReportClient()),
-        ),
-        child: _buildOptionRow(
-            'assets/images/info-circle.svg', 'Add Complain'),
-      ),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReportClient()),
+              ),
+              child: _buildOptionRow(
+                  'assets/images/info-circle.svg', 'Add Complain'),
+            ),
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),
@@ -98,7 +139,10 @@ class _AccountClientState extends State<AccountClient> {
     );
   }
 
-  Widget _buildOptionRow(String iconPath, String text,) {
+  Widget _buildOptionRow(
+    String iconPath,
+    String text,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(left: 20),
       child: Row(
@@ -115,19 +159,6 @@ class _AccountClientState extends State<AccountClient> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ProfileIcon extends StatelessWidget {
-  const _ProfileIcon();
-
-  @override
-  Widget build(BuildContext context) {
-    return const CircleAvatar(
-      radius: 25,
-      backgroundColor: Colors.blue, // Example color
-      // You can add an image or icon inside the CircleAvatar if needed
     );
   }
 }

@@ -1,13 +1,61 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants/colors.dart';
 import '../client/Complain_client.dart';
 import 'chat/screens/mobile_layout_screen.dart';
 import 'profile.dart';
+import 'package:http/http.dart' as http;
 
-class MyAccount extends StatelessWidget {
+class MyAccount extends StatefulWidget {
   const MyAccount({super.key});
 
+  @override
+  State<MyAccount> createState() => _MyAccountState();
+}
+
+class _MyAccountState extends State<MyAccount> {
+
+   String? _imageURL;
+  Future<void> fetchProfilePic() async {
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/user"); // Replace with your API endpoint
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final userData = jsonDecode(response.body);
+        final imageUrl = userData['image_url'];
+        setState(() {
+          _imageURL = imageUrl; // Store the image URL in a variable.
+        });
+      } else {
+        // Handle error
+        print('Failed to fetch user data');
+        print(response.body);
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error occurred while fetching user data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfilePic();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,8 +86,19 @@ class MyAccount extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20),
               child: Row(
                 children: [
-                  const _ProfileIcon(),
-                  const SizedBox(width: 10),
+ Container(
+                    width: 80.0,
+                    height: 80.0,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.deepPurple, width: 2),
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(_imageURL ??
+                            'YOUR_DEFAULT_IMAGE_URL_HERE'), // Use the image URL here, or provide a default URL.
+                      ),
+                    ),
+                  ),                  const SizedBox(width: 10),
                   _ProfileInfo(
                       onTap: () => Navigator.push(
                             context,
