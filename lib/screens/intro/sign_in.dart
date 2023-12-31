@@ -113,7 +113,7 @@ class _SignInState extends State<SignIn> {
                   const SizedBox(height: 16),
                   Container(
                     width: 358.0,
-                    height: 148.0,
+                    height: 170.0,
                     padding: const EdgeInsets.fromLTRB(0.0, 11.0, 0.0, 1.0),
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -149,12 +149,14 @@ class _SignInState extends State<SignIn> {
                                     countryCode = code;
                                   });
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: SvgPicture.asset(
-                                    "assets/images/Vector2.svg",
-                                    width: 10,
-                                    height: 10,
+                                child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: SvgPicture.asset(
+                                      "assets/images/Vector2.svg",
+                                      width: 15,
+                                      height: 15,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -240,7 +242,7 @@ class _SignInState extends State<SignIn> {
                   const SizedBox(height: 16),
                   const Center(
                     child: Text(
-                      'Lorem ipsum dolor sit amet, consectetur\n adipiscing elit, sed do eiusmod tempor',
+                      'By continuing, you agree to our',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,

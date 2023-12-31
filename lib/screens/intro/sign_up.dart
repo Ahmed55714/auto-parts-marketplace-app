@@ -54,15 +54,18 @@ class _SignUpState extends State<SignUp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 250,
-                  child: const Text(
-                    'Welecome to SLF please choose your account type to continue. ',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Roboto',
-                      color: greyColor,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 340,
+                    child: const Text(
+                      'Welecome to SLF please choose your account type to continue. ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Roboto',
+                        color: greyColor,
+                      ),
                     ),
                   ),
                 ),
@@ -82,7 +85,7 @@ class _SignUpState extends State<SignUp> {
                 }),
             const SizedBox(height: 12),
             CustomButton2(
-                text: 'Sign up as service vendor',
+                text: 'Sign up as service provider',
                 onPressed: () {
                   handleSignUp('vendor');
                 }),
