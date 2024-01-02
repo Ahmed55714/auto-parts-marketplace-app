@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/car_form.dart';
 import '../../constants/colors.dart';
 import '../../getx/orders.dart';
+import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../vendor/chat/screens/mobile_layout_screen.dart';
@@ -27,6 +28,7 @@ class OrdersClient extends StatefulWidget {
 
 class _OrdersClientState extends State<OrdersClient> {
   var orders = <Order>[].obs;
+  final RegesterController regesterController = Get.find<RegesterController>();
 
   int selectedContainerIndex = -1;
 
@@ -199,7 +201,11 @@ class _OrdersClientState extends State<OrdersClient> {
                         },
                         icon: Stack(
                           children: <Widget>[
-                            Icon(Icons.notifications, color: deepPurple, size: 35,),
+                            Icon(
+                              Icons.notifications,
+                              color: deepPurple,
+                              size: 35,
+                            ),
                             FutureBuilder<int>(
                               future:
                                   fetchUnreadMessageCount(), // your fetch function here
@@ -247,8 +253,7 @@ class _OrdersClientState extends State<OrdersClient> {
                       text: "New Request",
                       onPressed: () {
                         //List<int> orderIds = getOrderIds();
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => CarForm()));
+                        regesterController.navigateBasedClint(context);
                       },
                       svgIconPath:
                           'assets/images/+.svg', // Replace with the actual path to your SVG file
@@ -265,7 +270,7 @@ class _OrdersClientState extends State<OrdersClient> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
+                      return Center(child: Text('No orders available'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(child: Text('No orders available'));
                     } else {
@@ -862,7 +867,7 @@ class LocationViewScreen extends StatelessWidget {
           zoom: 14.0,
         ),
         markers: {Marker(markerId: MarkerId('loc'), position: location)},
-     zoomControlsEnabled: false,
+        zoomControlsEnabled: false,
       ),
     );
   }

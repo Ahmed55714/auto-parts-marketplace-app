@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,41 +66,36 @@ class _ClientMapState extends State<ClientMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body:  SafeArea(
         child: Stack(
-          children: [
-            FutureBuilder<List<PersonLocation>>(
-              future: fetchLocations(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return CustomGoogleMapp();
-                } else {
-                  return CustomGoogleMap(locations: snapshot.data!);
-                }
-              },
-            ),
-            // const Column(
-            //   children: [
-            //     CustomSearchBar(),
-            //     Spacer(),
-            //   ],
-            // ),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: CustomButton(
-                text: 'Order Now',
-                onPressed: () => regesterController.navigateBasedClint(context),
+            children: [
+              FutureBuilder<List<PersonLocation>>(
+                future: fetchLocations(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error occurred'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return CustomGoogleMapp();
+                  } else {
+                    return CustomGoogleMap(locations: snapshot.data!);
+                  }
+                },
               ),
+           Positioned(
+            bottom: 20,
+            left: 20,
+            right: 20,
+            child: CustomButton(
+              text: 'Order Now',
+              onPressed: () => regesterController.navigateBasedClint(context),
             ),
-          ],
-        ),
+          ),
+            ],
+          ),
       ),
+      
     );
   }
 }

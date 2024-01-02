@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -28,14 +29,10 @@ class MobileChatScreen extends StatefulWidget {
 
 class _MobileChatScreenState extends State<MobileChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-
-  String? userName;
-  String? userImageUrl;
-
   var messages = <Message>[].obs;
+  Timer? _timer;
 
   Future<void> postMessage({
-   
     required String content,
   }) async {
     final Uri apiEndpoint =
@@ -107,11 +104,14 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
   @override
   void initState() {
     super.initState();
-    print("User ID: ${widget.userId}");
-    // fetchUserProfile();
-    fetchMessages(
-        widget.userId); 
-    
+    fetchMessages(widget.userId);
+    _startRefreshTimer();
+  }
+
+  void _startRefreshTimer() {
+    _timer = Timer.periodic(Duration(seconds: 30), (timer) {
+      fetchMessages(widget.userId);
+    });
   }
 
   @override
@@ -175,7 +175,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                       if (message.iSentThis) {
                         return MyMessageCard(
                           message: message.content,
-                           isSeen: message.isSeen,
+                          isSeen: message.isSeen,
                         );
                       } else {
                         return SenderMessageCard(
@@ -221,9 +221,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                             color: Theme.of(context).primaryColor),
                         onPressed: () {
                           if (_messageController.text.isNotEmpty) {
-                            postMessage(
-                                     
-                                    content: _messageController.text)
+                            postMessage(content: _messageController.text)
                                 .then((_) {
                               // Clear the message input field after sending the message
                               setState(() {
@@ -245,6 +243,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
 
   @override
   void dispose() {
+    _timer?.cancel();
     _messageController.dispose();
     super.dispose();
   }

@@ -3,9 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/widgets/custom_button.dart';
 import 'package:http/http.dart' as http;
-
 import '../../widgets/custom_textFaild.dart';
-import 'Previews_order.dart';
 
 class BottomSheetWidget extends StatefulWidget {
   final int orderId;
@@ -42,7 +40,7 @@ Future<void> rateOrder(int orderId, int stars, String comment) async {
       print('Rating submitted successfully.');
 print('Response body: ${response.body}');
     } else {
-      // Handle the error. The server might return a 4xx or 5xx response.
+      // Handle the error.
       print('Failed to submit rating: ${response.statusCode}');
       print('Response body: ${response.body}');
     }

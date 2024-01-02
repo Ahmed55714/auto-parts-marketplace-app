@@ -32,7 +32,7 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 18.13),
                     const Text(
-                      'Lorem ipsum dolor sit amet',
+                      'Welcome to Your Journey',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w400,
@@ -46,7 +46,7 @@ class OnboardingScreen extends StatelessWidget {
                         width: 305,
                         height: 50,
                         child: const Text(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+                          'Explore a world of possibilities and unlock your potential with us!',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,

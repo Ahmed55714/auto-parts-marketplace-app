@@ -8,7 +8,6 @@ import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
 import 'package:http/http.dart' as http;
 
-import 'account_client.dart';
 
 class ReportClient extends StatefulWidget {
   const ReportClient({Key? key}) : super(key: key);

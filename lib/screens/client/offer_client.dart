@@ -3,14 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/payment.dart';
 
-import '../../constants/colors.dart';
 import '../../widgets/custom_button.dart';
-import '../vendor/Bottom_nav.dart';
-import 'orders_clint.dart';
 import 'vedor_profile.dart';
 import 'package:http/http.dart' as http;
 

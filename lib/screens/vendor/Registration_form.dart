@@ -412,42 +412,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  // Widget buildImagesDisplay() {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(right: 16.0, left: 16),
-  //     child: Wrap(
-  //       children: List.generate(_images.length, (index) {
-  //         return Stack(
-  //           alignment: Alignment.topRight,
-  //           children: [
-  //             Padding(
-  //               padding: const EdgeInsets.all(8.0),
-  //               child: ClipRRect(
-  //                 borderRadius: BorderRadius.circular(20),
-  //                 child: Image.file(
-  //                   File(_images[index].path),
-  //                   width: 100,
-  //                   height: 100,
-  //                   fit: BoxFit.cover,
-  //                 ),
-  //               ),
-  //             ),
-  //             Positioned(
-  //               top: 0,
-  //               right: 0,
-  //               child: GestureDetector(
-  //                 onTap: () => _removeImage(index),
-  //                 child: SvgPicture.asset('assets/images/cancel.svg',
-  //                     width: 24, height: 24),
-  //               ),
-  //             ),
-  //           ],
-  //         );
-  //       }),
-  //     ),
-  //   );
-  // }
-
   Widget buildImagesDisplay(int fieldIndex) {
     return Wrap(
       children: _images[fieldIndex].map((image) {

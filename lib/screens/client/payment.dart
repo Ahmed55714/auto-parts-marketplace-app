@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
-import 'package:work2/screens/client/orders_clint.dart';
 import 'package:work2/widgets/custom_button.dart';
 import 'package:http/http.dart' as http;
 import '../../widgets/custom_continer.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
-import 'bottom_cheet.dart';
 
 class Payment extends StatefulWidget {
   final int offerId;

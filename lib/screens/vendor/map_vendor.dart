@@ -130,14 +130,14 @@ class _ClientMapState extends State<MyMap> {
                             child: Text('Error: ${locationsSnapshot.error}'));
                       } else if (locationsSnapshot.hasData &&
                           locationsSnapshot.data!.isEmpty) {
-                        setState(() {
+                        
                           fetchLocations();
-                        });
+                      
                         return CustomGoogleMapp();
                       } else {
-                        setState(() {
+                        
                           fetchLocations();
-                        });
+                        
                         return CustomGoogleMap(
                             locations: locationsSnapshot.data!);
                       }
@@ -172,11 +172,10 @@ class _ClientMapState extends State<MyMap> {
                   } else if (locationsSnapshot.hasError) {
                     return Center(
                         child: Text('Error: ${locationsSnapshot.error}'));
-                  } else if (locationsSnapshot.hasData &&
-                      locationsSnapshot.data!.isEmpty) {
-                    return CustomGoogleMapp();
-                  } else {
+                  } else if (locationsSnapshot.hasData) {
                     return CustomGoogleMap(locations: locationsSnapshot.data!);
+                  } else {
+                    return Text('No data available');
                   }
                 },
               );

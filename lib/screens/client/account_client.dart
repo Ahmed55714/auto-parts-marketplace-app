@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:work2/screens/client/Terms_and_conditions.dart';
 
 import '../../constants/colors.dart';
@@ -25,9 +24,9 @@ class AccountClient extends StatefulWidget {
 
 class _AccountClientState extends State<AccountClient> {
   String? _imageURL;
+  String? _name;
   Future<void> fetchProfilePic() async {
-    final Uri apiEndpoint = Uri.parse(
-        "https://slfsparepart.com/api/user"); // Replace with your API endpoint
+    final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/user");
     final prefs = await SharedPreferences.getInstance();
     final String? authToken = prefs.getString('auth_token');
 
@@ -43,8 +42,10 @@ class _AccountClientState extends State<AccountClient> {
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
         final imageUrl = userData['image_url'];
+        final name = userData['name'];
         setState(() {
-          _imageURL = imageUrl; // Store the image URL in a variable.
+          _imageURL = imageUrl;
+          _name = name;
         });
       } else {
         // Handle error
@@ -95,17 +96,17 @@ class _AccountClientState extends State<AccountClient> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(_imageURL ??
-                            'YOUR_DEFAULT_IMAGE_URL_HERE'), // Use the image URL here, or provide a default URL.
+                        image: NetworkImage(
+                            _imageURL ?? 'YOUR_DEFAULT_IMAGE_URL_HERE'),
                       ),
                     ),
                   ),
                   SizedBox(width: 10),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, 
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${widget.name ?? "Default Name"}',
+                        '${_name ?? "Name"}',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -148,7 +149,6 @@ class _AccountClientState extends State<AccountClient> {
             ),
             const SizedBox(height: 12),
             const _CustomDivider(),
-           
             const SizedBox(height: 12),
             _buildOptionRow('assets/images/login.svg', 'Log out'),
           ],
@@ -160,7 +160,6 @@ class _AccountClientState extends State<AccountClient> {
   Widget _buildOptionRow(
     String iconPath,
     String text,
-    
   ) {
     return Padding(
       padding: const EdgeInsets.only(left: 20),

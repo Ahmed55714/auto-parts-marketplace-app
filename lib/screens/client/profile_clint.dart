@@ -14,7 +14,6 @@ import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
 import '../vendor/profile.dart';
-import 'map_client.dart';
 import 'package:http/http.dart' as http;
 
 class ProfileClient extends StatefulWidget {
@@ -30,7 +29,6 @@ class _MyProfileState extends State<ProfileClient> {
   List<Address> addresses = [];
   int selectedContainerIndex = -1;
   String? _selectedAddressId;
-
 
   Future<void> fetchAddresses() async {
     final Uri apiEndpoint =
@@ -51,8 +49,8 @@ class _MyProfileState extends State<ProfileClient> {
         List<dynamic> jsonList = jsonDecode(response.body);
         setState(() {
           addresses = jsonList.map((json) => Address.fromJson(json)).toList();
-        if (addresses.isNotEmpty) {
-            selectContainer(0); 
+          if (addresses.isNotEmpty) {
+            selectContainer(0);
           }
         });
       } else {
@@ -65,20 +63,23 @@ class _MyProfileState extends State<ProfileClient> {
       print('Error occurred while fetching addresses: $e');
     }
   }
-void selectContainer(int index) {
-  setState(() {
-    selectedContainerIndex = index;
-    if (index != -1) {
-      saveAddress(addresses[index].fullAddress, addresses[index].id.toString());
-    }
-  });
-}
 
-Future<void> saveAddress(String address, String addressId) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('selected_address', address);
-  await prefs.setString('selected_address_id', addressId); // Save the address ID
-}
+  void selectContainer(int index) {
+    setState(() {
+      selectedContainerIndex = index;
+      if (index != -1) {
+        saveAddress(
+            addresses[index].fullAddress, addresses[index].id.toString());
+      }
+    });
+  }
+
+  Future<void> saveAddress(String address, String addressId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_address', address);
+    await prefs.setString(
+        'selected_address_id', addressId); // Save the address ID
+  }
 
   Future<void> deleteAddress(int addressId) async {
     final Uri apiEndpoint = Uri.parse(
@@ -143,11 +144,11 @@ Future<void> saveAddress(String address, String addressId) async {
   @override
   void initState() {
     super.initState();
-     fetchAddresses().then((_) {
-    // After fetching addresses, select the first one if the list is not empty.
-    if (addresses.isNotEmpty) {
-      selectContainer(0);
-    } });
+    fetchAddresses().then((_) {
+      if (addresses.isNotEmpty) {
+        selectContainer(0);
+      }
+    });
     fetchProfilePic();
   }
 
@@ -195,6 +196,9 @@ Future<void> saveAddress(String address, String addressId) async {
     }
   }
 
+  void refreshAddresses() {
+    fetchAddresses();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,11 +243,15 @@ Future<void> saveAddress(String address, String addressId) async {
                             shape: BoxShape.circle,
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: _image != null 
-                       ? FileImage(_image!) // Display the selected image
-                       : (_imageURL != null 
-                          ? NetworkImage(_imageURL!) // Display the network image if URL is available
-                          : AssetImage('YOUR_DEFAULT_IMAGE_PATH')) as ImageProvider, // Fallback to a default image
+                              image: _image != null
+                                  ? FileImage(
+                                      _image!) // Display the selected image
+                                  : (_imageURL != null
+                                          ? NetworkImage(
+                                              _imageURL!) // Display the network image if URL is available
+                                          : AssetImage(
+                                              'YOUR_DEFAULT_IMAGE_PATH'))
+                                      as ImageProvider, // Fallback to a default image
                             ),
                           ),
                         ),
@@ -304,7 +312,7 @@ Future<void> saveAddress(String address, String addressId) async {
                       ),
                     ],
                   ),
-                 addresses.isEmpty 
+                  addresses.isEmpty
                       ? Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
@@ -325,7 +333,8 @@ Future<void> saveAddress(String address, String addressId) async {
                                 index: index,
                                 isSelected: selectedContainerIndex == index,
                                 title: address.name,
-                                description: "${address.street} - ${address.building} - ${address.floor} - ${address.apartment}",
+                                description:
+                                    "${address.street} - ${address.building} - ${address.floor} - ${address.apartment}",
                                 onTap: () {
                                   selectContainer(index);
                                 },
@@ -406,7 +415,7 @@ Future<void> saveAddress(String address, String addressId) async {
                           child: Container(
                             height: 200,
                             color: Colors.grey[300], // Placeholder for the map
-                            child: CustomGoogleMapp( ),
+                            child: CustomGoogleMapp(),
                           ),
                         ),
                         buildTextField(
@@ -447,10 +456,9 @@ Future<void> saveAddress(String address, String addressId) async {
                                   long: 'Longitude from map',
                                 );
 
-                                // Once the API call is done, hide the loading indicator
-                                Navigator.pop(
-                                    context); // Pop the loading dialog
-                                Navigator.pop(context); // Pop the bottom sheet
+                                Navigator.pop(context);
+                                refreshAddresses();
+                                fetchAddresses();
                               }
                             }),
                       ],
@@ -567,13 +575,13 @@ Future<void> saveAddress(String address, String addressId) async {
                 email: emailController.text,
                 phone: phoneNumberController.text,
                 image: _image,
-
               );
             }
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => updateTrueScreen(name: nameController.text),
+                builder: (context) =>
+                    updateTrueScreen(name: nameController.text),
                 // const CarForm(),
               ),
             );
@@ -602,7 +610,7 @@ class Address {
     required this.apartment,
   });
 
-    String get fullAddress => "$street - $building - $floor - $apartment";
+  String get fullAddress => "$street - $building - $floor - $apartment";
 
   static Address fromJson(Map<String, dynamic> json) {
     return Address(
@@ -624,7 +632,6 @@ class CustomSelection extends StatefulWidget {
   final VoidCallback onTap;
   final int addressId;
   final VoidCallback onDelete;
-  
 
   CustomSelection({
     required this.index,

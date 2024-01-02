@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -18,15 +19,29 @@ class MobileLayoutScreen extends StatefulWidget {
 }
 
 class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
-
   late Future<List<Contact>> contactsFuture;
+    Timer? _timer;
+
 
   @override
   void initState() {
     super.initState();
     contactsFuture = fetchContacts();
+   _startRefreshTimer();
   }
 
+  void _startRefreshTimer() {
+    _timer = Timer.periodic(Duration(seconds: 30), (timer) {
+      setState(() {
+        contactsFuture = fetchContacts();
+      });
+    });
+  }
+    @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
   Future<List<Contact>> fetchContacts() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? authToken = prefs.getString('auth_token');
@@ -160,9 +175,10 @@ class ContactsList extends StatelessWidget {
                   contact.lastMessage.time,
                   style: TextStyle(
                     color: Colors.grey,
-                    fontSize: 13,
+                    fontSize: 10,
                   ),
                 ),
+             
                       Container(
                         padding: EdgeInsets.all(6),
                         decoration: BoxDecoration(

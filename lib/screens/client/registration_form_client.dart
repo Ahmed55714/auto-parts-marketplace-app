@@ -12,7 +12,6 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
-import 'car_form.dart';
 
 class RegistrationFormClinet extends StatefulWidget {
   const RegistrationFormClinet({Key? key}) : super(key: key);
@@ -23,7 +22,7 @@ class RegistrationFormClinet extends StatefulWidget {
 
 class _RegistrationFormState extends State<RegistrationFormClinet> {
   bool isAgreed = false;
-  
+
   List<XFile> _images = [];
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
@@ -36,6 +35,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
   final locationController = TextEditingController();
   final dateController = TextEditingController();
   final cartypeController = TextEditingController();
+  final locationdoneController = TextEditingController();
 
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode;
@@ -102,8 +102,13 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                     'Birth date',
                     dateController,
                   ),
-                  buildTextFieldLocation('Location', locationController,
-                      TextInputType.text, 'Enter your location', context),
+                  buildTextFieldLocation(
+                      'Location',
+                      locationdoneController,
+                      locationController,
+                      TextInputType.text,
+                      'Enter your location',
+                      context),
                   buildCarTypeField1(),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
@@ -209,7 +214,9 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
   }
 
   Widget buildTextFieldLocation(String label, TextEditingController controller,
-      TextInputType type, String? text, BuildContext context) {
+        TextEditingController locationController,
+
+      TextInputType type, String? text, BuildContext context,) {
     // Function to get current location
     Future<void> _getCurrentLocation() async {
       bool serviceEnabled;
@@ -236,11 +243,15 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         return Future.error(
             'Location permissions are permanently denied, we cannot request permissions.');
       }
-      
+
       // When permissions are granted, get the current location
       Position position = await Geolocator.getCurrentPosition();
-      controller.text = "${position.latitude}, ${position.longitude}";
-      
+     setState(() {
+        // Update the locationController with latitude and longitude
+        locationController.text = '${position.latitude}, ${position.longitude}';
+        // Update the display controller with "Done"
+        controller.text = 'Done';
+      });
     }
 
     return Column(

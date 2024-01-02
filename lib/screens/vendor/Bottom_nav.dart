@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:work2/constants/colors.dart';
-import 'Registration_form.dart';
+import '../client/account_client.dart';
 import 'map_vendor.dart';
-import 'my_account.dart';
 import 'orders.dart';
 
 class VendorMap extends StatefulWidget {
@@ -26,7 +25,7 @@ class _VendorMapState extends State<VendorMap> {
       case 1:
         return MyMap();
       case 2:
-        return MyAccountVindor();
+        return AccountClient();// for vendor and client
       default:
         return MyOrders();
       // Default case
