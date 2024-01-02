@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
   CustomTextField({
     Key? key,
     required this.labelText,
-    this.fieldHeight = 58.0,
+    this.fieldHeight = 78.0,
     this.controller,
     this.keyboardType = TextInputType.text, // Default keyboardType is text
     this.validator, 

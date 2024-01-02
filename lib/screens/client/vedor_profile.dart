@@ -240,7 +240,11 @@ class _VenforProfileState extends State<VenforProfile> {
                       text: 'contact',
                       onPressed: () {
                              Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute(builder: (context) => MobileChatScreen()),
+      MaterialPageRoute(builder: (context) => MobileChatScreen( 
+       userId: widget.userId,
+       name : profile.name,
+       pic: profile.imageUrl,
+      )),
     );
 
                       }),
@@ -293,7 +297,7 @@ class _ChatBottomSheetState extends State<ChatBottomSheet> {
           Container(
             decoration: const BoxDecoration(
               color:
-                  deepPurple, // Here we set the color for the top rounded part
+                  deepPurple, 
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25),
                 topRight: Radius.circular(25),
@@ -557,7 +561,7 @@ class ReviewCard extends StatelessWidget {
                 return Icon(
                   index < starCount ? Icons.star : Icons.star_border,
                   color: Colors.orange,
-                  size: 20,
+                  size: 25,
                 );
               }),
             ),
@@ -566,7 +570,7 @@ class ReviewCard extends StatelessWidget {
               child: Text(
                 rating.comment,
                 style: TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 18.0,
                   fontFamily: 'Roboto',
                 ),
                 overflow: TextOverflow.ellipsis,

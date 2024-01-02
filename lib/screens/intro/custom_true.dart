@@ -187,7 +187,7 @@ class updateTrueScreen extends StatelessWidget {
   }
 }
 
-class TrueOrderScreen extends StatelessWidget {
+class TrueOrderClinetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

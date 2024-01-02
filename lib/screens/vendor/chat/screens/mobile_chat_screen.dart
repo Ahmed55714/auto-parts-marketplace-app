@@ -1,17 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:work2/constants/colors.dart';
-import 'package:http/http.dart' as http;
-
 import '../../Bottom_nav.dart';
-import '../info.dart';
-import '../widgets/chat_list.dart';
+import '../widgets/my_message_card.dart';
+import '../widgets/sender_message_card.dart';
 
 class MobileChatScreen extends StatefulWidget {
-  MobileChatScreen({Key? key}) : super(key: key);
+  final int userId;
+  final String? name;
+  final String? pic;
+  MobileChatScreen({
+    Key? key,
+    required this.userId,
+    this.name,
+    this.pic,
+  }) : super(key: key);
 
   @override
   State<MobileChatScreen> createState() => _MobileChatScreenState();
@@ -23,8 +32,10 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
   String? userName;
   String? userImageUrl;
 
+  var messages = <Message>[].obs;
+
   Future<void> postMessage({
-    required int userId,
+   
     required String content,
   }) async {
     final Uri apiEndpoint =
@@ -40,7 +51,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
           'Authorization': 'Bearer $authToken',
         },
         body: {
-          'user_id': userId.toString(),
+          'user_id': widget.userId.toString(),
           'content': content,
         },
       );
@@ -50,7 +61,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
         var data = jsonDecode(response.body);
         print('Message sent: $data');
         print(response.body);
-        // Do something with the response data
+        await fetchMessages(widget.userId);
       } else {
         // Handle error
         print('Failed to send message: ${response.statusCode}');
@@ -65,42 +76,42 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
     }
   }
 
+  Future<void> fetchMessages(int userId) async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/chat/${userId}/show");
+    final SharedPreferences prefs =
+        await SharedPreferences.getInstance(); // Fixed here
+    final String? authToken = prefs.getString('auth_token');
+
+    final response = await http.get(
+      apiEndpoint,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+    print('API Response for user $userId: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      List<Message> fetchedMessages = (data['messages'] as List)
+          .map((message) => Message.fromJson(message))
+          .toList();
+      messages.assignAll(fetchedMessages);
+      print(response.body);
+    } else {
+      throw Exception('Failed to load messages: ${response.body}');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    fetchUserProfile();
-  }
-
-  Future<void> fetchUserProfile() async {
-    // Replace with the actual user ID or fetch it from saved preferences
-    final int userId = 2;
-    final Uri apiEndpoint =
-        Uri.parse("https://slfsparepart.com/api/user/$userId");
-
-    try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? authToken = prefs.getString('auth_token');
-      final response = await http.get(
-        apiEndpoint,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        setState(() {
-          userName =
-              data['name']; // Assuming 'name' is the key for the user's name
-          userImageUrl = data['image_url']; // Assuming 'image_url' is the key
-        });
-      } else {
-        print('Failed to fetch user profile: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error occurred while fetching user profile: $e');
-    }
+    print("User ID: ${widget.userId}");
+    // fetchUserProfile();
+    fetchMessages(
+        widget.userId); 
+    
   }
 
   @override
@@ -123,7 +134,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                   BackButtonDeep(),
                   CircleAvatar(
                     backgroundImage: NetworkImage(
-                      userImageUrl ?? 'https://picsum.photos/250?image=9',
+                      widget.pic ?? 'https://picsum.photos/250?image=9',
                     ),
                   ),
                   SizedBox(width: 10),
@@ -131,7 +142,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userName ?? 'Loading...',
+                        widget.name ?? 'Loading...',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -151,9 +162,29 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
               ),
             ),
             Expanded(
-              child: ChatList(
-                userName: userName,
-                userImageUrl: userImageUrl,
+              child: Obx(
+                () {
+                  if (messages.isEmpty) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  return ListView.builder(
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      var message = messages[index];
+                      if (message.iSentThis) {
+                        return MyMessageCard(
+                          message: message.content,
+                           isSeen: message.isSeen,
+                        );
+                      } else {
+                        return SenderMessageCard(
+                          message: message.content,
+                        );
+                      }
+                    },
+                  );
+                },
               ),
             ),
             Padding(
@@ -190,11 +221,8 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                             color: Theme.of(context).primaryColor),
                         onPressed: () {
                           if (_messageController.text.isNotEmpty) {
-                            // Retrieve the user ID from user profile or similar
-                            int userId =
-                                2; // Example user ID, replace with actual user ID
                             postMessage(
-                                    userId: userId,
+                                     
                                     content: _messageController.text)
                                 .then((_) {
                               // Clear the message input field after sending the message
@@ -219,5 +247,28 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
   void dispose() {
     _messageController.dispose();
     super.dispose();
+  }
+}
+
+class Message {
+  final int id;
+  final String content;
+  final bool isSeen;
+  final bool iSentThis;
+
+  Message({
+    required this.id,
+    required this.content,
+    required this.isSeen, // This is a boolean now
+    required this.iSentThis,
+  });
+
+  factory Message.fromJson(Map<String, dynamic> json) {
+    return Message(
+      id: json['id'],
+      content: json['content'],
+      isSeen: json['is_seen'] == "1", // Parse the string to a boolean
+      iSentThis: json['i_sent_this'] == true,
+    );
   }
 }

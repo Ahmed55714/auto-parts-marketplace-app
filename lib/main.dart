@@ -12,6 +12,7 @@ import 'package:work2/getx/update_profile.dart';
 import 'package:work2/screens/client/Complain_client.dart';
 
 import 'getx/auth.dart';
+
 import 'getx/orders.dart';
 import 'screens/client/Bottom_nav.dart';
 import 'screens/client/car_form.dart';
@@ -25,7 +26,6 @@ import 'screens/vendor/Bottom_nav.dart';
 import 'screens/vendor/Registration_form.dart';
 import 'screens/vendor/Report.dart';
 import 'screens/vendor/chat/screens/mobile_layout_screen.dart';
-import 'screens/vendor/my_account.dart';
 import 'screens/vendor/offer_form.dart';
 import 'screens/vendor/orders_rate.dart';
 import 'screens/vendor/profile.dart';
@@ -39,6 +39,7 @@ void main() async {
   Get.put(RegesterController());
   Get.put(UpdateProfileController());
   Get.put(OrdersController());
+ 
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
   final userType = prefs.getString('user_type');

@@ -377,10 +377,9 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] as int,
-      name: json['name'] as String? ?? '', // Handle potential null
-      imageUrl: json['image_url'] as String? ?? '', // Handle potential null
-      avgRating:
-          (json['avg_rating'] as num?)?.toDouble(), // No need to cast here
+      name: json['name'] as String? ?? '',
+      imageUrl: json['image_url'] as String? ?? '',
+      avgRating: double.tryParse(json['avg_rating']?.toString() ?? '0'),
     );
   }
 }

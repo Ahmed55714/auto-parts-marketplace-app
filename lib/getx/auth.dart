@@ -22,11 +22,11 @@ class AuthController extends GetxController {
       },
       verificationFailed: (FirebaseAuthException e) {
         isLoading(false);
-        Get.snackbar('Error', 'Verification Failed: ${e.message}');
+        Get.snackbar('Error', 'Verification Failed please check your internet');
       },
       codeSent: (String verificationId, int? resendToken) {
         isLoading(false);
-        // Navigate to OTP screen with verificationId
+        
         Get.to(() => VerificationScreen(
             verificationId: verificationId, phoneNumber: phoneNumber));
       },
@@ -65,17 +65,17 @@ class AuthController extends GetxController {
             'phone': user.phoneNumber,
           },
         );
-        print(user.uid);
-        print(user.phoneNumber);
+       
+      
 
-        print('Response Body: ${response.body}');
+      
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           // Here we assume the token is returned in the response body
           var data = jsonDecode(response.body);
           var token = data['token'];
           await saveToken(token);
-          print(token);
+         
           Get.snackbar(
             'Success',
             'Verify successfully',
@@ -90,13 +90,13 @@ class AuthController extends GetxController {
         }
       } catch (e) {
         Get.snackbar(
-          'Error',
-          'An error occurred while posting data',
+          'Network Error',
+          'Could not connect to the server. Please check your internet connection.',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-        print(e.toString());
+      
       } finally {
         isLoading(false);
       }
@@ -106,7 +106,7 @@ class AuthController extends GetxController {
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
-    print('Token saved successfully');
+  
   }
 
   Future<String?> getToken(String token) async {
@@ -134,16 +134,14 @@ class AuthController extends GetxController {
 
       if (response.statusCode == 200) {
         // Handle successful response
-        print('Type posted successfully');
-        print(response.body);
+   ;
       } else {
         // Handle error
-        print('Failed to post type');
-        print(response.body);
+  
       }
     } catch (e) {
       // Handle any exceptions
-      print('Error posting type: $e');
+    
     }
   }
 

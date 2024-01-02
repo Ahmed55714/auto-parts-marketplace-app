@@ -1156,7 +1156,7 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
         ),
         const SizedBox(height: 27),
         CustomButton(
-          text: 'Register',
+          text: 'Order',
           onPressed: () async {
             if (_formKey.currentState!.validate() && validateField1() == null) {
               setState(() {
@@ -1189,7 +1189,7 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TrueOrderScreen(),
+                    builder: (context) => TrueOrderClinetScreen(),
                   ),
                 );
               } catch (e) {

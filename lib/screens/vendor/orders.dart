@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
+import '../client/orders_clint.dart';
 import 'chat/screens/mobile_layout_screen.dart';
 import 'offer_form.dart';
 
@@ -197,10 +198,32 @@ class _MyOrdersState extends State<MyOrders> {
     }
   }
 
+  Future<int> fetchUnreadMessageCount() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/chat/inbox/unread/count");
+    final response = await http.get(
+      apiEndpoint,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      return jsonResponse['unread_count'];
+    } else {
+      throw Exception('Failed to load unread count: ${response.body}');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    // Fetch orders when the widget is first created
+    fetchUnreadMessageCount();
     fetchOrders();
     Timer.periodic(Duration(minutes: 5), (Timer timer) {
       fetchOrders();
@@ -238,18 +261,54 @@ class _MyOrdersState extends State<MyOrders> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MobileLayoutScreen()));
-                              },
-                              icon: const Icon(
-                                Icons.notifications,
-                                color: deepPurple,
-                              ),
-                            ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MobileLayoutScreen()));
+                                },
+                                icon: Stack(
+                                  children: <Widget>[
+                                    Icon(Icons.notifications,size: 35,
+                                        color: deepPurple),
+                                    FutureBuilder<int>(
+                                      future:
+                                          fetchUnreadMessageCount(), // your fetch function here
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<int> snapshot) {
+                                        if (snapshot.hasData &&
+                                            snapshot.data! > 0) {
+                                          return Positioned(
+                                            right: 0,
+                                            child: Container(
+                                              padding: EdgeInsets.all(1),
+                                              decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                              ),
+                                              constraints: BoxConstraints(
+                                                minWidth: 16,
+                                                minHeight: 16,
+                                              ),
+                                              child: Text(
+                                                '${snapshot.data}',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 8,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      },
+                                    )
+                                  ],
+                                ))
                           ],
                         ),
                       ),
@@ -567,7 +626,12 @@ class OrderDetailLine extends StatelessWidget {
                 ? InkWell(
                     onTap: () {
                       if (location != null) {
-                        _showMapDialog(context, location!);
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    LocationViewScreen(location: location!),
+                                settings: RouteSettings(arguments: location)));
                       }
                     },
                     child: Text(
@@ -587,7 +651,12 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl != null && imageUrl!.isNotEmpty) {
-                                _showImageDialog(context, imageUrl!);
+                               Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ImageViewScreen(),
+                                        settings: RouteSettings(
+                                            arguments: imageUrl)));
                               }
                             },
                             child: Text(
@@ -604,7 +673,12 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl2 != null && imageUrl2!.isNotEmpty) {
-                                _showImageDialog(context, imageUrl2!);
+                                 Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ImageViewScreen(),
+                                        settings: RouteSettings(
+                                            arguments: imageUrl2)));
                               }
                             },
                             child: Text(

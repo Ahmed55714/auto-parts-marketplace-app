@@ -46,13 +46,11 @@ class _OrdersClientState extends State<OrdersClient> {
       );
 
       if (response.statusCode == 200) {
-        
-              List<dynamic> jsonList = jsonDecode(response.body);
-      return jsonList.map((json) {
-        bool rated = prefs.getBool('order_rated_${json['id']}') ?? false;
-        return Order.fromJson(json).copyWith(rated: rated);
-      }).toList();
-     
+        List<dynamic> jsonList = jsonDecode(response.body);
+        return jsonList.map((json) {
+          bool rated = prefs.getBool('order_rated_${json['id']}') ?? false;
+          return Order.fromJson(json).copyWith(rated: rated);
+        }).toList();
       } else {
         // Handle error
         print('Failed to fetch orders: ${response.body}');
@@ -112,30 +110,53 @@ class _OrdersClientState extends State<OrdersClient> {
     }
   }
 
- @override
-void initState() {
-  super.initState();
-  fetchOrders().then((fetchedOrders) {
-    for (var order in fetchedOrders) {
-      if (order.status == "Delivered" && !order.rated) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => BottomSheetWidget(orderId: order.id),
-          ).then((_) {
-            setState(() {
-              order.rated = true;
-              SharedPreferences.getInstance().then((prefs) {
-                prefs.setBool('order_rated_${order.id}', true);
+  Future<int> fetchUnreadMessageCount() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/chat/inbox/unread/count");
+    final response = await http.get(
+      apiEndpoint,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      return jsonResponse['unread_count'];
+    } else {
+      throw Exception('Failed to load unread count: ${response.body}');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUnreadMessageCount();
+    fetchOrders().then((fetchedOrders) {
+      for (var order in fetchedOrders) {
+        if (order.status == "Delivered" && !order.rated) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => BottomSheetWidget(orderId: order.id),
+            ).then((_) {
+              setState(() {
+                order.rated = true;
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setBool('order_rated_${order.id}', true);
+                });
               });
             });
           });
-        });
+        }
       }
-    }
-  });
-  Timer.periodic(Duration(minutes: 5), (Timer timer) => fetchOrders());
-}
+    });
+    Timer.periodic(Duration(minutes: 5), (Timer timer) => fetchOrders());
+  }
 
   final OrdersController orderController = Get.put(OrdersController());
 
@@ -164,27 +185,60 @@ void initState() {
                     ),
                   ),
                 ),
-                                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MobileLayoutScreen()));
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MobileLayoutScreen()));
+                        },
+                        icon: Stack(
+                          children: <Widget>[
+                            Icon(Icons.notifications, color: deepPurple, size: 35,),
+                            FutureBuilder<int>(
+                              future:
+                                  fetchUnreadMessageCount(), // your fetch function here
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<int> snapshot) {
+                                if (snapshot.hasData && snapshot.data! > 0) {
+                                  return Positioned(
+                                    right: 0,
+                                    child: Container(
+                                      padding: EdgeInsets.all(1),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      constraints: BoxConstraints(
+                                        minWidth: 16,
+                                        minHeight: 16,
+                                      ),
+                                      child: Text(
+                                        '${snapshot.data}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 8,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Container();
+                                }
                               },
-                              icon: const Icon(
-                                Icons.notifications,
-                                color: deepPurple,
-                              ),
-                            ),
+                            )
                           ],
                         ),
                       ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -311,33 +365,33 @@ void initState() {
           ),
         ),
         if (order.status == 'Delivered')
-        CustomButton(
-          text: 'Return Order',
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => OrderRepo( orderId: order.id)));
-          },
-        )
-      else if (order.status != 'Canceled')
-        CustomButton2(
-          text: 'Cancel order',
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return BottomcancelSheetWidget(
-                  orderId: order.id,
-                  onConfirmCancel: (cancelReason, orderId) async {
-                    await cancelOrder(cancelReason, orderId);
-                    fetchOrders();
-                  },
-                );
-              },
-            );
-          },
-        ),
+          CustomButton(
+            text: 'Return Order',
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OrderRepo(orderId: order.id)));
+            },
+          )
+        else if (order.status != 'Canceled')
+          CustomButton2(
+            text: 'Cancel order',
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return BottomcancelSheetWidget(
+                    orderId: order.id,
+                    onConfirmCancel: (cancelReason, orderId) async {
+                      await cancelOrder(cancelReason, orderId);
+                      fetchOrders();
+                    },
+                  );
+                },
+              );
+            },
+          ),
         SizedBox(height: 10),
         order.status != 'Canceled'
             ? Row(
@@ -733,7 +787,7 @@ class Order {
       rated: json['rated'] ?? false,
     );
   }
-   Order copyWith({bool? rated}) {
+  Order copyWith({bool? rated}) {
     return Order(
       id: this.id,
       carPiece: this.carPiece,
@@ -755,8 +809,6 @@ class Order {
     );
   }
 }
-
-
 
 class File {
   final int id;
@@ -810,6 +862,7 @@ class LocationViewScreen extends StatelessWidget {
           zoom: 14.0,
         ),
         markers: {Marker(markerId: MarkerId('loc'), position: location)},
+     zoomControlsEnabled: false,
       ),
     );
   }

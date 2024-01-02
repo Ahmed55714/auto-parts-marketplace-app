@@ -2,14 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/intro/sign_up.dart';
-import '../screens/intro/verification.dart';
 
 class OrdersController extends GetxController {
   var isLoading = false.obs;
@@ -35,12 +32,9 @@ class OrdersController extends GetxController {
         PieceTypes.value = List<Map<String, dynamic>>.from(data);
       } else {
         // Handle error
-        print('Failed to fetch piece types');
-        print(response.body);
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while fetching piece types: $e');
     } finally {
       isLoading(false);
     }
@@ -67,12 +61,9 @@ class OrdersController extends GetxController {
         PieceDeltals.value = List<Map<String, dynamic>>.from(data);
       } else {
         // Handle error
-        print('Failed to fetch piece details');
-        print(response.body);
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while fetching piece details: $e');
     } finally {
       isLoading(false);
     }
@@ -130,17 +121,17 @@ class OrdersController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
         var jsonResponse = json.decode(response.body);
-        print('Response body: ${response.body}');
-        print(jsonResponse);
       } else {
         // Handle error
-        print('Failed to register client');
-        print(response.body);
       }
     } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while registering client: $e');
-      print(e);
+      Get.snackbar(
+        'Upload Error',
+        'Failed to upload: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading(false);
     }
@@ -157,8 +148,8 @@ class OrdersController extends GetxController {
     required String notes,
     required List<XFile> images,
   }) async {
-    final Uri apiEndpoint =
-        Uri.parse("https://slfsparepart.com/api/vendor/orders/$orderId/offers/create");
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/vendor/orders/$orderId/offers/create");
     final prefs = await SharedPreferences.getInstance();
     final String? authToken = prefs.getString('auth_token');
     isLoading(true);
@@ -192,33 +183,35 @@ class OrdersController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
         var jsonResponse = json.decode(response.body);
-        print('Response body: ${response.body}');
-        print(jsonResponse);
       } else {
         // Handle error
-        print('Failed to make offer');
-       showDialog(
-      context: Get.context!,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Offer Error'),
-          content: Text('This order cannot receive offers at the moment.'),
-          actions: <Widget>[
-              ElevatedButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+
+        showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Offer Error'),
+              content: Text('This order cannot receive offers at the moment.'),
+              actions: <Widget>[
+                ElevatedButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
         );
-      },
-    );
       }
     } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while make offer: $e');
-      print(e);
+      Get.snackbar(
+        'Network Error',
+        'Could not connect to the server. Please check your internet connection.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading(false);
     }
