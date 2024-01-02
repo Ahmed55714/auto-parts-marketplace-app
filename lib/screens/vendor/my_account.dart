@@ -1,24 +1,29 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../constants/colors.dart';
 import '../client/Complain_client.dart';
 import 'chat/screens/mobile_layout_screen.dart';
 import 'profile.dart';
-import 'package:http/http.dart' as http;
 
-class MyAccount extends StatefulWidget {
-  const MyAccount({super.key});
+class MyAccountVindor extends StatefulWidget {
+  final String? name;
+  const MyAccountVindor({
+    Key? key,
+    this.name,
+  }) : super(key: key);
 
   @override
-  State<MyAccount> createState() => _MyAccountState();
+  State<MyAccountVindor> createState() => _MyAccountVindorState();
 }
 
-class _MyAccountState extends State<MyAccount> {
-
-   String? _imageURL;
+class _MyAccountVindorState extends State<MyAccountVindor> {
+  String? _imageURL;
   Future<void> fetchProfilePic() async {
     final Uri apiEndpoint = Uri.parse(
         "https://slfsparepart.com/api/user"); // Replace with your API endpoint
@@ -56,13 +61,14 @@ class _MyAccountState extends State<MyAccount> {
     super.initState();
     fetchProfilePic();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-             Padding(
+            Padding(
               padding: EdgeInsets.only(top: 20),
               child: Center(
                 child: Row(
@@ -76,7 +82,6 @@ class _MyAccountState extends State<MyAccount> {
                         color: deepPurple,
                       ),
                     ),
-                    
                   ],
                 ),
               ),
@@ -86,7 +91,7 @@ class _MyAccountState extends State<MyAccount> {
               padding: const EdgeInsets.only(left: 20),
               child: Row(
                 children: [
- Container(
+                  Container(
                     width: 80.0,
                     height: 80.0,
                     decoration: BoxDecoration(
@@ -98,13 +103,30 @@ class _MyAccountState extends State<MyAccount> {
                             'YOUR_DEFAULT_IMAGE_URL_HERE'), // Use the image URL here, or provide a default URL.
                       ),
                     ),
-                  ),                  const SizedBox(width: 10),
-                  _ProfileInfo(
-                      onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MyProfile()),
-                          ))
+                  ),
+                  SizedBox(width: 10),
+                     Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, 
+                    children: [
+                      Text(
+                        '${widget.name ?? "Default Name"}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      _ProfileInfo(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyProfile()),
+                        )
+                          ),
+                             
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -121,14 +143,14 @@ class _MyAccountState extends State<MyAccount> {
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),
-                       GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ReportClient()),
-        ),
-        child: _buildOptionRow(
-            'assets/images/info-circle.svg', 'Add Complain'),
-      ),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReportClient()),
+              ),
+              child: _buildOptionRow(
+                  'assets/images/info-circle.svg', 'Add Complain'),
+            ),
             const SizedBox(height: 12),
             const _CustomDivider(),
             _buildOptionRow('assets/images/login.svg', 'Log out'),
@@ -182,14 +204,6 @@ class _ProfileInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Ahmed Khaled',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: deepPurple,
-          ),
-        ),
         GestureDetector(
           onTap: onTap,
           child: const Padding(

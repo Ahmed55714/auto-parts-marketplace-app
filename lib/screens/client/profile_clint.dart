@@ -13,6 +13,7 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
+import '../vendor/profile.dart';
 import 'map_client.dart';
 import 'package:http/http.dart' as http;
 
@@ -238,8 +239,11 @@ Future<void> saveAddress(String address, String addressId) async {
                             shape: BoxShape.circle,
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: NetworkImage(_imageURL ??
-                                  'YOUR_DEFAULT_IMAGE_URL_HERE'), // Use the image URL here, or provide a default URL.
+                              image: _image != null 
+                       ? FileImage(_image!) // Display the selected image
+                       : (_imageURL != null 
+                          ? NetworkImage(_imageURL!) // Display the network image if URL is available
+                          : AssetImage('YOUR_DEFAULT_IMAGE_PATH')) as ImageProvider, // Fallback to a default image
                             ),
                           ),
                         ),
@@ -402,7 +406,7 @@ Future<void> saveAddress(String address, String addressId) async {
                           child: Container(
                             height: 200,
                             color: Colors.grey[300], // Placeholder for the map
-                            child: const CustomGoogleMap(),
+                            child: CustomGoogleMapp( ),
                           ),
                         ),
                         buildTextField(
@@ -562,12 +566,14 @@ Future<void> saveAddress(String address, String addressId) async {
                 name: nameController.text,
                 email: emailController.text,
                 phone: phoneNumberController.text,
+                image: _image,
+
               );
             }
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => updateTrueScreen(),
+                builder: (context) => updateTrueScreen(name: nameController.text),
                 // const CarForm(),
               ),
             );

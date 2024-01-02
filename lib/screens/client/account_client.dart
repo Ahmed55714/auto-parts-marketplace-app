@@ -1,16 +1,23 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:work2/screens/client/Terms_and_conditions.dart';
+
 import '../../constants/colors.dart';
 import 'Complain_client.dart';
 import 'Profile_clint.dart';
-import 'package:http/http.dart' as http;
 
 class AccountClient extends StatefulWidget {
-  const AccountClient({super.key});
+  final String? name;
+  const AccountClient({
+    Key? key,
+    this.name,
+  }) : super(key: key);
 
   @override
   State<AccountClient> createState() => _AccountClientState();
@@ -93,15 +100,40 @@ class _AccountClientState extends State<AccountClient> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  _ProfileInfo(
-                      onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfileClient()),
-                          ))
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, 
+                    children: [
+                      Text(
+                        '${widget.name ?? "Default Name"}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      _ProfileInfo(
+                          onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileClient()),
+                              ))
+                    ],
+                  ),
                 ],
               ),
+            ),
+            const SizedBox(height: 12),
+            const _CustomDivider(),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReportClient()),
+              ),
+              child: _buildOptionRow(
+                  'assets/images/clipboard-tick.svg', 'Add Complain'),
             ),
             const SizedBox(height: 12),
             const _CustomDivider(),
@@ -112,25 +144,11 @@ class _AccountClientState extends State<AccountClient> {
                 MaterialPageRoute(builder: (context) => TermsAndConditions()),
               ),
               child: _buildOptionRow(
-                  'assets/images/clipboard-tick.svg', 'Previews Orders'),
+                  'assets/images/info-circle.svg', 'Terms and conditions'),
             ),
             const SizedBox(height: 12),
             const _CustomDivider(),
-            const SizedBox(height: 12),
-            _buildOptionRow(
-                'assets/images/info-circle.svg', 'Terms and conditions'),
-            const SizedBox(height: 12),
-            const _CustomDivider(),
-            GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ReportClient()),
-              ),
-              child: _buildOptionRow(
-                  'assets/images/info-circle.svg', 'Add Complain'),
-            ),
-            const SizedBox(height: 12),
-            const _CustomDivider(),
+           
             const SizedBox(height: 12),
             _buildOptionRow('assets/images/login.svg', 'Log out'),
           ],
@@ -142,6 +160,7 @@ class _AccountClientState extends State<AccountClient> {
   Widget _buildOptionRow(
     String iconPath,
     String text,
+    
   ) {
     return Padding(
       padding: const EdgeInsets.only(left: 20),
@@ -173,14 +192,6 @@ class _ProfileInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Ahmed Khaled',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: deepPurple,
-          ),
-        ),
         GestureDetector(
           onTap: onTap,
           child: const Padding(

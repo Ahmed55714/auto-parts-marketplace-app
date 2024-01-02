@@ -4,6 +4,7 @@ import '../info.dart';
 import '../screens/mobile_chat_screen.dart';
 
 class ContactsList extends StatelessWidget {
+  
   const ContactsList({Key? key}) : super(key: key);
 
   @override
@@ -18,7 +19,10 @@ class ContactsList extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/chat');
+                 Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(builder: (context) => MobileChatScreen()),
+    );
+
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),

@@ -131,6 +131,10 @@ class TrueresgesterScreen extends StatelessWidget {
 }
 
 class updateTrueScreen extends StatelessWidget {
+    final String name;
+
+  const updateTrueScreen({super.key, required this.name});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,7 +174,7 @@ class updateTrueScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AccountClient(),
+                        builder: (context) =>  AccountClient( name: name,),
                         // const CarForm(),
                       ),
                     );

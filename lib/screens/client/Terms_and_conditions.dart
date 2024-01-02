@@ -1,9 +1,44 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants/colors.dart';
 import '../vendor/Bottom_nav.dart';
+import 'package:http/http.dart' as http;
 
 class TermsAndConditions extends StatelessWidget {
+ Future<Map<String, String>> fetchTermsAndConditions() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? authToken = prefs.getString('auth_token');
+      print('Auth Token: $authToken');
+
+      final response = await http.get(
+        Uri.parse('https://slfsparepart.com/api/pages'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(response.body);
+
+        return {
+          'name': data[0]['name'],
+          'content': data[0]['content'],
+        };
+      } else {
+        throw Exception('Failed to load terms and conditions');
+      }
+    } catch (error) {
+      print('Error: $error');
+      throw Exception('Failed to fetch terms and conditions');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,26 +65,34 @@ class TermsAndConditions extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              for (int i = 1; i <= 3; i++)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '$i- Lorem ipsum dolor sit amet,',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 16.0),
-                        child: Text(
-                          ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
-                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+              FutureBuilder<Map<String, String>>(
+                future: fetchTermsAndConditions(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final terms = snapshot.data!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${terms['name']}',
+                          style: const TextStyle(fontSize: 16),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                         Padding(
+                          padding: EdgeInsets.only(bottom: 16.0),
+                          child: Text(
+                            '${terms['content']}',
+                            style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

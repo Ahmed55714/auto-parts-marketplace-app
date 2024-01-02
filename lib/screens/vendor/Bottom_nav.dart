@@ -26,7 +26,7 @@ class _VendorMapState extends State<VendorMap> {
       case 1:
         return MyMap();
       case 2:
-        return MyAccount();
+        return MyAccountVindor();
       default:
         return MyOrders();
       // Default case

@@ -24,6 +24,7 @@ import 'screens/intro/verification.dart';
 import 'screens/vendor/Bottom_nav.dart';
 import 'screens/vendor/Registration_form.dart';
 import 'screens/vendor/Report.dart';
+import 'screens/vendor/chat/screens/mobile_layout_screen.dart';
 import 'screens/vendor/my_account.dart';
 import 'screens/vendor/offer_form.dart';
 import 'screens/vendor/orders_rate.dart';
@@ -32,7 +33,7 @@ import 'screens/vendor/profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await initialization(null);
+  await initialization(null); 
   HttpOverrides.global = MyHttpOverrides();
   Get.put(AuthController());
   Get.put(RegesterController());
@@ -86,6 +87,7 @@ class _MyAppState extends State<MyApp> {
       ),
       // home: const OnboardingScreen(),
       initialRoute: widget.initialRoute,
+      
       onGenerateRoute: (settings) {
         final routes = <String, WidgetBuilder>{
           '/': (context) => const OnboardingScreen(),
@@ -104,11 +106,15 @@ class _MyAppState extends State<MyApp> {
           ),
           '/ordersrate': (context) => const MyOrders_rate(),
           '/reprt': (context) => const Report(),
-          '/myaccount': (context) => const MyAccount(),
+      
           '/profile': (context) => const MyProfile(),
           '/CarForm': (context) => const CarForm(),
           '/Report': (context) => const ReportClient(),
           '/TrueOfferScreen': (context) => TrueOfferScreen(),
+         '/chat': (context) => const MobileLayoutScreen(),
+        
+     
+   
         };
         final builder = routes[settings.name];
         if (builder == null) {

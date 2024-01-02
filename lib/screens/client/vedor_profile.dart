@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../../constants/colors.dart';
 import '../vendor/Bottom_nav.dart';
+import '../vendor/chat/screens/mobile_chat_screen.dart';
 
 class VenforProfile extends StatefulWidget {
   final int userId;
@@ -45,14 +46,21 @@ class _VenforProfileState extends State<VenforProfile> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(response.body);
+
         return VendorProfile.fromJson(data);
+        
       } else {
         print(
             'Failed to load vendor profile. Status code: ${response.statusCode}');
+            print(response.body);
+
         throw Exception(
             'Failed to load vendor profile. Status code: ${response.statusCode}');
+            
       }
     } catch (e) {
+      
       print('Exception caught in fetchVendorProfile: $e');
       throw Exception('Failed to load vendor profile: $e');
     }
@@ -231,7 +239,10 @@ class _VenforProfileState extends State<VenforProfile> {
                   CustomButton(
                       text: 'contact',
                       onPressed: () {
-                        showChatBottomSheet(context);
+                             Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(builder: (context) => MobileChatScreen()),
+    );
+
                       }),
                 ],
               ),
@@ -599,7 +610,7 @@ class VendorProfile {
 
     return VendorProfile(
       id: json['id'] as int,
-      name: json['name'] as String,
+     name: json['name'] as String? ?? 'Default Name',
       summary: json['summary'] as String?,
       lat: json['lat'] != null ? double.parse(json['lat'].toString()) : 0.0,
       long: json['long'] != null ? double.parse(json['long'].toString()) : 0.0,

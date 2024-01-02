@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
+import '../client/map_client.dart';
 import 'Registration_form.dart';
+import 'profile.dart';
 
 class MyMap extends StatefulWidget {
   const MyMap({super.key});
@@ -23,12 +25,7 @@ class MyMap extends StatefulWidget {
 class _ClientMapState extends State<MyMap> {
   final RegesterController regesterController = Get.find<RegesterController>();
   late Future<String> _completeRegistrationStatus;
-
-  @override
-  void initState() {
-    super.initState();
-    _completeRegistrationStatus = fetchCompleteRegistrationStatus();
-  }
+  late Future<List<PersonLocation>> _locationsFuture;
 
   Future<String> fetchCompleteRegistrationStatus() async {
     var url = Uri.parse('https://slfsparepart.com/api/user');
@@ -56,6 +53,53 @@ class _ClientMapState extends State<MyMap> {
   }
 
   bool hasVisitedRegistrationScreen = false;
+  Future<List<PersonLocation>> fetchLocations() async {
+    final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/map");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+    if (authToken == null) {
+      print("Auth token is null");
+      return [];
+    }
+
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print(authToken);
+        print(response.body);
+        List<dynamic> data = jsonDecode(response.body);
+        return data.map<PersonLocation>((locationJson) {
+          return PersonLocation.fromJson(locationJson);
+        }).toList();
+      } else {
+        print('Failed to fetch locations');
+        return [];
+      }
+    } catch (e) {
+      print('Error occurred while fetching locations: $e');
+      return [];
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _completeRegistrationStatus = fetchCompleteRegistrationStatus();
+    _locationsFuture = fetchLocations();
+  }
+
+  void refreshState() {
+    setState(() {
+      _completeRegistrationStatus = fetchCompleteRegistrationStatus();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,39 +107,78 @@ class _ClientMapState extends State<MyMap> {
       body: SafeArea(
         child: FutureBuilder<String>(
           future: _completeRegistrationStatus,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasData && snapshot.data == "0") {
-              // If registration is not complete, show the "Complete Registration" button
-              return Positioned(
-                bottom: 20,
-                left: 20,
-                right: 20,
-                child: CustomButton(
-                  text: 'Complete Registration',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegistrationForm(),
-                      ),
-                    );
-                  },
-                ),
-              );
-            } else {
-              // If registration is complete, show the map and search bar
+          builder: (context, registrationSnapshot) {
+            if (registrationSnapshot.connectionState ==
+                ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (registrationSnapshot.hasError) {
+              return Center(
+                  child: Text('Error: ${registrationSnapshot.error}'));
+            } else if (registrationSnapshot.hasData &&
+                registrationSnapshot.data == "0") {
+              // If registration is not complete
               return Stack(
                 children: [
-                  CustomGoogleMap(), // Full-screen map
+                  FutureBuilder<List<PersonLocation>>(
+                    future: _locationsFuture,
+                    builder: (context, locationsSnapshot) {
+                      if (locationsSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (locationsSnapshot.hasError) {
+                        return Center(
+                            child: Text('Error: ${locationsSnapshot.error}'));
+                      } else if (locationsSnapshot.hasData &&
+                          locationsSnapshot.data!.isEmpty) {
+                        setState(() {
+                          fetchLocations();
+                        });
+                        return CustomGoogleMapp();
+                      } else {
+                        setState(() {
+                          fetchLocations();
+                        });
+                        return CustomGoogleMap(
+                            locations: locationsSnapshot.data!);
+                      }
+                    },
+                  ),
                   Positioned(
-                    top: 20,
+                    bottom: 20,
                     left: 20,
                     right: 20,
-                    child: CustomSearchBar(),
+                    child: CustomButton(
+                      text: 'Complete Registration',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegistrationForm(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
+              );
+            } else {
+              // If registration is complete, just show the map
+              return FutureBuilder<List<PersonLocation>>(
+                future: _locationsFuture,
+                builder: (context, locationsSnapshot) {
+                  if (locationsSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (locationsSnapshot.hasError) {
+                    return Center(
+                        child: Text('Error: ${locationsSnapshot.error}'));
+                  } else if (locationsSnapshot.hasData &&
+                      locationsSnapshot.data!.isEmpty) {
+                    return CustomGoogleMapp();
+                  } else {
+                    return CustomGoogleMap(locations: locationsSnapshot.data!);
+                  }
+                },
               );
             }
           },
@@ -105,80 +188,60 @@ class _ClientMapState extends State<MyMap> {
   }
 }
 
-
 class CustomGoogleMap extends StatefulWidget {
-  const CustomGoogleMap({super.key});
+  final List<PersonLocation> locations;
+
+  const CustomGoogleMap({Key? key, required this.locations}) : super(key: key);
 
   @override
-  _CustomGoogleMapState createState() => _CustomGoogleMapState();
+  State<CustomGoogleMap> createState() => _CustomGoogleMapState();
 }
 
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
   final Completer<GoogleMapController> _controller = Completer();
   final LatLng _initialPosition = const LatLng(37.33500926, -122.03272188);
-  Location _location = Location();
-  LocationData? _currentLocation;
+  Set<Marker> markers = {};
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    _setMarkers(widget.locations);
   }
 
-  _getCurrentLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+  void _setMarkers(List<PersonLocation> locations) {
+    final Set<Marker> _markers = {};
+    for (var location in locations) {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(location.id.toString()),
+          position: LatLng(location.latitude, location.longitude),
+          infoWindow: InfoWindow(title: location.name),
 
-    _serviceEnabled = await _location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await _location.requestService();
-      if (!_serviceEnabled) return;
+          // Optional: if you want to use custom images as marker icons
+          // icon: BitmapDescriptor.fromNetwork(location.imageUrl),
+        ),
+      );
     }
 
-    _permissionGranted = await _location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await _location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) return;
-    }
-
-    _location.onLocationChanged.listen((LocationData currentLocation) {
-      setState(() {
-        _currentLocation = currentLocation;
-      });
-
-      if (_controller.isCompleted) {
-        _controller.future.then((controller) {
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                bearing: 0,
-                target: LatLng(
-                    _currentLocation!.latitude!, _currentLocation!.longitude!),
-                zoom: 17.0,
-              ),
-            ),
-          );
-        });
-      }
+    setState(() {
+      markers = _markers;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_currentLocation == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     return GoogleMap(
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
       },
       initialCameraPosition: CameraPosition(
         target: _initialPosition,
-        zoom: 18.0,
+        zoom: 12.0,
       ),
+      markers: markers,
       myLocationEnabled: true,
-      myLocationButtonEnabled: false,
+      myLocationButtonEnabled: true,
+      zoomControlsEnabled: false,
     );
   }
 }

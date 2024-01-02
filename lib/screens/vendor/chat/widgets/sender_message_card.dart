@@ -5,10 +5,9 @@ class SenderMessageCard extends StatelessWidget {
   const SenderMessageCard({
     Key? key,
     required this.message,
-    required this.date,
+  
   }) : super(key: key);
   final String message;
-  final String date;
 
   @override
   Widget build(BuildContext context) {
@@ -39,17 +38,7 @@ class SenderMessageCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 2,
-                right: 10,
-                child: Text(
-                  date,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ),
+              
             ],
           ),
         ),
@@ -57,3 +46,4 @@ class SenderMessageCard extends StatelessWidget {
     );
   }
 }
+

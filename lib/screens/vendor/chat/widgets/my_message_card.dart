@@ -4,9 +4,9 @@ import 'package:work2/constants/colors.dart';
 
 class MyMessageCard extends StatelessWidget {
   final String message;
-  final String date;
 
-  const MyMessageCard({Key? key, required this.message, required this.date}) : super(key: key);
+
+  const MyMessageCard({Key? key, required this.message,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +18,18 @@ class MyMessageCard extends StatelessWidget {
         ),
         child: Card(
           elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: deepPurple,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            bottomLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+          )),
+          color: Colors.purple,
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 10,
+                  left: 14,
                   right: 30,
                   top: 5,
                   bottom: 20,
@@ -34,6 +38,7 @@ class MyMessageCard extends StatelessWidget {
                   message,
                   style: const TextStyle(
                     fontSize: 16,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -42,13 +47,7 @@ class MyMessageCard extends StatelessWidget {
                 right: 10,
                 child: Row(
                   children: [
-                    Text(
-                      date,
-                      style:const TextStyle(
-                        fontSize: 13,
-                        color: Colors.white60,
-                      ),
-                    ),
+                    
                     const SizedBox(
                       width: 5,
                     ),

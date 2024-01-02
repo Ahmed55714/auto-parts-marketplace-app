@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+
+import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateProfileController extends GetxController {
@@ -12,6 +16,7 @@ class UpdateProfileController extends GetxController {
     required String name,
     required String email,
     required String phone,
+    File? image,
   }) async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/user/update");
@@ -20,22 +25,31 @@ class UpdateProfileController extends GetxController {
     print('Auth Token: $authToken');
     isLoading(true);
     try {
-      final response = await http.post(
-        apiEndpoint,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-        body: {
-          'name': name,
-          'email': email,
-          'phone': phone,
-        },
+      final request = http.MultipartRequest('POST', apiEndpoint)
+        ..headers['Accept'] = 'application/json'
+        ..headers['Authorization'] = 'Bearer $authToken'
+        ..fields['name'] = name
+        ..fields['email'] = email
+        ..fields['phone'] = phone;
+
+       if (image != null) {
+      final mimeTypeData = lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
+      var multipartFile = await http.MultipartFile.fromPath(
+        'image',
+        image.path,
+        contentType: MediaType(mimeTypeData![0], mimeTypeData[1]),
       );
+      request.files.add(multipartFile);
+    }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
-        print(response.body);
-        print('Response body: ${response.request}');
+        var jsonResponse = json.decode(response.body);
+        print('Response body: ${response.body}');
+        print(jsonResponse);
       } else {
         // Handle error
         print('Failed to register client');
@@ -44,6 +58,7 @@ class UpdateProfileController extends GetxController {
     } catch (e) {
       // Handle any exceptions here
       print('Error occurred while registering client: $e');
+      print(e);
     } finally {
       isLoading(false);
     }

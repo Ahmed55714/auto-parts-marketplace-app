@@ -13,6 +13,7 @@ import '../../constants/colors.dart';
 import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
+import '../vendor/chat/screens/mobile_layout_screen.dart';
 import 'bottom_cheet.dart';
 import 'offer_client.dart';
 import 'order_repo.dart';
@@ -163,6 +164,27 @@ void initState() {
                     ),
                   ),
                 ),
+                                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MobileLayoutScreen()));
+                              },
+                              icon: const Icon(
+                                Icons.notifications,
+                                color: deepPurple,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
