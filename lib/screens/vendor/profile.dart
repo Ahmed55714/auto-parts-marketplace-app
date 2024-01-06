@@ -53,12 +53,11 @@ class _MyProfileState extends State<MyProfile> {
         });
       } else {
         // Handle error
-        print('Failed to fetch addresses');
-        print(response.body);
+       
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while fetching addresses: $e');
+  
     }
   }
 
@@ -81,12 +80,10 @@ class _MyProfileState extends State<MyProfile> {
         fetchAddresses();
       } else {
         // Handle error
-        print('Failed to delete address');
-        print(response.body);
+       
       }
     } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while deleting address: $e');
+     
     }
   }
 
@@ -113,12 +110,10 @@ class _MyProfileState extends State<MyProfile> {
         });
       } else {
         // Handle error
-        print('Failed to fetch user data');
-        print(response.body);
+    
       }
     } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while fetching user data: $e');
+ 
     }
   }
 
@@ -162,25 +157,28 @@ class _MyProfileState extends State<MyProfile> {
 
   File? _image;
 
-Future getImage() async {
-  print("Opening gallery");
-  final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  Future getImage() async {
+   
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    print("Picked File Path: ${pickedFile.path}");
-    setState(() {
-      _image = File(pickedFile.path);
-    });
-  } else {
-    print("No image selected");
+    if (pickedFile != null) {
+      
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    } else {
+    
+    }
   }
-}
-
 
   void selectContainer(int index) {
     setState(() {
       selectedContainerIndex = (selectedContainerIndex == index) ? -1 : index;
     });
+  }
+
+  void refreshAddresses() {
+    fetchAddresses();
   }
 
   @override
@@ -226,11 +224,15 @@ Future getImage() async {
                             shape: BoxShape.circle,
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: _image != null 
-                       ? FileImage(_image!) // Display the selected image
-                       : (_imageURL != null 
-                          ? NetworkImage(_imageURL!) // Display the network image if URL is available
-                          : AssetImage('YOUR_DEFAULT_IMAGE_PATH')) as ImageProvider, // Fallback to a default image
+                              image: _image != null
+                                  ? FileImage(
+                                      _image!) // Display the selected image
+                                  : (_imageURL != null
+                                          ? NetworkImage(
+                                              _imageURL!) // Display the network image if URL is available
+                                          : AssetImage(
+                                              'YOUR_DEFAULT_IMAGE_PATH'))
+                                      as ImageProvider, // Fallback to a default image
                             ),
                           ),
                         ),
@@ -313,7 +315,7 @@ Future getImage() async {
                             if (address.id != null) {
                               deleteAddress(address.id);
                             } else {
-                              print("Address ID is null.");
+                            
                             }
                           },
                         );
@@ -427,7 +429,8 @@ Future getImage() async {
                                 );
 
                                 Navigator.pop(context);
-                                Navigator.pop(context);
+                                refreshAddresses();
+                                fetchAddresses();
                               }
                             }),
                       ],
@@ -538,7 +541,6 @@ Future getImage() async {
         CustomButton(
           text: 'Save',
           onPressed: () async {
-             
             if (_formKey.currentState!.validate()) {
               await updateController.updateProfile(
                 name: nameController.text,
@@ -550,7 +552,8 @@ Future getImage() async {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => updateTrueScreen(name: nameController.text),
+                builder: (context) =>
+                    updateTrueScreen(name: nameController.text),
                 // const CarForm(),
               ),
             );

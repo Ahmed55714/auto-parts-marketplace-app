@@ -58,16 +58,16 @@ class _OfferClientState extends State<OfferClient> {
               jsonList.map((json) => Offer.fromJson(json)).toList();
           if (fetchedOffers.isNotEmpty) {
             offers[orderId] = fetchedOffers;
-            print(response.body);
+          
           }
         } else {
-          print('Offers key not found or is not a list');
+         
         }
       } else {
-        print('Failed to fetch Offers for order $orderId: ${response.body}');
+       
       }
     } catch (e) {
-      print('Error occurred while fetching Offers for order $orderId: $e');
+     
     }
   }
 
@@ -88,7 +88,7 @@ class _OfferClientState extends State<OfferClient> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        print(responseData);
+       
         if (responseData['status'] == true) {
           // Offer has been declined successfully
           ScaffoldMessenger.of(context).showSnackBar(
@@ -107,14 +107,14 @@ class _OfferClientState extends State<OfferClient> {
         }
       } else {
         // Handle error
-        print('Failed to decline offer. Status code: ${response.statusCode}');
+       
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to decline offer')),
         );
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while declining offer: $e');
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error occurred while declining offer')),
       );

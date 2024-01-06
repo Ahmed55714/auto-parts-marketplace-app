@@ -8,7 +8,12 @@ import '../client/account_client.dart';
 import '../client/map_client.dart';
 import '../client/orders_clint.dart';
 
-class TrueScreen extends StatelessWidget {
+class TrueScreen extends StatefulWidget {
+  @override
+  State<TrueScreen> createState() => _TrueScreenState();
+}
+
+class _TrueScreenState extends State<TrueScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,10 +61,12 @@ class TrueScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const VendorMap(),
+                        builder: (context) => MyOrders(),
+
                         // const CarForm(),
                       ),
                     );
+                   
                   }),
             ],
           ),
@@ -131,7 +138,7 @@ class TrueresgesterScreen extends StatelessWidget {
 }
 
 class updateTrueScreen extends StatelessWidget {
-    final String name;
+  final String name;
 
   const updateTrueScreen({super.key, required this.name});
 
@@ -174,7 +181,9 @@ class updateTrueScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>  AccountClient( name: name,),
+                        builder: (context) => AccountClient(
+                          name: name,
+                        ),
                         // const CarForm(),
                       ),
                     );
@@ -250,6 +259,68 @@ class TrueOrderClinetScreen extends StatelessWidget {
 }
 
 
+class TrueOrderClinetScreen2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SvgPicture.asset(
+                'assets/images/true.svg',
+                height: 100,
+                width: 100,
+              ),
+              const SizedBox(
+                  height: 24.0), // Provides space between the icon and the text
+              const Text(
+                'We got your Order!',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8.0), // Provides space between the texts
+              Container(
+                width: 300,
+                child: const Text(
+                  'Check your orders to see the status of your order from home page.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
+                ),
+              ),
+              const SizedBox(height: 32.0),
+              CustomButton2(
+                text: 'Edit',
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 12.0),
+              CustomButton(
+                text: 'Homepage',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ClientMap(),
+                      // const CarForm(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class TrueOfferScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -285,9 +356,7 @@ class TrueOfferScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32.0),
-              
-              
-             
+
               CustomButton(
                 text: 'Orders',
                 onPressed: () {
@@ -307,6 +376,7 @@ class TrueOfferScreen extends StatelessWidget {
     );
   }
 }
+
 class TrueComplinPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -403,8 +473,7 @@ class TruePayment extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32.0),
-              
-            
+
               CustomButton(
                   text: 'My Orders',
                   onPressed: () {
@@ -459,9 +528,7 @@ class TrueReturnScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32.0),
-              
-              
-             
+
               CustomButton(
                 text: 'Orders',
                 onPressed: () {

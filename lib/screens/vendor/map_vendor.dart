@@ -113,7 +113,7 @@ class _ClientMapState extends State<MyMap> {
               return const Center(child: CircularProgressIndicator());
             } else if (registrationSnapshot.hasError) {
               return Center(
-                  child: Text('Error: ${registrationSnapshot.error}'));
+                  child: Text('please check you internet'));
             } else if (registrationSnapshot.hasData &&
                 registrationSnapshot.data == "0") {
               // If registration is not complete
@@ -127,7 +127,7 @@ class _ClientMapState extends State<MyMap> {
                         return Center(child: CircularProgressIndicator());
                       } else if (locationsSnapshot.hasError) {
                         return Center(
-                            child: Text('Error: ${locationsSnapshot.error}'));
+                            child: Text('please check you internet'));
                       } else if (locationsSnapshot.hasData &&
                           locationsSnapshot.data!.isEmpty) {
                         
@@ -143,22 +143,7 @@ class _ClientMapState extends State<MyMap> {
                       }
                     },
                   ),
-                  Positioned(
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
-                    child: CustomButton(
-                      text: 'Complete Registration',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RegistrationForm(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                
                 ],
               );
             } else {

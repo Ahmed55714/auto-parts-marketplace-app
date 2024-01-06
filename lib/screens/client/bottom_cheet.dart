@@ -37,16 +37,14 @@ Future<void> rateOrder(int orderId, int stars, String comment) async {
     );
     
     if (response.statusCode == 200) {
-      print('Rating submitted successfully.');
-print('Response body: ${response.body}');
+
     } else {
       // Handle the error.
-      print('Failed to submit rating: ${response.statusCode}');
-      print('Response body: ${response.body}');
+  
     }
   } catch (e) {
     // Handle any exceptions here
-    print('Error occurred while submitting rating: $e');
+ 
   }
 }
 @override

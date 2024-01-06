@@ -56,17 +56,16 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
       if (response.statusCode == 200) {
         // Handle success
         var data = jsonDecode(response.body);
-        print('Message sent: $data');
-        print(response.body);
+   
         await fetchMessages(widget.userId);
       } else {
         // Handle error
-        print('Failed to send message: ${response.statusCode}');
-        print('Error body: ${response.body}');
+        
+       
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while sending message: $e');
+      
     } finally {
       // Stop loading indication
       // isLoading(false);
@@ -87,7 +86,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
         'Authorization': 'Bearer $authToken',
       },
     );
-    print('API Response for user $userId: ${response.body}');
+   
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -95,7 +94,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
           .map((message) => Message.fromJson(message))
           .toList();
       messages.assignAll(fetchedMessages);
-      print(response.body);
+      
     } else {
       throw Exception('Failed to load messages: ${response.body}');
     }

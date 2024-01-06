@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,7 +6,6 @@ import 'package:work2/constants/colors.dart';
 import 'package:work2/widgets/custom_button.dart';
 
 import '../../getx/auth.dart';
-import 'verification.dart';
 
 class SignIn extends StatefulWidget {
   SignIn({super.key});
@@ -17,6 +15,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  String buttonText = 'Next';
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -24,22 +23,24 @@ class _SignInState extends State<SignIn> {
   String? phoneNumberError;
   String? verificationId;
 
-    final AuthController authController = Get.put(AuthController());
-
+  final AuthController authController = Get.put(AuthController());
 
   void validatePhoneNumber(String value) async {
     String? value = phoneController.text;
     if (value.isEmpty) {
       setState(() {
         phoneNumberError = 'Please enter your phone number';
+         buttonText = 'Next'; // Reset button text
       });
     } else if (value.length < 9) {
       setState(() {
         phoneNumberError = 'Please enter a valid phone number';
+        buttonText = 'Next'; // Reset button text
       });
     } else if (countryCode == null) {
       setState(() {
         phoneNumberError = 'Please select your country code';
+        buttonText = 'Next'; // Reset button text
       });
     } else {
       setState(() {
@@ -47,31 +48,6 @@ class _SignInState extends State<SignIn> {
       });
       final fullNumber = '${countryCode?.dialCode ?? ''}$value';
       authController.verifyPhoneNumber(fullNumber);
-      // await FirebaseAuth.instance.verifyPhoneNumber(
-      //   phoneNumber: fullNumber,
-      //   verificationCompleted: (PhoneAuthCredential credential) async {
-      //     // Auto-retrieval or instant verification
-      //   },
-      //   verificationFailed: (FirebaseAuthException e) {
-      //     // Handle error
-      //   },
-      //   codeSent: (String verificationId, int? resendToken) {
-      //     // Save the verification ID and navigate to the verification screen
-      //     verificationId = verificationId;
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) => VerificationScreen(
-      //           verificationId: verificationId,
-      //           value: fullNumber,
-      //         ),
-      //       ),
-      //     );
-      //   },
-      //   codeAutoRetrievalTimeout: (String verificationId) {
-      //     // Auto retrieval timeout
-      //   },
-      // );
     }
   }
 
@@ -129,71 +105,95 @@ class _SignInState extends State<SignIn> {
                         // First TextField (above the line)
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Country / Region',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[700],
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () async {
-                                  final code = await countryPicker.showPicker(
-                                      context: context);
+                          child: GestureDetector(
+                            onTap: () async {
+                              final code = await countryPicker.showPicker(
+                                  context: context);
 
-                                  setState(() {
-                                    countryCode = code;
-                                  });
-                                },
-                                child: Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: SvgPicture.asset(
-                                      "assets/images/Vector2.svg",
-                                      width: 15,
-                                      height: 15,
+                              setState(() {
+                                countryCode = code;
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Country / Region',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey[700],
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                          child: Row(
-                            children: [
-                              countryCode != null
-                                  ? CountryCodeFlagWidget(
-                                      width: 35,
-                                      alignment: Alignment.center,
-                                      countryCode: countryCode!)
-                                  : const Text(
-                                      'KSA',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
+                                GestureDetector(
+                                  onTap: () async {
+                                    final code = await countryPicker.showPicker(
+                                        context: context);
+
+                                    setState(() {
+                                      countryCode = code;
+                                    });
+                                  },
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: SvgPicture.asset(
+                                        "assets/images/Vector2.svg",
+                                        width: 15,
+                                        height: 15,
                                       ),
                                     ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                countryCode?.dialCode ?? '+966',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Roboto',
-                                  color: Colors.black,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final code = await countryPicker.showPicker(
+                                context: context);
+
+                            setState(() {
+                              countryCode = code;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8, top: 8, bottom: 8),
+                            child: Row(
+                              children: [
+                                countryCode != null
+                                    ? CountryCodeFlagWidget(
+                                        width: 35,
+                                        alignment: Alignment.center,
+                                        countryCode: countryCode!)
+                                    : const Text(
+                                        'KSA',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    countryCode?.dialCode ?? '+966',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Roboto',
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
 
@@ -253,14 +253,15 @@ class _SignInState extends State<SignIn> {
                   ),
                   const SizedBox(height: 34),
                   CustomButton(
-                      text: 'Next',
+                      text: buttonText,
                       onPressed: () {
                         final value = phoneController.text;
                         if (formKey.currentState!.validate() &&
                             phoneNumberError == null) {
                           validatePhoneNumber(value);
-                        //authController.verifyPhoneNumber(phoneController.text);
-                          //Navigator.pushNamed(context, '/Verification');
+                          setState(() {
+                            buttonText = 'Please Wait...';
+                          });
                         }
                       }),
                 ],

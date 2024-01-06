@@ -8,7 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:work2/screens/client/car_form.dart';
 import '../../constants/colors.dart';
 import '../../getx/orders.dart';
 import '../../getx/regestration.dart';
@@ -29,8 +28,9 @@ class OrdersClient extends StatefulWidget {
 class _OrdersClientState extends State<OrdersClient> {
   var orders = <Order>[].obs;
   final RegesterController regesterController = Get.find<RegesterController>();
-
   int selectedContainerIndex = -1;
+    final StreamController<List<Order>> _ordersStreamController = StreamController();
+
 
   Future<List<Order>> fetchOrders() async {
     final Uri apiEndpoint =
@@ -55,12 +55,12 @@ class _OrdersClientState extends State<OrdersClient> {
         }).toList();
       } else {
         // Handle error
-        print('Failed to fetch orders: ${response.body}');
+      
         throw Exception('Failed to load orders');
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while fetching orders: $e');
+   
       throw Exception('Error fetching orders');
     }
   }
@@ -87,7 +87,7 @@ class _OrdersClientState extends State<OrdersClient> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        print(responseData);
+    
         if (responseData['status'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -98,14 +98,14 @@ class _OrdersClientState extends State<OrdersClient> {
         }
       } else {
         // Handle error
-        print('Failed to cancel order. Status code: ${response.statusCode}');
+       
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to cancel order')),
         );
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while cancelling order: $e');
+     
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error occurred while cancelling order')),
       );
@@ -134,6 +134,8 @@ class _OrdersClientState extends State<OrdersClient> {
     }
   }
 
+  
+
   @override
   void initState() {
     super.initState();
@@ -157,13 +159,18 @@ class _OrdersClientState extends State<OrdersClient> {
         }
       }
     });
-    Timer.periodic(Duration(minutes: 5), (Timer timer) => fetchOrders());
+
   }
 
   final OrdersController orderController = Get.put(OrdersController());
 
   List<int> getOrderIds() {
     return orders.map((order) => order.id).toList();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -253,7 +260,7 @@ class _OrdersClientState extends State<OrdersClient> {
                       text: "New Request",
                       onPressed: () {
                         //List<int> orderIds = getOrderIds();
-                        regesterController.navigateBasedClint(context);
+                        regesterController.navigateBasedClint2(context);
                       },
                       svgIconPath:
                           'assets/images/+.svg', // Replace with the actual path to your SVG file
@@ -390,11 +397,12 @@ class _OrdersClientState extends State<OrdersClient> {
                     orderId: order.id,
                     onConfirmCancel: (cancelReason, orderId) async {
                       await cancelOrder(cancelReason, orderId);
-                      fetchOrders();
+                     
                     },
                   );
                 },
               );
+              fetchOrders();
             },
           ),
         SizedBox(height: 10),

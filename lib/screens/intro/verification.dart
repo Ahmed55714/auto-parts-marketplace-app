@@ -53,13 +53,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
         verificationCompleted: (PhoneAuthCredential credential) {},
         verificationFailed: (FirebaseAuthException e) {
           // Handle verification failure
-          print('Failed to send OTP: ${e.message}');
+         
         },
         codeSent: (String verificationId, int? resendToken) {},
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
     } catch (e) {
-      print('Error sending OTP: $e');
+    
     }
   }
 

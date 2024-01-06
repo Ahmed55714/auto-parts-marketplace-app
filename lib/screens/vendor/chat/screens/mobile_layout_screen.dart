@@ -56,7 +56,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
   );
 
   if (response.statusCode == 200) {
-    print(response.body);
+  
     List<dynamic> contactsJson = jsonDecode(response.body);
     return contactsJson.map((json) => Contact.fromJson(json)).toList();
   } else {

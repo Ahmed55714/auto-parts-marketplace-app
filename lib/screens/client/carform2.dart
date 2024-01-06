@@ -1,26 +1,27 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:work2/constants/colors.dart';
+import '../../getx/orders.dart';
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
+import '../vendor/Bottom_nav.dart';
 import 'Bottom_nav.dart';
 
-class RegistrationForm extends StatefulWidget {
-  const RegistrationForm({Key? key}) : super(key: key);
+class CarForm2 extends StatefulWidget {
+  const CarForm2({Key? key}) : super(key: key);
 
   @override
-  _RegistrationFormState createState() => _RegistrationFormState();
+  _CarForm2State createState() => _CarForm2State();
 }
 
-class _RegistrationFormState extends State<RegistrationForm> {
+class _CarForm2State extends State<CarForm2> {
   bool isAgreed = false;
   bool _isLoading = false;
 
@@ -29,33 +30,28 @@ class _RegistrationFormState extends State<RegistrationForm> {
   List<List<XFile?>> _images = [[], [], []];
 
   // Text editing controllers
-  final nameController = TextEditingController();
-  //final phoneNumberController = TextEditingController();
-  final emailController = TextEditingController();
+  final pieceCarController = TextEditingController();
   final carTypeController = TextEditingController();
+  final carModelController = TextEditingController();
+  final chassisNumberController = TextEditingController();
   final locationController = TextEditingController();
-  final cartypeController = TextEditingController();
+  final piecetypeController = TextEditingController();
+  final piecedetailsController = TextEditingController();
+  final dateController = TextEditingController();
   final locationdoneController = TextEditingController();
-
-  List<String> carTypes = []; // List to store car types
-  final RegesterController regesterController = Get.find<RegesterController>();
-  void _addCarType() {
-    if (cartypeController.text.isNotEmpty) {
-      setState(() {
-        carTypes.add(cartypeController.text);
-        cartypeController.clear();
-      });
-    }
-  }
 
   @override
   void dispose() {
-    nameController.dispose();
-    // phoneNumberController.dispose();
-    emailController.dispose();
+    pieceCarController.dispose();
     carTypeController.dispose();
+    carModelController.dispose();
+    chassisNumberController.dispose();
     locationController.dispose();
-    cartypeController.dispose();
+    piecetypeController.dispose();
+    piecedetailsController.dispose();
+    dateController.dispose();
+    locationdoneController.dispose();
+
     super.dispose();
   }
 
@@ -70,21 +66,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   String? validateField1() {
     if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
-      return 'Please upload an image for Tax Certificate';
-    }
-    return null;
-  }
-
-  String? validateField2() {
-    if (_images[1].isEmpty || _images[1].any((xFile) => xFile == null)) {
-      return 'Please upload an image for Commercial Register';
-    }
-    return null;
-  }
-
-  String? validateField3() {
-    if (_images[2].isEmpty || _images[2].any((xFile) => xFile == null)) {
-      return 'Please upload an image for Municipality Certificate';
+      return 'Please upload an image for license';
     }
     return null;
   }
@@ -93,12 +75,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
     setState(() {
       _images[fieldIndex].remove(image);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    regesterController.fetchCarTypes();
   }
 
   @override
@@ -122,7 +98,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     ),
                   ),
                   const Text(
-                    'Registration Form',
+                    'Car Form',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -130,24 +106,29 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  buildTextField('Name', nameController, TextInputType.text,
-                      'Enter your name'),
-                  // buildTextField('Phone Number', phoneNumberController,
-                  //     TextInputType.number, 'Enter your phone number'),
-                  buildTextField('Email', emailController,
-                      TextInputType.emailAddress, 'Enter your email'),
-                  buildCarTypeField1(),
+                  buildTextField('needed car piece', pieceCarController,
+                      TextInputType.text, 'Enter your car piece'),
+                  buildTextField('Car model', carModelController,
+                      TextInputType.number, 'Enter your car piece'),
+                  buildCarTypeField1('Car type', 'Enter your car type'),
+                  buildTextField('Chassis number', chassisNumberController,
+                      TextInputType.emailAddress, 'Enter your Chassis number'),
+                  buildPieceTypeField1(
+                    'Piece type',
+                    'Enter your Piece type',
+                  ),
                   const SizedBox(height: 10),
-
-                  buildTextFieldLocation(
-                      'Location',
-                      locationdoneController,
-                      locationController,
-                      TextInputType.text,
-                      'Enter your location',
-                      context),
-                  buildImagePicker('Tax Certificate', 0),
-
+                  buildPieceDetails(
+                    'Piece Details',
+                    'Enter your Piece Details',
+                  ),
+                  SizedBox(height: 10),
+                  buildDateFieldDate(
+                    'Date',
+                    dateController,
+                    initialText: '2021-01-01',
+                  ),
+                  buildImagePicker('Car License', 0),
                   if (validateField1() != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
@@ -159,40 +140,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       ),
                     ),
                   SizedBox(height: 10),
-                  buildImagePicker('Commercial Register', 1),
-
-                  if (validateField2() != null)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Row(
-                        children: [
-                          Text(validateField2()!,
-                              style: TextStyle(color: Colors.red)),
-                        ],
-                      ),
-                    ),
-                  SizedBox(height: 10),
-                  buildImagePicker('Municipality Certificate', 2),
-
-                  if (validateField3() != null)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Row(
-                        children: [
-                          Text(validateField3()!,
-                              style: TextStyle(color: Colors.red)),
-                        ],
-                      ),
-                    ),
-                  SizedBox(height: 10),
                   Row(
                     children: [
                       buildImagesDisplay(0),
                       buildImagesDisplay(1),
-                      buildImagesDisplay(2),
                     ],
                   ),
-
+                  buildTextFieldLocation(
+                      'Location',
+                      locationdoneController,
+                      locationController,
+                      TextInputType.text,
+                      'Enter your location',
+                      context),
                   buildAgreementSwitch(),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
@@ -232,67 +192,159 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  Widget buildCarTypeField1() {
+  @override
+  void initState() {
+    super.initState();
+    final RegesterController regesterController =
+        Get.find<RegesterController>();
+    final OrdersController ordersController = Get.find<OrdersController>();
+
+    // Fetch data once
+    regesterController.fetchCarTypes().then((_) {
+      if (regesterController.carTypes.isNotEmpty) {
+        carTypeController.text =
+            regesterController.carTypes.first['id'].toString();
+      }
+    });
+
+    ordersController.fetchPieceTypes().then((_) {
+      if (ordersController.PieceTypes.isNotEmpty) {
+        piecetypeController.text =
+            ordersController.PieceTypes.first['id'].toString();
+      }
+    });
+
+    ordersController.fetchPieceDeltals().then((_) {
+      if (ordersController.PieceDeltals.isNotEmpty) {
+        piecedetailsController.text =
+            ordersController.PieceDeltals.first['id'].toString();
+      }
+    });
+  }
+
+  Widget buildCarTypeField1(String text, String hint) {
     final RegesterController regesterController =
         Get.find<RegesterController>();
 
-    // This line will trigger the API call when the widget is being built
-    regesterController.fetchCarTypes();
+    return buildDropdownField(text, hint, carTypeController,
+        regesterController.isLoading, regesterController.carTypes);
+  }
 
+  Widget buildPieceTypeField1(String text, String hint) {
+    final OrdersController ordersController = Get.find<OrdersController>();
+
+    return buildDropdownField(text, hint, piecetypeController,
+        ordersController.isLoading, ordersController.PieceTypes);
+  }
+
+  Widget buildPieceDetails(String text, String hint) {
+    final OrdersController detailsController = Get.find<OrdersController>();
+
+    return buildDropdownField(text, hint, piecedetailsController,
+        detailsController.isLoading, detailsController.PieceDeltals);
+  }
+
+  Widget buildDropdownField(String text, String hint,
+      TextEditingController controller, RxBool isLoading, List<dynamic> items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomText(
-          text: 'Car type',
+          text: text,
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
         const SizedBox(height: 8),
         Obx(() {
-          if (regesterController.isLoading.isTrue) {
+          if (isLoading.isTrue) {
             return CircularProgressIndicator();
           } else {
             return Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: MultiSelectDialogField(
-                items: regesterController.carTypes
-                    .map((car) =>
-                        MultiSelectItem(car['id'].toString(), car['name']))
-                    .toList(),
-                title: Text("Car Types"),
-                selectedColor: deepPurple,
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
-                  color: deepPurple.withOpacity(0.1),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  border: Border.all(
-                    color: deepPurple,
-                    width: 2,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: hint,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                    ),
+                    value: controller.text,
+                    onChanged: (String? newValue) {
+                      controller.text = newValue ?? '';
+                    },
+                    items: items.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item['id'].toString(),
+                        child: Text(item['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter $text';
+                      }
+                      return null;
+                    },
                   ),
                 ),
-                buttonIcon: Icon(
-                  Icons.car_rental,
-                  color: deepPurple,
-                ),
-                buttonText: Text(
-                  "Select Car Types",
-                  style: TextStyle(
-                    color: deepPurple,
-                    fontSize: 16,
-                  ),
-                ),
-                onConfirm: (List selectedValues) {
-                  carTypes = selectedValues as List<String>;
-                },
-                validator: (values) {
-                  if (values == null || values.isEmpty) {
-                    return "Please select one or more car types";
-                  }
-                  return null;
-                },
               ),
             );
           }
         }),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget buildDateFieldDate(String label, TextEditingController controller,
+      {String? initialText}) {
+    // Function to handle date picking
+    Future<void> _selectDate(BuildContext context) async {
+      DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: initialText != null
+            ? DateFormat('yyyy-MM-dd').parse(initialText)
+            : DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2101),
+      );
+      if (picked != null && picked != initialText) {
+        controller.text = DateFormat('yyyy-MM-dd').format(picked);
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          text: label,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: () => _selectDate(context),
+          child: AbsorbPointer(
+            // Prevents keyboard from showing
+            child: CustomTextField(
+              labelText:
+                  controller.text.isEmpty ? 'YYYY-MM-DD' : controller.text,
+              controller: controller,
+              keyboardType: TextInputType.datetime,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter $label';
+                }
+                return null;
+              },
+            ),
+          ),
+        ),
         const SizedBox(height: 8),
       ],
     );
@@ -334,6 +386,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
       // When permissions are granted, get the current location
       Position position = await Geolocator.getCurrentPosition();
+        if (!mounted) return; 
       setState(() {
         // Update the locationController with latitude and longitude
         locationController.text = '${position.latitude}, ${position.longitude}';
@@ -487,7 +540,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         Column(
           children: [
             CustomText(
-              text: 'Agree to terms and conditions',
+              text: 'Price offer for governmental entity ',
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -498,8 +551,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
   Widget buildSubmitButton(BuildContext context) {
-    final RegesterController regesterController =
-        Get.find<RegesterController>();
+    final OrdersController ordersController = Get.find<OrdersController>();
+
     return Column(
       children: [
         const SizedBox(height: 10),
@@ -508,17 +561,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
             left: 16.0,
             right: 16,
           ),
-          child: Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
+          child: Text(''),
         ),
         const SizedBox(height: 27),
         CustomButton(
-          text: 'Register',
+          text: 'Order',
           onPressed: () async {
-            if (_formKey.currentState!.validate() &&
-                validateField1() == null &&
-                validateField2() == null &&
-                validateField3() == null) {
+            if (_formKey.currentState!.validate() && validateField1() == null) {
               setState(() {
                 _isLoading = true; // Start loading
               });
@@ -529,28 +578,38 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
                 return;
               }
-              List<XFile> flattenedImages = _images
-                  .expand((xFiles) => xFiles)
-                  .where((xFile) => xFile != null)
-                  .cast<XFile>()
-                  .toList();
 
               try {
-                await regesterController.postVendorRegistration(
-                  name: nameController.text,
-                  email: emailController.text,
-                  carTypeIds: carTypes,
+                await ordersController.carFormClient(
+                  carPiece: pieceCarController.text,
+                  carTypeIds: [
+                    carTypeController.text
+                  ], // Assuming single selection
+                  carModelIds: carModelController.text,
+                  chassisNumber: chassisNumberController.text,
+                  pieceType: [
+                    piecetypeController.text
+                  ], // Assuming single selection
+                  pieceDetail: [
+                    piecedetailsController.text
+                  ], // Assuming single selection
+                  images: _images
+                      .expand((xFiles) => xFiles)
+                      .whereType<XFile>()
+                      .toList(),
+                  birthDate: dateController.text,
                   latitude: latLong[0].trim(),
                   longitude: latLong[1].trim(),
-                  images: flattenedImages,
+                  for_government: isAgreed ? "1" : "0",
                 );
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TrueScreen(),
+                    builder: (context) => TrueOrderClinetScreen2(),
                   ),
                 );
+                
               } catch (e) {
                 // Handle error
               } finally {

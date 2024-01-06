@@ -46,14 +46,13 @@ class _VenforProfileState extends State<VenforProfile> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print(response.body);
+     
+    
 
         return VendorProfile.fromJson(data);
         
       } else {
-        print(
-            'Failed to load vendor profile. Status code: ${response.statusCode}');
-            print(response.body);
+    
 
         throw Exception(
             'Failed to load vendor profile. Status code: ${response.statusCode}');
@@ -61,7 +60,6 @@ class _VenforProfileState extends State<VenforProfile> {
       }
     } catch (e) {
       
-      print('Exception caught in fetchVendorProfile: $e');
       throw Exception('Failed to load vendor profile: $e');
     }
   }

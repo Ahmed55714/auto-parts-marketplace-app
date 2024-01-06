@@ -55,12 +55,10 @@ class _MyProfileState extends State<ProfileClient> {
         });
       } else {
         // Handle error
-        print('Failed to fetch addresses');
-        print(response.body);
+    
       }
     } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while fetching addresses: $e');
+    
     }
   }
 
@@ -100,12 +98,10 @@ class _MyProfileState extends State<ProfileClient> {
         fetchAddresses();
       } else {
         // Handle error
-        print('Failed to delete address');
-        print(response.body);
+     
       }
     } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while deleting address: $e');
+    
     }
   }
 
@@ -128,16 +124,14 @@ class _MyProfileState extends State<ProfileClient> {
         final userData = jsonDecode(response.body);
         final imageUrl = userData['image_url'];
         setState(() {
-          _imageURL = imageUrl; // Store the image URL in a variable.
+          _imageURL = imageUrl; 
         });
       } else {
         // Handle error
-        print('Failed to fetch user data');
-        print(response.body);
+       
       }
     } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while fetching user data: $e');
+     
     }
   }
 
@@ -343,7 +337,7 @@ class _MyProfileState extends State<ProfileClient> {
                                   if (address.id != null) {
                                     deleteAddress(address.id);
                                   } else {
-                                    print("Address ID is null.");
+                                
                                   }
                                 },
                               );

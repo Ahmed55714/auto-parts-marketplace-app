@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/client/car_form.dart';
+import '../screens/client/carform2.dart';
 import '../screens/client/registration_form_client.dart';
 import '../screens/vendor/Registration_form.dart';
 
@@ -67,34 +68,38 @@ class RegesterController extends GetxController {
   //var selectedCarTypes = <String>[].obs;
 //client
   var carTypes = <Map<String, dynamic>>[].obs;
+  
 
   Future<void> fetchCarTypes() async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/lists/cars");
     final prefs = await SharedPreferences.getInstance();
     final String? authToken = prefs.getString('auth_token');
-    isLoading(true);
-    try {
-      final response = await http.get(
-        apiEndpoint,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-      );
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        carTypes.value = List<Map<String, dynamic>>.from(data);
-      } else {
-        // Handle error
-        print('Failed to fetch car types');
-        print(response.body);
-      }
-    } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while fetching car types: $e');
-    } finally {
-      isLoading(false);
+   
+      isLoading(true);
+      try {
+        final response = await http.get(
+          apiEndpoint,
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $authToken',
+          },
+        );
+        if (response.statusCode == 200) {
+          List<dynamic> data = jsonDecode(response.body);
+          carTypes.value = List<Map<String, dynamic>>.from(data);
+        } else {
+          // Handle error
+          print('Failed to fetch car types');
+          print(response.body);
+        }
+       
+      } catch (e) {
+        // Handle any exceptions here
+        print('Error occurred while fetching car types: $e');
+      } finally {
+        isLoading(false);
+      
     }
   }
 
@@ -123,6 +128,51 @@ class RegesterController extends GetxController {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CarForm()),
+          );
+          print('Response body: ${response.body}');
+        } else if (completeRegistration == "0") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const RegistrationFormClinet()),
+          );
+        }
+        
+      } else {
+        // Handle non-200 responses
+        print('Request failed with status: ${response.body}.');
+      }
+    } catch (e) {
+      // Handle any exceptions
+      print('Error occurred: $e');
+    }
+  }
+
+    Future<void> navigateBasedClint2(BuildContext context) async {
+    var url = Uri.parse('https://slfsparepart.com/api/user');
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        String completeRegistration = jsonResponse['complete_registration'];
+
+        if (completeRegistration == "1") {
+          // If number is 1, navigate to FirstScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CarForm2()),
           );
           print('Response body: ${response.body}');
         } else if (completeRegistration == "0") {

@@ -40,7 +40,6 @@ class _CarFormState extends State<CarForm> {
   final dateController = TextEditingController();
   final locationdoneController = TextEditingController();
 
-
   @override
   void dispose() {
     pieceCarController.dispose();
@@ -114,10 +113,10 @@ class _CarFormState extends State<CarForm> {
                   buildCarTypeField1('Car type', 'Enter your car type'),
                   buildTextField('Chassis number', chassisNumberController,
                       TextInputType.emailAddress, 'Enter your Chassis number'),
-                buildPieceTypeField1(
-                  'Piece type',
-                  'Enter your Piece type',
-                ),
+                  buildPieceTypeField1(
+                    'Piece type',
+                    'Enter your Piece type',
+                  ),
                   const SizedBox(height: 10),
                   buildPieceDetails(
                     'Piece Details',
@@ -129,9 +128,7 @@ class _CarFormState extends State<CarForm> {
                     dateController,
                     initialText: '2021-01-01',
                   ),
-
                   buildImagePicker('Car License', 0),
-
                   if (validateField1() != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
@@ -142,7 +139,6 @@ class _CarFormState extends State<CarForm> {
                         ],
                       ),
                     ),
-
                   SizedBox(height: 10),
                   Row(
                     children: [
@@ -157,12 +153,9 @@ class _CarFormState extends State<CarForm> {
                       TextInputType.text,
                       'Enter your location',
                       context),
-
                   buildAgreementSwitch(),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
-
-                 
                 ],
               ),
             ),
@@ -198,297 +191,115 @@ class _CarFormState extends State<CarForm> {
       ],
     );
   }
-@override
-void initState() {
-  super.initState();
-  final RegesterController regesterController = Get.find<RegesterController>();
-  final OrdersController ordersController = Get.find<OrdersController>();
 
-  // Fetch data once
-  regesterController.fetchCarTypes().then((_) {
-    if (regesterController.carTypes.isNotEmpty) {
-      carTypeController.text = regesterController.carTypes.first['id'].toString();
-    }
-  });
+  @override
+  void initState() {
+    super.initState();
+    final RegesterController regesterController =
+        Get.find<RegesterController>();
+    final OrdersController ordersController = Get.find<OrdersController>();
 
-  ordersController.fetchPieceTypes().then((_) {
-    if (ordersController.PieceTypes.isNotEmpty) {
-      piecetypeController.text = ordersController.PieceTypes.first['id'].toString();
-    }
-  });
+    // Fetch data once
+    regesterController.fetchCarTypes().then((_) {
+      if (regesterController.carTypes.isNotEmpty) {
+        carTypeController.text =
+            regesterController.carTypes.first['id'].toString();
+      }
+    });
 
-  ordersController.fetchPieceDeltals().then((_) {
-    if (ordersController.PieceDeltals.isNotEmpty) {
-      piecedetailsController.text = ordersController.PieceDeltals.first['id'].toString();
-    }
-  });
-}
+    ordersController.fetchPieceTypes().then((_) {
+      if (ordersController.PieceTypes.isNotEmpty) {
+        piecetypeController.text =
+            ordersController.PieceTypes.first['id'].toString();
+      }
+    });
 
-Widget buildCarTypeField1(String text, String hint) {
-  final RegesterController regesterController = Get.find<RegesterController>();
+    ordersController.fetchPieceDeltals().then((_) {
+      if (ordersController.PieceDeltals.isNotEmpty) {
+        piecedetailsController.text =
+            ordersController.PieceDeltals.first['id'].toString();
+      }
+    });
+  }
 
-  return buildDropdownField(text, hint, carTypeController, regesterController.isLoading, regesterController.carTypes);
-}
+  Widget buildCarTypeField1(String text, String hint) {
+    final RegesterController regesterController =
+        Get.find<RegesterController>();
 
-Widget buildPieceTypeField1(String text, String hint) {
-  final OrdersController ordersController = Get.find<OrdersController>();
+    return buildDropdownField(text, hint, carTypeController,
+        regesterController.isLoading, regesterController.carTypes);
+  }
 
-  return buildDropdownField(text, hint, piecetypeController, ordersController.isLoading, ordersController.PieceTypes);
-}
+  Widget buildPieceTypeField1(String text, String hint) {
+    final OrdersController ordersController = Get.find<OrdersController>();
 
-Widget buildPieceDetails(String text, String hint) {
-  final OrdersController detailsController = Get.find<OrdersController>();
+    return buildDropdownField(text, hint, piecetypeController,
+        ordersController.isLoading, ordersController.PieceTypes);
+  }
 
-  return buildDropdownField(text, hint, piecedetailsController, detailsController.isLoading, detailsController.PieceDeltals);
-}
+  Widget buildPieceDetails(String text, String hint) {
+    final OrdersController detailsController = Get.find<OrdersController>();
 
-Widget buildDropdownField(String text, String hint, TextEditingController controller, RxBool isLoading, List<dynamic> items) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CustomText(
-        text: text,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
-      const SizedBox(height: 8),
-      Obx(() {
-        if (isLoading.isTrue) {
-          return CircularProgressIndicator();
-        } else {
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: hint,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+    return buildDropdownField(text, hint, piecedetailsController,
+        detailsController.isLoading, detailsController.PieceDeltals);
+  }
+
+  Widget buildDropdownField(String text, String hint,
+      TextEditingController controller, RxBool isLoading, List<dynamic> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          text: text,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        const SizedBox(height: 8),
+        Obx(() {
+          if (isLoading.isTrue) {
+            return CircularProgressIndicator();
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: hint,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                    ),
+                    value: controller.text,
+                    onChanged: (String? newValue) {
+                      controller.text = newValue ?? '';
+                    },
+                    items: items.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item['id'].toString(),
+                        child: Text(item['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter $text';
+                      }
+                      return null;
+                    },
                   ),
-                  value: controller.text,
-                  onChanged: (String? newValue) {
-                    controller.text = newValue ?? '';
-                  },
-                  items: items.map((item) {
-                    return DropdownMenuItem<String>(
-                      value: item['id'].toString(),
-                      child: Text(item['name']),
-                    );
-                  }).toList(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter $text';
-                    }
-                    return null;
-                  },
                 ),
               ),
-            ),
-          );
-        }
-      }),
-      const SizedBox(height: 8),
-    ],
-  );
-}
-
-  // Widget buildCarTypeField1(String text, String hint) {
-  //   final RegesterController regesterController =
-  //       Get.find<RegesterController>();
-
-  //   // This line will trigger the API call when the widget is being built
-  //   regesterController.fetchCarTypes();
-
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       CustomText(
-  //         text: text,
-  //         fontSize: 16,
-  //         fontWeight: FontWeight.w500,
-  //       ),
-  //       const SizedBox(height: 8),
-  //       Obx(() {
-  //         if (regesterController.isLoading.isTrue) {
-  //           return CircularProgressIndicator();
-  //         } else {
-  //           return Padding(
-  //             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-  //             child: Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 10),
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(10),
-  //                 border: Border.all(color: Colors.grey.shade300),
-  //               ),
-  //               child: DropdownButtonHideUnderline(
-  //                 child: DropdownButtonFormField<String>(
-  //                   decoration: InputDecoration(
-  //                     labelText: hint,
-  //                     border: InputBorder.none, // No border
-  //                     // To align the label text and the dropdown arrow icon
-  //                     contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-  //                   ),
-  //                   value: carTypeController.text,
-                      
-  //                   onChanged: (String? newValue) {
-  //                     carTypeController.text = newValue ?? '';
-  //                   },
-  //                   items: regesterController.carTypes.map((car) {
-  //                     return DropdownMenuItem<String>(
-  //                       value: car['id'].toString(),
-  //                       child: Text(car['name']),
-  //                     );
-  //                   }).toList(),
-  //                   validator: (value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please enter Car type';
-  //                     }
-  //                     return null;
-  //                   },
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         }
-  //       }),
-  //       const SizedBox(height: 8),
-  //     ],
-  //   );
-  // }
-  //  Widget buildPieceTypeField1(String text, String hint) {
-  //   final OrdersController ordersController =
-  //       Get.find<OrdersController>();
-
-  //   ordersController.fetchPieceTypes();
-
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       CustomText(
-  //         text: text,
-  //         fontSize: 16,
-  //         fontWeight: FontWeight.w500,
-  //       ),
-  //       const SizedBox(height: 8),
-  //       Obx(() {
-  //         if (ordersController.isLoading.isTrue) {
-  //           return CircularProgressIndicator();
-  //         } else {
-  //           return Padding(
-  //             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-  //             child: Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 10),
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(10),
-  //                 border: Border.all(color: Colors.grey.shade300),
-  //               ),
-  //               child: DropdownButtonHideUnderline(
-  //                 child: DropdownButtonFormField<String>(
-  //                   decoration: InputDecoration(
-  //                     labelText: hint,
-  //                     border: InputBorder.none, // No border
-  //                     // To align the label text and the dropdown arrow icon
-  //                     contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-  //                   ),
-  //                   value: carTypeController.text.isEmpty
-  //                       ? null
-  //                       : carTypeController.text,
-  //                   onChanged: (String? newValue) {
-  //                     carTypeController.text = newValue ?? '';
-  //                   },
-  //                   items: ordersController.PieceTypes.map((piece) {
-  //                     return DropdownMenuItem<String>(
-  //                       value: piece['id'].toString(),
-  //                       child: Text(piece['name']),
-  //                     );
-  //                   }).toList(),
-  //                   validator: (value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please enter Piece type';
-  //                     }
-  //                     return null;
-  //                   },
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         }
-  //       }),
-  //       const SizedBox(height: 8),
-  //     ],
-  //   );
-  // }
-
-
-  // Widget buildPieceDetails(String text, String hint) {
-  //   final OrdersController detailsController =
-  //       Get.find<OrdersController>();
-
-  //   detailsController.fetchPieceDeltals();
-
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       CustomText(
-  //         text: text,
-  //         fontSize: 16,
-  //         fontWeight: FontWeight.w500,
-  //       ),
-  //       const SizedBox(height: 8),
-  //       Obx(() {
-  //         if (detailsController.isLoading.isTrue) {
-  //           return CircularProgressIndicator();
-  //         } else {
-  //           return Padding(
-  //             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-  //             child: Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 10),
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(10),
-  //                 border: Border.all(color: Colors.grey.shade300),
-  //               ),
-  //               child: DropdownButtonHideUnderline(
-  //                 child: DropdownButtonFormField<String>(
-  //                   decoration: InputDecoration(
-  //                     labelText: hint,
-  //                     border: InputBorder.none, // No border
-  //                     // To align the label text and the dropdown arrow icon
-  //                     contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-  //                   ),
-  //                   value: carTypeController.text.isEmpty
-  //                       ? null
-  //                       : carTypeController.text,
-  //                   onChanged: (String? newValue) {
-  //                     carTypeController.text = newValue ?? '';
-  //                   },
-  //                   items: detailsController.PieceDeltals.map((piece) {
-  //                     return DropdownMenuItem<String>(
-  //                       value: piece['id'].toString(),
-  //                       child: Text(piece['name']),
-  //                     );
-  //                   }).toList(),
-  //                   validator: (value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please enter Piece type';
-  //                     }
-  //                     return null;
-  //                   },
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         }
-  //       }),
-  //       const SizedBox(height: 8),
-  //     ],
-  //   );
-  // }
+            );
+          }
+        }),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
 
   Widget buildDateFieldDate(String label, TextEditingController controller,
       {String? initialText}) {
@@ -575,6 +386,7 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
 
       // When permissions are granted, get the current location
       Position position = await Geolocator.getCurrentPosition();
+      if (!mounted) return;
       setState(() {
         // Update the locationController with latitude and longitude
         locationController.text = '${position.latitude}, ${position.longitude}';
@@ -739,7 +551,7 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
   }
 
   Widget buildSubmitButton(BuildContext context) {
-      final OrdersController ordersController = Get.find<OrdersController>();
+    final OrdersController ordersController = Get.find<OrdersController>();
 
     return Column(
       children: [
@@ -749,8 +561,7 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
             left: 16.0,
             right: 16,
           ),
-          child: Text(
-              ''),
+          child: Text(''),
         ),
         const SizedBox(height: 27),
         CustomButton(
@@ -764,35 +575,44 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
               var latLong = locationController.text.split(',');
               if (latLong.length != 2) {
                 // Handle error
-                print('Invalid location format');
+
                 return;
               }
 
-             try {
-          await ordersController.carFormClient(
-            carPiece: pieceCarController.text,
-            carTypeIds: [carTypeController.text], // Assuming single selection
-            carModelIds: carModelController.text,
-            chassisNumber: chassisNumberController.text,
-            pieceType: [piecetypeController.text], // Assuming single selection
-            pieceDetail: [piecedetailsController.text], // Assuming single selection
-            images: _images.expand((xFiles) => xFiles).whereType<XFile>().toList(),
-            birthDate: dateController.text,
-            latitude: latLong[0].trim(),
-            longitude: latLong[1].trim(),
-            for_government: isAgreed ? "1" : "0",
-          );
-               
-
+              try {
+                await ordersController.carFormClient(
+                  carPiece: pieceCarController.text,
+                  carTypeIds: [
+                    carTypeController.text
+                  ], // Assuming single selection
+                  carModelIds: carModelController.text,
+                  chassisNumber: chassisNumberController.text,
+                  pieceType: [
+                    piecetypeController.text
+                  ], // Assuming single selection
+                  pieceDetail: [
+                    piecedetailsController.text
+                  ], // Assuming single selection
+                  images: _images
+                      .expand((xFiles) => xFiles)
+                      .whereType<XFile>()
+                      .toList(),
+                  birthDate: dateController.text,
+                  latitude: latLong[0].trim(),
+                  longitude: latLong[1].trim(),
+                  for_government: isAgreed ? "1" : "0",
+                );
+              
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TrueOrderClinetScreen(),
+                    builder: (context) => TrueOrderClinetScreen2(),
                   ),
                 );
+
+               
               } catch (e) {
                 // Handle error
-                print(e);
               } finally {
                 setState(() {
                   _isLoading = false; // Stop loading
@@ -806,10 +626,5 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
     );
   }
 
-  Widget _buildLoadingIndicator() {
-    if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-    return SizedBox(); // Empty box when not loading
-  }
+
 }

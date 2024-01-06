@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/Terms_and_conditions.dart';
 
 import '../../constants/colors.dart';
+import '../intro/onboarding_screen.dart';
 import 'Complain_client.dart';
 import 'Profile_clint.dart';
 
@@ -49,20 +50,27 @@ class _AccountClientState extends State<AccountClient> {
         });
       } else {
         // Handle error
-        print('Failed to fetch user data');
-        print(response.body);
+      
+    
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while fetching user data: $e');
+   
     }
   }
-
   @override
   void initState() {
     super.initState();
     fetchProfilePic();
   }
+
+  // Future<void> signOut() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.remove('auth_token');
+
+  //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingScreen()));
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +158,9 @@ class _AccountClientState extends State<AccountClient> {
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),
-            _buildOptionRow('assets/images/login.svg', 'Log out'),
+            GestureDetector(
+          //    onTap: () => signOut(),
+              child: _buildOptionRow('assets/images/login.svg', 'Log out')),
           ],
         ),
       ),

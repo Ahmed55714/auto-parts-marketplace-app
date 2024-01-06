@@ -25,7 +25,7 @@ class _VendorMapState extends State<VendorMap> {
       case 1:
         return MyMap();
       case 2:
-        return AccountClient();// for vendor and client
+        return AccountClient();
       default:
         return MyOrders();
       // Default case
@@ -79,7 +79,7 @@ class _VendorMapState extends State<VendorMap> {
       tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
           builder: (BuildContext context) {
-            return _createScreen(index); // Create a new screen each time
+            return _createScreen(index); 
           },
         );
       },

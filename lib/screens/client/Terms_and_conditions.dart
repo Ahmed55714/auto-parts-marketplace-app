@@ -12,8 +12,7 @@ class TermsAndConditions extends StatelessWidget {
     try {
       final prefs = await SharedPreferences.getInstance();
       final String? authToken = prefs.getString('auth_token');
-      print('Auth Token: $authToken');
-
+     
       final response = await http.get(
         Uri.parse('https://slfsparepart.com/api/pages'),
         headers: {
@@ -24,7 +23,7 @@ class TermsAndConditions extends StatelessWidget {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(response.body);
+      
 
         return {
           'name': data[0]['name'],
@@ -34,7 +33,7 @@ class TermsAndConditions extends StatelessWidget {
         throw Exception('Failed to load terms and conditions');
       }
     } catch (error) {
-      print('Error: $error');
+     
       throw Exception('Failed to fetch terms and conditions');
     }
   }

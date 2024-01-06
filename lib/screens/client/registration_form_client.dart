@@ -64,6 +64,21 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
   void _removeImage(int index) {
     setState(() => _images.removeAt(index));
   }
+ @override
+  void initState() {
+    super.initState();
+   
+    final RegesterController regesterController = Get.find<RegesterController>();
+ 
+
+  // Fetch data once
+  regesterController.fetchCarTypes().then((_) {
+    if (regesterController.carTypes.isNotEmpty) {
+      carTypeController.text = regesterController.carTypes.first['id'].toString();
+    }
+  });
+   
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +124,11 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                       TextInputType.text,
                       'Enter your location',
                       context),
-                  buildCarTypeField1(),
+                  buildCarTypeField1(
+                    'Car type',
+                    'Select Car Type',
+                  
+                  ),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
                 ],
@@ -120,71 +139,134 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
       ),
     );
   }
+Widget buildCarTypeField1(String text, String hint) {
+  final RegesterController regesterController = Get.find<RegesterController>();
 
-  Widget buildCarTypeField1() {
-    final RegesterController regesterController =
-        Get.find<RegesterController>();
+  return buildDropdownField(text, hint, carTypeController, regesterController.isLoading, regesterController.carTypes);
+}
 
-    // This line will trigger the API call when the widget is being built
-    regesterController.fetchCarTypes();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: 'Car type',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        const SizedBox(height: 8),
-        Obx(() {
-          if (regesterController.isLoading.isTrue) {
-            return CircularProgressIndicator();
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: 'Select Car Type',
-                      border: InputBorder.none, // No border
-                      // To align the label text and the dropdown arrow icon
-                      contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-                    ),
-                    value: carTypeController.text.isEmpty
-                        ? null
-                        : carTypeController.text,
-                    onChanged: (String? newValue) {
-                      carTypeController.text = newValue ?? '';
-                    },
-                    items: regesterController.carTypes.map((car) {
-                      return DropdownMenuItem<String>(
-                        value: car['id'].toString(),
-                        child: Text(car['name']),
-                      );
-                    }).toList(),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter Car type';
-                      }
-                      return null;
-                    },
+Widget buildDropdownField(String text, String hint, TextEditingController controller, RxBool isLoading, List<dynamic> items) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomText(
+        text: text,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      const SizedBox(height: 8),
+      Obx(() {
+        if (isLoading.isTrue) {
+          return CircularProgressIndicator();
+        } else {
+          return Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: hint,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
                   ),
+                  value: controller.text,
+                  onChanged: (String? newValue) {
+                    controller.text = newValue ?? '';
+                  },
+                  items: items.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item['id'].toString(),
+                      child: Text(item['name']),
+                    );
+                  }).toList(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter $text';
+                    }
+                    return null;
+                  },
                 ),
               ),
-            );
-          }
-        }),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
+            ),
+          );
+        }
+      }),
+      const SizedBox(height: 8),
+    ],
+  );
+}
+
+  // Widget buildCarTypeField1() {
+  //   final RegesterController regesterController =
+  //       Get.find<RegesterController>();
+
+  //   regesterController.fetchCarTypes();
+
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       CustomText(
+  //         text: 'Car type',
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //       const SizedBox(height: 8),
+  //       Obx(() {
+  //         if (regesterController.isLoading.isTrue) {
+  //           return CircularProgressIndicator();
+  //         } else {
+  //           return Padding(
+  //             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+  //             child: Container(
+  //               padding: EdgeInsets.symmetric(horizontal: 10),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(10),
+  //                 border: Border.all(color: Colors.grey.shade300),
+  //               ),
+  //               child: DropdownButtonHideUnderline(
+  //                 child: DropdownButtonFormField<String>(
+  //                   decoration: InputDecoration(
+  //                     labelText: 'Select Car Type',
+  //                     border: InputBorder.none, // No border
+  //                     // To align the label text and the dropdown arrow icon
+  //                     contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+  //                   ),
+  //                   value: carTypeController.text.isEmpty
+  //                       ? null
+  //                       : carTypeController.text,
+  //                   onChanged: (String? newValue) {
+  //                     carTypeController.text = newValue ?? '';
+  //                   },
+  //                   items: regesterController.carTypes.map((car) {
+  //                     return DropdownMenuItem<String>(
+  //                       value: car['id'].toString(),
+  //                       child: Text(car['name']),
+  //                     );
+  //                   }).toList(),
+  //                   validator: (value) {
+  //                     if (value == null || value.isEmpty) {
+  //                       return 'Please enter Car type';
+  //                     }
+  //                     return null;
+  //                   },
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         }
+  //       }),
+
+        
+      
+  //     ],
+  //   );
+  // }
 
   Widget buildTextField(String label, TextEditingController controller,
       TextInputType type, String? text) {

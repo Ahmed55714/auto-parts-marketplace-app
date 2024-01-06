@@ -67,7 +67,7 @@ class _PaymentState extends State<Payment> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Offer accepted successfully')),
         );
-        print('Response body: ${response.body}');
+    
 
         Navigator.pushReplacement(
           context,

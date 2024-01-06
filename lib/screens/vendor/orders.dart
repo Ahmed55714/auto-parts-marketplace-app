@@ -14,6 +14,7 @@ import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../client/orders_clint.dart';
+import 'Registration_form.dart';
 import 'chat/screens/mobile_layout_screen.dart';
 import 'offer_form.dart';
 
@@ -33,6 +34,8 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
+  late StreamController<List<Order>> _streamController;
+
   Future<RegistrationVerificationStatus>
       fetchCompleteRegistrationStatus() async {
     var url = Uri.parse('https://slfsparepart.com/api/user');
@@ -82,27 +85,23 @@ class _MyOrdersState extends State<MyOrders> {
       );
 
       if (response.statusCode == 200) {
-        print('Response data: ${response.body}');
         List<dynamic> jsonList = jsonDecode(response.body);
         var fetchedOrders =
             jsonList.map((json) => Order.fromJson(json)).toList();
         return fetchedOrders; // Return the list of orders
       } else {
         // Handle error
-        print('Failed to fetch orders');
-        print(response.body);
+
         throw Exception('Failed to load orders');
       }
     } catch (e) {
       // Handle any exceptions here
-      print('Error occurred while fetching orders: $e');
+
       throw Exception('Error occurred while fetching orders');
     }
   }
 
-  Future<void> _refresh() async {
-    await fetchOrders();
-  }
+
 
   Future<void> declineOrder(int orderId) async {
     final Uri apiEndpoint = Uri.parse(
@@ -123,16 +122,11 @@ class _MyOrdersState extends State<MyOrders> {
       );
 
       if (response.statusCode == 200) {
-        print('Order declined successfully');
         await fetchOrders();
       } else {
         // Handle error
-        print('Failed to decline order. Status code: ${response.statusCode}');
       }
-    } catch (e) {
-      // Handle any exceptions here
-      print('Error occurred while declining order: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> updateOrderStatus(int orderId) async {
@@ -154,17 +148,9 @@ class _MyOrdersState extends State<MyOrders> {
       );
 
       if (response.statusCode == 200) {
-        print('Order status updated to "Out for Delivery" successfully');
-        print(response.body);
         await fetchOrders();
-      } else {
-        print(
-            'Failed to update order status. Status code: ${response.statusCode}');
-        print(response.body);
-      }
-    } catch (e) {
-      print('Error occurred while updating order status: $e');
-    }
+      } else {}
+    } catch (e) {}
   }
 
   Future<void> markOrderAsDelivered(int orderId) async {
@@ -186,16 +172,8 @@ class _MyOrdersState extends State<MyOrders> {
       );
 
       if (response.statusCode == 200) {
-        print('Order status updated to "Delivered" successfully');
-        print(response.body);
-      } else {
-        print(
-            'Failed to update order status to "Delivered". Status code: ${response.statusCode}');
-        print(response.body);
-      }
-    } catch (e) {
-      print('Error occurred while updating order status to "Delivered": $e');
-    }
+      } else {}
+    } catch (e) {}
   }
 
   Future<int> fetchUnreadMessageCount() async {
@@ -224,20 +202,108 @@ class _MyOrdersState extends State<MyOrders> {
   void initState() {
     super.initState();
     fetchUnreadMessageCount();
-    fetchOrders();
-    Timer.periodic(Duration(minutes: 5), (Timer timer) {
-      fetchOrders();
+    _streamController = StreamController<List<Order>>.broadcast();
+    _startListeningToOrders();
+    // _startFetchingOrders();
+  }
+
+  void _startListeningToOrders() {
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      var orders = await fetchOrders();
+      _streamController.add(orders);
     });
   }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
+
+  Stream<List<Order>> get ordersStream => _streamController.stream;
 
   final OrdersController orderController = Get.put(OrdersController());
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<RegistrationVerificationStatus>(
+      future: fetchCompleteRegistrationStatus(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(child: Text('Error: ${snapshot.error}')),
+          );
+        } else if (snapshot.hasData) {
+          var status = snapshot.data!;
+          if (status.completeRegistration == "1" && status.isVerified == "1") {
+            return buildOrdersLayout(); // Replace with your orders layout
+          }
+          //  else if (status.completeRegistration == "1" &&
+          //     status.isVerified == "0") {
+          //   return const Scaffold(
+          //     body: Center(
+          //       child: Padding(
+          //         padding: EdgeInsets.all(16.0),
+          //         child: Text(
+          //           'Your application is under review, please wait for the approval',
+          //           style: TextStyle(
+          //               fontSize: 20,
+          //               fontWeight: FontWeight.w500,
+          //               color: deepPurple),
+          //         ),
+          //       ),
+          //     ),
+          //   );
+          // }
+          else if (status.completeRegistration == "0" &&
+              status.isVerified == "0") {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        'Registration to be able to see orders',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: deepPurple),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    CustomButton(
+                      text: 'Complete Registration',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegistrationForm(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+        return buildOrdersLayout();
+      },
+    );
+  }
+
+  Widget buildOrdersLayout() {
     return Scaffold(
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _refresh,
+       
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,8 +336,8 @@ class _MyOrdersState extends State<MyOrders> {
                                 },
                                 icon: Stack(
                                   children: <Widget>[
-                                    Icon(Icons.notifications,size: 35,
-                                        color: deepPurple),
+                                    Icon(Icons.notifications,
+                                        size: 35, color: deepPurple),
                                     FutureBuilder<int>(
                                       future:
                                           fetchUnreadMessageCount(), // your fetch function here
@@ -317,17 +383,14 @@ class _MyOrdersState extends State<MyOrders> {
                 ),
                 //...orders.map((order) => orderDetails(order)).toList(),
 
-                FutureBuilder<List<Order>>(
-                  future: fetchOrders(), // Replace with your future function
+                StreamBuilder<List<Order>>(
+                  stream: ordersStream,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // While waiting for data, show a circular progress indicator
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
-                      // If there's an error, display an error message
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (snapshot.hasData) {
-                      // If data is available, build the ListView.builder
                       var orders = snapshot.data!;
                       return ListView.builder(
                         itemCount: orders.length,
@@ -338,16 +401,15 @@ class _MyOrdersState extends State<MyOrders> {
                         },
                       );
                     } else {
-                      // Handle other cases here (e.g., when data is null)
                       return Center(child: Text('No data available'));
                     }
                   },
-                )
+                ),
               ],
             ),
           ),
         ),
-      ),
+      
     );
   }
 
@@ -473,6 +535,7 @@ class _MyOrdersState extends State<MyOrders> {
                 text: 'Decline',
                 onPressed: () {
                   declineOrder(order.id);
+                  setState(() {});
                 },
               ),
             ],
@@ -626,7 +689,7 @@ class OrderDetailLine extends StatelessWidget {
                 ? InkWell(
                     onTap: () {
                       if (location != null) {
-                      Navigator.push(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
@@ -651,7 +714,7 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl != null && imageUrl!.isNotEmpty) {
-                               Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => ImageViewScreen(),
@@ -673,7 +736,7 @@ class OrderDetailLine extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (imageUrl2 != null && imageUrl2!.isNotEmpty) {
-                                 Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => ImageViewScreen(),
@@ -898,64 +961,3 @@ class File {
     );
   }
 }
-
-
-
-//  @override
-// Widget build(BuildContext context) {
-//   return FutureBuilder<RegistrationVerificationStatus>(
-//     future: fetchCompleteRegistrationStatus(),
-//     builder: (context, snapshot) {
-//       if (snapshot.connectionState == ConnectionState.waiting) {
-//         return const Scaffold(
-//           body: Center(child: CircularProgressIndicator()),
-//         );
-//       } else if (snapshot.hasError) {
-//         return Scaffold(
-//           body: Center(child: Text('Error: ${snapshot.error}')),
-//         );
-//       } else if (snapshot.hasData) {
-//         var status = snapshot.data!;
-//         if (status.completeRegistration == "1" && status.isVerified == "1") {
-//           return buildOrdersLayout();
-//         } else if (status.completeRegistration == "1" && status.isVerified == "0") {
-//           return const Scaffold(
-//             body: Center(
-//               child: Padding(
-//                 padding: EdgeInsets.all(16.0),
-//                 child: Text(
-//                   'Your application is under review, please wait for the approval',
-//                   style: TextStyle(
-//                       fontSize: 20,
-//                       fontWeight: FontWeight.w500,
-//                       color: deepPurple),
-//                 ),
-//               ),
-//             ),
-//           );
-//         } else if (status.completeRegistration == "0" && status.isVerified == "0") {
-//           return const Scaffold(
-//             body: Center(
-//               child: Padding(
-//                 padding: EdgeInsets.all(16.0),
-//                 child: Text(
-//                   'Registration to be able to see orders',
-//                   style: TextStyle(
-//                       fontSize: 20,
-//                       fontWeight: FontWeight.w500,
-//                       color: deepPurple),
-//                 ),
-//               ),
-//             ),
-//           );
-//         }
-//       }
-//       return const Scaffold(
-//         body: Center(child: Text('No data available')),
-//       );
-//     },
-//   );
-// }
-
-
- 

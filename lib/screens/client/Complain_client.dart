@@ -257,7 +257,7 @@ Future<void> submitComplain(String name,
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Complain submitted successfully')),
       );
-      print('Response body: ${response.body}');
+      
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -269,7 +269,7 @@ Future<void> submitComplain(String name,
         SnackBar(
             content: Text('Failed to submit complaint${response.statusCode}}')),
       );
-      print('Response body: ${response.body}');
+   
     }
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(

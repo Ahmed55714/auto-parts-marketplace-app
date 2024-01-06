@@ -28,7 +28,6 @@ class _ClientMapState extends State<ClientMap> {
     final prefs = await SharedPreferences.getInstance();
     final String? authToken = prefs.getString('auth_token');
     if (authToken == null) {
-      print("Auth token is null");
       return [];
     }
 
@@ -42,17 +41,14 @@ class _ClientMapState extends State<ClientMap> {
       );
 
       if (response.statusCode == 200) {
-        print(response.body);
         List<dynamic> data = jsonDecode(response.body);
         return data.map<PersonLocation>((locationJson) {
           return PersonLocation.fromJson(locationJson);
         }).toList();
       } else {
-        print('Failed to fetch locations');
         return [];
       }
     } catch (e) {
-      print('Error occurred while fetching locations: $e');
       return [];
     }
   }
@@ -66,36 +62,36 @@ class _ClientMapState extends State<ClientMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  SafeArea(
+      body: SafeArea(
         child: Stack(
-            children: [
-              FutureBuilder<List<PersonLocation>>(
-                future: fetchLocations(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error occurred'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return CustomGoogleMapp();
-                  } else {
-                    return CustomGoogleMap(locations: snapshot.data!);
-                  }
-                },
-              ),
-           Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: CustomButton(
-              text: 'Order Now',
-              onPressed: () => regesterController.navigateBasedClint(context),
+          children: [
+            FutureBuilder<List<PersonLocation>>(
+              future: fetchLocations(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error occurred'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return CustomGoogleMapp();
+                } else {
+                  return CustomGoogleMap(locations: snapshot.data!);
+                }
+              },
             ),
-          ),
-            ],
-          ),
+            Positioned(
+              bottom: 20,
+              left: 20,
+              right: 20,
+              child: CustomButton(
+                  text: 'Order Now',
+                  onPressed: () {
+                    regesterController.navigateBasedClint(context);
+                  }),
+            ),
+          ],
+        ),
       ),
-      
     );
   }
 }

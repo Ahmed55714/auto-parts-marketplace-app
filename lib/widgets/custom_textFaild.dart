@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
   CustomTextField({
     Key? key,
     required this.labelText,
-    this.fieldHeight = 78.0,
+    this.fieldHeight = 81.0,
     this.controller,
     this.keyboardType = TextInputType.text, // Default keyboardType is text
     this.validator, 
@@ -28,7 +28,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16, bottom:18),
+      padding: const EdgeInsets.only(left: 16.0, right: 16),
       child: Container(
         height: fieldHeight,
         child: TextFormField(
