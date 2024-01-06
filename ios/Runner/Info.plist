@@ -51,6 +51,13 @@
 		<string>We need access to your photo gallery for uploading images.</string>
 		<key>NSPhotoLibraryAddUsageDescription</key>
 		<string>We need access to add photos to your gallery.</string>
+		<key>io.flutter.embedded_views_preview</key>
+		<true/>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+
 
 	</dict>
 </plist>

@@ -50,6 +50,7 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_auth: ^4.15.3
   photo_view: ^0.14.0
+  my_fatoorah: ^3.3.0
   
 
  

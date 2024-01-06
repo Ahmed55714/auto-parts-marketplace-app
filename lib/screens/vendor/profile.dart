@@ -430,7 +430,9 @@ class _MyProfileState extends State<MyProfile> {
 
                                 Navigator.pop(context);
                                 refreshAddresses();
-                                fetchAddresses();
+                                setState(() {
+                                  fetchAddresses();
+                                });
                               }
                             }),
                       ],

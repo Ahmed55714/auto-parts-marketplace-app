@@ -55,11 +55,8 @@ class _MyProfileState extends State<ProfileClient> {
         });
       } else {
         // Handle error
-    
       }
-    } catch (e) {
-    
-    }
+    } catch (e) {}
   }
 
   void selectContainer(int index) {
@@ -98,11 +95,8 @@ class _MyProfileState extends State<ProfileClient> {
         fetchAddresses();
       } else {
         // Handle error
-     
       }
-    } catch (e) {
-    
-    }
+    } catch (e) {}
   }
 
   Future<void> fetchProfilePic() async {
@@ -124,15 +118,12 @@ class _MyProfileState extends State<ProfileClient> {
         final userData = jsonDecode(response.body);
         final imageUrl = userData['image_url'];
         setState(() {
-          _imageURL = imageUrl; 
+          _imageURL = imageUrl;
         });
       } else {
         // Handle error
-       
       }
-    } catch (e) {
-     
-    }
+    } catch (e) {}
   }
 
   @override
@@ -336,9 +327,7 @@ class _MyProfileState extends State<ProfileClient> {
                                 onDelete: () {
                                   if (address.id != null) {
                                     deleteAddress(address.id);
-                                  } else {
-                                
-                                  }
+                                  } else {}
                                 },
                               );
                             },
@@ -452,7 +441,9 @@ class _MyProfileState extends State<ProfileClient> {
 
                                 Navigator.pop(context);
                                 refreshAddresses();
-                                fetchAddresses();
+                                setState(() {
+                                  fetchAddresses();
+                                });
                               }
                             }),
                       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_fatoorah/my_fatoorah.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import 'package:work2/widgets/custom_button.dart';
@@ -27,17 +28,47 @@ class _PaymentState extends State<Payment> {
     fetchSelectedAddress();
   }
 
+  void startMyFatoorahPayment() async {
+    try {
+      var response = await MyFatoorah.startPayment(
+        context: context,
+        request: MyfatoorahRequest.test(
+          currencyIso: Country.SaudiArabia,
+          successUrl: 'https://www.facebook.com',
+          errorUrl: 'https://www.google.com/',
+          invoiceAmount: 100,
+          language: ApiLanguage.English,
+          token:
+              'rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL',
+        ),
+      );
+      //print(response.paymentId.toString());
+      if (response.isSuccess) {
+        // Call acceptOffer on successful payment
+        acceptOffer(widget.offerId, _selectedAddressId, selectedContainerIndex);
+      } else {
+        // Stay on the same page or show an error message
+        //print('Payment failed or was cancelled');
+      }
+    } catch (e) {
+      // Handle the payment error here
+      //print('Payment Error: $e');
+      // Optionally, show an error message or stay on the same page
+    } catch (e) {
+      //print('Payment Error: $e');
+    }
+  }
+
   Future<void> fetchSelectedAddress() async {
     final prefs = await SharedPreferences.getInstance();
     String address = prefs.getString('selected_address') ?? '';
-    String addressId =
-        prefs.getString('selected_address_id') ?? ''; // Retrieve the address ID
+    String addressId = prefs.getString('selected_address_id') ?? '';
 
     setState(() {
       _selectedAddress = address;
       _selectedAddressId = addressId;
       if (_selectedAddress.isNotEmpty) {
-        selectedContainerIndex = 1; // Default selection, adjust as needed
+        selectedContainerIndex = 1;
       }
     });
   }
@@ -67,11 +98,10 @@ class _PaymentState extends State<Payment> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Offer accepted successfully')),
         );
-    
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) =>  TruePayment()),
+          MaterialPageRoute(builder: (context) => TruePayment()),
         );
       } else {
         // Handle error
@@ -202,23 +232,31 @@ class _PaymentState extends State<Payment> {
                 },
               ),
               CustomButton(
-                  text: 'Pay',
-                  onPressed: () {
-                    if (selectedContainerIndex == -1) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please select a payment method')),
-                      );
-                      return;
-                    }
-                    if (_selectedAddressId.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('No delivery address selected')),
-                      );
-                      return;
-                    }
+                text: 'Pay',
+                onPressed: () {
+                  if (selectedContainerIndex == -1) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Please select a payment method')),
+                    );
+                    return;
+                  }
+                  if (_selectedAddressId.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('No delivery address selected')),
+                    );
+                    return;
+                  }
+
+                  if (selectedContainerIndex == 1) {
+                    // MyFatoorah payment
+                    startMyFatoorahPayment();
+                  } else {
+                    // Handle other payment methods
                     acceptOffer(widget.offerId, _selectedAddressId,
                         selectedContainerIndex);
-                  }),
+                  }
+                },
+              ),
             ],
           ),
         ),

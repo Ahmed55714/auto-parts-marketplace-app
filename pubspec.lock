@@ -222,6 +222,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_inappwebview:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview
+      sha256: d198297060d116b94048301ee6749cd2e7d03c1f2689783f52d210a6b7aba350
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.8.0"
   flutter_localizations:
     dependency: transitive
     description: flutter
@@ -573,6 +581,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.3"
+  my_fatoorah:
+    dependency: "direct main"
+    description:
+      name: my_fatoorah
+      sha256: c7b32ab5e780b739737ba6beadbe1ea1461af4fd870576b9b91241864e1cd904
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.0"
   path:
     dependency: transitive
     description:
