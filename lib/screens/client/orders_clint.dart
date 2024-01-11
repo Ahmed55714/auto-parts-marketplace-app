@@ -29,8 +29,8 @@ class _OrdersClientState extends State<OrdersClient> {
   var orders = <Order>[].obs;
   final RegesterController regesterController = Get.find<RegesterController>();
   int selectedContainerIndex = -1;
-    final StreamController<List<Order>> _ordersStreamController = StreamController();
-
+  final StreamController<List<Order>> _ordersStreamController =
+      StreamController();
 
   Future<List<Order>> fetchOrders() async {
     final Uri apiEndpoint =
@@ -55,12 +55,12 @@ class _OrdersClientState extends State<OrdersClient> {
         }).toList();
       } else {
         // Handle error
-      
+        print(response.body);
         throw Exception('Failed to load orders');
       }
     } catch (e) {
       // Handle any exceptions here
-   
+      print(e);
       throw Exception('Error fetching orders');
     }
   }
@@ -87,25 +87,27 @@ class _OrdersClientState extends State<OrdersClient> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-    
+
         if (responseData['status'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Order $orderId has been cancelled successfully'),
             ),
           );
-          fetchOrders();
+          setState(() {
+            fetchOrders();
+          });
         }
       } else {
         // Handle error
-       
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to cancel order')),
         );
       }
     } catch (e) {
       // Handle any exceptions here
-     
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error occurred while cancelling order')),
       );
@@ -134,8 +136,6 @@ class _OrdersClientState extends State<OrdersClient> {
     }
   }
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -159,7 +159,6 @@ class _OrdersClientState extends State<OrdersClient> {
         }
       }
     });
-
   }
 
   final OrdersController orderController = Get.put(OrdersController());
@@ -397,12 +396,10 @@ class _OrdersClientState extends State<OrdersClient> {
                     orderId: order.id,
                     onConfirmCancel: (cancelReason, orderId) async {
                       await cancelOrder(cancelReason, orderId);
-                     
                     },
                   );
                 },
               );
-              fetchOrders();
             },
           ),
         SizedBox(height: 10),
@@ -779,8 +776,8 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'],
-      carPiece: json['car_piece'],
-      carModel: json['car_model'],
+      carPiece: json['car_piece'].toString(),
+      carModel: json['car_model'].toString(),
       chassisNumber: json['chassis_number'],
       date: DateTime.parse(json['date']),
       status: json['status'],

@@ -53,11 +53,9 @@ class _MyProfileState extends State<MyProfile> {
         });
       } else {
         // Handle error
-       
       }
     } catch (e) {
       // Handle any exceptions here
-  
     }
   }
 
@@ -80,11 +78,8 @@ class _MyProfileState extends State<MyProfile> {
         fetchAddresses();
       } else {
         // Handle error
-       
       }
-    } catch (e) {
-     
-    }
+    } catch (e) {}
   }
 
   Future<void> fetchProfilePic() async {
@@ -110,11 +105,8 @@ class _MyProfileState extends State<MyProfile> {
         });
       } else {
         // Handle error
-    
       }
-    } catch (e) {
- 
-    }
+    } catch (e) {}
   }
 
   @override
@@ -158,17 +150,13 @@ class _MyProfileState extends State<MyProfile> {
   File? _image;
 
   Future getImage() async {
-   
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      
       setState(() {
         _image = File(pickedFile.path);
       });
-    } else {
-    
-    }
+    } else {}
   }
 
   void selectContainer(int index) {
@@ -314,9 +302,7 @@ class _MyProfileState extends State<MyProfile> {
                           onDelete: () {
                             if (address.id != null) {
                               deleteAddress(address.id);
-                            } else {
-                            
-                            }
+                            } else {}
                           },
                         );
                       },

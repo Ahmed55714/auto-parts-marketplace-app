@@ -12,7 +12,6 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
-import 'Bottom_nav.dart';
 
 class CarForm2 extends StatefulWidget {
   const CarForm2({Key? key}) : super(key: key);

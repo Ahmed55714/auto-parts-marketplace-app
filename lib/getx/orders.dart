@@ -121,6 +121,7 @@ class OrdersController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
         var jsonResponse = json.decode(response.body);
+        
       } else {
         // Handle error
       }

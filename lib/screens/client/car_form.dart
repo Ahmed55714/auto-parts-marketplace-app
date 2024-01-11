@@ -13,6 +13,7 @@ import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
 import 'Bottom_nav.dart';
+import 'payment_offer_check.dart';
 
 class CarForm extends StatefulWidget {
   const CarForm({Key? key}) : super(key: key);
@@ -550,81 +551,85 @@ class _CarFormState extends State<CarForm> {
     );
   }
 
-  Widget buildSubmitButton(BuildContext context) {
-    final OrdersController ordersController = Get.find<OrdersController>();
+ Widget buildSubmitButton(BuildContext context) {
+  final OrdersController ordersController = Get.find<OrdersController>();
 
-    return Column(
-      children: [
-        const SizedBox(height: 10),
-        const Padding(
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16,
-          ),
-          child: Text(''),
-        ),
-        const SizedBox(height: 27),
-        CustomButton(
-          text: 'Order',
-          onPressed: () async {
-            if (_formKey.currentState!.validate() && validateField1() == null) {
+  return Column(
+    children: [
+      const SizedBox(height: 10),
+      CustomButton(
+        text: 'Order',
+        onPressed: () async {
+          if (_formKey.currentState!.validate() && validateField1() == null) {
+            setState(() {
+              _isLoading = true;
+            });
+
+            var latLong = locationController.text.split(',');
+            if (latLong.length != 2) {
               setState(() {
-                _isLoading = true; // Start loading
+                _isLoading = false;
               });
+              return;
+            }
 
-              var latLong = locationController.text.split(',');
-              if (latLong.length != 2) {
-                // Handle error
-
-                return;
-              }
-
+            if (isAgreed) {
+              // Checkbox is checked, navigate to PaymentOfferCheck screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PaymentOfferCheck(
+                    carPiece: pieceCarController.text,
+                    carTypeIds: [carTypeController.text],
+                    carModelIds: carModelController.text,
+                    chassisNumber: chassisNumberController.text,
+                    pieceType: [piecetypeController.text],
+                    pieceDetail: [piecedetailsController.text],
+                    images: _images.expand((xFiles) => xFiles).whereType<XFile>().toList(),
+                    birthDate: dateController.text,
+                    latitude: latLong[0].trim(),
+                    longitude: latLong[1].trim(),
+                    for_government: "1",
+                  ),
+                ),
+              );
+            } else {
+              // Checkbox is not checked, send data to API
               try {
                 await ordersController.carFormClient(
                   carPiece: pieceCarController.text,
-                  carTypeIds: [
-                    carTypeController.text
-                  ], // Assuming single selection
+                  carTypeIds: [carTypeController.text],
                   carModelIds: carModelController.text,
                   chassisNumber: chassisNumberController.text,
-                  pieceType: [
-                    piecetypeController.text
-                  ], // Assuming single selection
-                  pieceDetail: [
-                    piecedetailsController.text
-                  ], // Assuming single selection
-                  images: _images
-                      .expand((xFiles) => xFiles)
-                      .whereType<XFile>()
-                      .toList(),
+                  pieceType: [piecetypeController.text],
+                  pieceDetail: [piecedetailsController.text],
+                  images: _images.expand((xFiles) => xFiles).whereType<XFile>().toList(),
                   birthDate: dateController.text,
                   latitude: latLong[0].trim(),
                   longitude: latLong[1].trim(),
-                  for_government: isAgreed ? "1" : "0",
+                  for_government: "0",
                 );
-              
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => TrueOrderClinetScreen2(),
                   ),
                 );
-
-               
               } catch (e) {
                 // Handle error
               } finally {
                 setState(() {
-                  _isLoading = false; // Stop loading
+                  _isLoading = false;
                 });
               }
             }
-          },
-        ),
-        const SizedBox(height: 15),
-      ],
-    );
-  }
-
+          }
+        },
+      ),
+      const SizedBox(height: 15),
+    ],
+  );
+}
 
 }

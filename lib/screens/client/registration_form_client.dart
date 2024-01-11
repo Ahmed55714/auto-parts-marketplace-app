@@ -64,20 +64,21 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
   void _removeImage(int index) {
     setState(() => _images.removeAt(index));
   }
- @override
+
+  @override
   void initState() {
     super.initState();
-   
-    final RegesterController regesterController = Get.find<RegesterController>();
- 
 
-  // Fetch data once
-  regesterController.fetchCarTypes().then((_) {
-    if (regesterController.carTypes.isNotEmpty) {
-      carTypeController.text = regesterController.carTypes.first['id'].toString();
-    }
-  });
-   
+    final RegesterController regesterController =
+        Get.find<RegesterController>();
+
+    // Fetch data once
+    regesterController.fetchCarTypes().then((_) {
+      if (regesterController.carTypes.isNotEmpty) {
+        carTypeController.text =
+            regesterController.carTypes.first['id'].toString();
+      }
+    });
   }
 
   @override
@@ -127,7 +128,6 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                   buildCarTypeField1(
                     'Car type',
                     'Select Car Type',
-                  
                   ),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
@@ -139,68 +139,71 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
       ),
     );
   }
-Widget buildCarTypeField1(String text, String hint) {
-  final RegesterController regesterController = Get.find<RegesterController>();
 
-  return buildDropdownField(text, hint, carTypeController, regesterController.isLoading, regesterController.carTypes);
-}
+  Widget buildCarTypeField1(String text, String hint) {
+    final RegesterController regesterController =
+        Get.find<RegesterController>();
 
+    return buildDropdownField(text, hint, carTypeController,
+        regesterController.isLoading, regesterController.carTypes);
+  }
 
-Widget buildDropdownField(String text, String hint, TextEditingController controller, RxBool isLoading, List<dynamic> items) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CustomText(
-        text: text,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
-      const SizedBox(height: 8),
-      Obx(() {
-        if (isLoading.isTrue) {
-          return CircularProgressIndicator();
-        } else {
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: hint,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+  Widget buildDropdownField(String text, String hint,
+      TextEditingController controller, RxBool isLoading, List<dynamic> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          text: text,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        const SizedBox(height: 8),
+        Obx(() {
+          if (isLoading.isTrue) {
+            return CircularProgressIndicator();
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: hint,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                    ),
+                    value: controller.text,
+                    onChanged: (String? newValue) {
+                      controller.text = newValue ?? '';
+                    },
+                    items: items.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item['id'].toString(),
+                        child: Text(item['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter $text';
+                      }
+                      return null;
+                    },
                   ),
-                  value: controller.text,
-                  onChanged: (String? newValue) {
-                    controller.text = newValue ?? '';
-                  },
-                  items: items.map((item) {
-                    return DropdownMenuItem<String>(
-                      value: item['id'].toString(),
-                      child: Text(item['name']),
-                    );
-                  }).toList(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter $text';
-                    }
-                    return null;
-                  },
                 ),
               ),
-            ),
-          );
-        }
-      }),
-      const SizedBox(height: 8),
-    ],
-  );
-}
+            );
+          }
+        }),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
 
   // Widget buildCarTypeField1() {
   //   final RegesterController regesterController =
@@ -262,8 +265,6 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
   //         }
   //       }),
 
-        
-      
   //     ],
   //   );
   // }
@@ -295,10 +296,14 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
     );
   }
 
-  Widget buildTextFieldLocation(String label, TextEditingController controller,
-        TextEditingController locationController,
-
-      TextInputType type, String? text, BuildContext context,) {
+  Widget buildTextFieldLocation(
+    String label,
+    TextEditingController controller,
+    TextEditingController locationController,
+    TextInputType type,
+    String? text,
+    BuildContext context,
+  ) {
     // Function to get current location
     Future<void> _getCurrentLocation() async {
       bool serviceEnabled;
@@ -328,7 +333,7 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
 
       // When permissions are granted, get the current location
       Position position = await Geolocator.getCurrentPosition();
-     setState(() {
+      setState(() {
         // Update the locationController with latitude and longitude
         locationController.text = '${position.latitude}, ${position.longitude}';
         // Update the display controller with "Done"
@@ -555,34 +560,43 @@ Widget buildDropdownField(String text, String hint, TextEditingController contro
           ),
           child: Text(''),
         ),
-        CustomButton(
-          text: 'Register',
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              String selectedCarTypeId = carTypeController.text;
-              // Assuming you have latitude and longitude as separate variables
-              var latLong = locationController.text.split(',');
+        Obx(() {
+          if (regesterController.isLoading.value) {
+            return CircularProgressIndicator();
+          } else {
+            return CustomButton(
+              text: 'Register',
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  String selectedCarTypeId = carTypeController.text;
+                  var latLong = locationController.text.split(',');
 
-              // Call the API to register the client
-              await regesterController.postClientRegistration(
-                name: nameController.text,
-                email: emailController.text,
-                birthDate: dateController.text,
-                carTypeId: selectedCarTypeId,
-                latitude: latLong[0].trim(),
-                longitude: latLong[1].trim(),
-              );
+                  await regesterController.postClientRegistration(
+                    name: nameController.text,
+                    email: emailController.text,
+                    birthDate: dateController.text,
+                    carTypeId: selectedCarTypeId,
+                    latitude: latLong[0].trim(),
+                    longitude: latLong[1].trim(),
+                  );
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TrueresgesterScreen(),
-                  // const CarForm(),
-                ),
-              );
-            }
-          },
-        ),
+                  if (regesterController.message.value == 'Success') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TrueresgesterScreen(),
+                      ),
+                    );
+                  } else if (regesterController.message.value.isNotEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(regesterController.message.value)),
+                    );
+                  }
+                }
+              },
+            );
+          }
+        }),
         const SizedBox(height: 15),
       ],
     );

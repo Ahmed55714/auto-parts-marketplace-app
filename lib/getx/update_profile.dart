@@ -124,8 +124,11 @@ class UpdateProfileController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
         var data = jsonDecode(response.body);
+        print(data);
+        print(authToken);
       } else {
         // Handle error
+        print(response.body);
       }
     } catch (e) {
       // Handle any exceptions here

@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 
@@ -26,6 +29,7 @@ class ProfileClient extends StatefulWidget {
 class _MyProfileState extends State<ProfileClient> {
   String? _imageURL;
 
+  LatLng? _selectedLocation;
   List<Address> addresses = [];
   int selectedContainerIndex = -1;
   String? _selectedAddressId;
@@ -49,13 +53,12 @@ class _MyProfileState extends State<ProfileClient> {
         List<dynamic> jsonList = jsonDecode(response.body);
         setState(() {
           addresses = jsonList.map((json) => Address.fromJson(json)).toList();
+
           if (addresses.isNotEmpty) {
             selectContainer(0);
           }
         });
-      } else {
-        // Handle error
-      }
+      } else {}
     } catch (e) {}
   }
 
@@ -117,13 +120,21 @@ class _MyProfileState extends State<ProfileClient> {
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
         final imageUrl = userData['image_url'];
+        final _phoneNumber = userData['phone'];
         setState(() {
           _imageURL = imageUrl;
+          phoneNumberController.text = _phoneNumber ?? '';
         });
       } else {
         // Handle error
       }
     } catch (e) {}
+  }
+
+  void _onLocationSelected(LatLng location) {
+    setState(() {
+      _selectedLocation = location;
+    });
   }
 
   @override
@@ -398,7 +409,9 @@ class _MyProfileState extends State<ProfileClient> {
                           child: Container(
                             height: 200,
                             color: Colors.grey[300], // Placeholder for the map
-                            child: CustomGoogleMapp(),
+                            child: CustomGoogleMappp(
+                              onLocationSelected: _onLocationSelected,
+                            ),
                           ),
                         ),
                         buildTextField(
@@ -435,10 +448,10 @@ class _MyProfileState extends State<ProfileClient> {
                                   building: buildingController.text,
                                   floor: floorController.text,
                                   apartment: aptController.text,
-                                  lat: 'Latitude from map',
-                                  long: 'Longitude from map',
+                                  lat: _selectedLocation!.latitude.toString()??'Latitude from map',
+                                  long: _selectedLocation!.longitude.toString()??'Longitude from map',
+                                  //'Longitude from map',
                                 );
-
                                 Navigator.pop(context);
                                 refreshAddresses();
                                 setState(() {
@@ -595,18 +608,18 @@ class Address {
     required this.apartment,
   });
 
-  String get fullAddress => "$street - $building - $floor - $apartment";
-
-  static Address fromJson(Map<String, dynamic> json) {
+  factory Address.fromJson(Map<String, dynamic> json) {
     return Address(
-      id: json['id'],
-      name: json['name'],
-      street: json['street'],
-      building: json['building'],
-      floor: json['floor'],
-      apartment: json['apartment'],
+      id: json['id'], // Assuming 'id' is an integer in your JSON
+      name: json['name'] as String,
+      street: json['street'] as String,
+      building: json['building'].toString(), // Convert to String if it's not
+      floor: json['floor'].toString(), // Convert to String if it's not
+      apartment: json['apartment'].toString(), // Convert to String if it's not
     );
   }
+
+  String get fullAddress => "$street - $building - $floor - $apartment";
 }
 
 class CustomSelection extends StatefulWidget {
@@ -786,6 +799,106 @@ class _CustomSelectionState extends State<CustomSelection> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CustomGoogleMappp extends StatefulWidget {
+  final Function(LatLng) onLocationSelected;
+
+  const CustomGoogleMappp({Key? key, required this.onLocationSelected})
+      : super(key: key);
+
+  @override
+  _CustomGoogleMapppState createState() => _CustomGoogleMapppState();
+}
+
+class _CustomGoogleMapppState extends State<CustomGoogleMappp> {
+  final Completer<GoogleMapController> _controller = Completer();
+  final LatLng _initialPosition = const LatLng(37.33500926, -122.03272188);
+  Location _location = Location();
+  LocationData? _currentLocation;
+  Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  void _handleTap(LatLng tappedPoint) {
+    setState(() {
+      _markers.clear();
+      _markers.add(Marker(
+          markerId: MarkerId(tappedPoint.toString()), position: tappedPoint));
+    });
+    widget.onLocationSelected(
+        tappedPoint); // Call the callback with the new location
+  }
+
+  _getCurrentLocation() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await _location.requestService();
+      if (!_serviceEnabled) return;
+    }
+
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) return;
+    }
+
+    _location.onLocationChanged.listen((LocationData currentLocation) {
+      setState(() {
+        _currentLocation = currentLocation;
+        _markers.add(
+          Marker(
+            markerId: MarkerId(_initialPosition.toString()),
+            position: _initialPosition,
+          ),
+        );
+      });
+
+      if (_controller.isCompleted) {
+        _controller.future.then((controller) {
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                bearing: 0,
+                target: LatLng(
+                    _currentLocation!.latitude!, _currentLocation!.longitude!),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_currentLocation == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return GoogleMap(
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+      },
+      initialCameraPosition: CameraPosition(
+        target: _initialPosition,
+        zoom: 18.0,
+      ),
+      markers: _markers, // Use the _markers set here
+      onTap: _handleTap, // Add tap functionality
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: true,
     );
   }
 }

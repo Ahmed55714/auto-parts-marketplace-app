@@ -64,12 +64,16 @@ class _AccountClientState extends State<AccountClient> {
     fetchProfilePic();
   }
 
-  // Future<void> signOut() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.remove('auth_token');
+Future<void> signOut() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('auth_token');
 
-  //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingScreen()));
-  // }
+  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+    MaterialPageRoute(builder: (context) => OnboardingScreen()),
+    (_) => false, // Remove all routes below the pushed route
+  );
+}
+
 
 
   @override
@@ -159,7 +163,7 @@ class _AccountClientState extends State<AccountClient> {
             const _CustomDivider(),
             const SizedBox(height: 12),
             GestureDetector(
-          //    onTap: () => signOut(),
+              onTap: () => signOut(),
               child: _buildOptionRow('assets/images/login.svg', 'Log out')),
           ],
         ),
