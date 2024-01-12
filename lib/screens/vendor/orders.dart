@@ -34,7 +34,8 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
-  late StreamController<List<Order>> _streamController;
+  //late StreamController<List<Order>> _streamController;
+  Future<List<Order>>? _futureOrders;
 
   Future<RegistrationVerificationStatus>
       fetchCompleteRegistrationStatus() async {
@@ -86,22 +87,18 @@ class _MyOrdersState extends State<MyOrders> {
 
       if (response.statusCode == 200) {
         List<dynamic> jsonList = jsonDecode(response.body);
-        var fetchedOrders =
-            jsonList.map((json) => Order.fromJson(json)).toList();
-        return fetchedOrders; // Return the list of orders
+        return jsonList.map((json) => Order.fromJson(json)).toList();
       } else {
-        // Handle error
-
-        throw Exception('Failed to load orders');
+        print('Failed to load orders, Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        throw Exception(
+            'Failed to load orders, Status code: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle any exceptions here
-
+      print('Error occurred while fetching orders: $e');
       throw Exception('Error occurred while fetching orders');
     }
   }
-
-
 
   Future<void> declineOrder(int orderId) async {
     final Uri apiEndpoint = Uri.parse(
@@ -122,10 +119,8 @@ class _MyOrdersState extends State<MyOrders> {
       );
 
       if (response.statusCode == 200) {
-        await fetchOrders();
-      } else {
-        // Handle error
-      }
+        refreshOrders();
+      } else {}
     } catch (e) {}
   }
 
@@ -148,11 +143,15 @@ class _MyOrdersState extends State<MyOrders> {
       );
 
       if (response.statusCode == 200) {
-        await fetchOrders();
+       refreshOrders();
       } else {}
     } catch (e) {}
   }
-
+void refreshOrders() async {
+  setState(() {
+    _futureOrders = fetchOrders(); // Fetch and update the orders list
+  });
+}
   Future<void> markOrderAsDelivered(int orderId) async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/vendor/orders/$orderId/update");
@@ -202,25 +201,26 @@ class _MyOrdersState extends State<MyOrders> {
   void initState() {
     super.initState();
     fetchUnreadMessageCount();
-    _streamController = StreamController<List<Order>>.broadcast();
-    _startListeningToOrders();
+    //_streamController = StreamController<List<Order>>.broadcast();
+    // _startListeningToOrders();
     // _startFetchingOrders();
+    _futureOrders = fetchOrders();
   }
 
   void _startListeningToOrders() {
-    Timer.periodic(Duration(seconds: 1), (timer) async {
+    Timer.periodic(Duration(seconds: 3), (timer) async {
       var orders = await fetchOrders();
-      _streamController.add(orders);
+      // _streamController.add(orders);
     });
   }
 
   @override
   void dispose() {
-    _streamController.close();
+    //_streamController.close();
     super.dispose();
   }
 
-  Stream<List<Order>> get ordersStream => _streamController.stream;
+  //Stream<List<Order>> get ordersStream => _streamController.stream;
 
   final OrdersController orderController = Get.put(OrdersController());
 
@@ -235,7 +235,7 @@ class _MyOrdersState extends State<MyOrders> {
           );
         } else if (snapshot.hasError) {
           return Scaffold(
-            body: Center(child: Text('Error: ${snapshot.error}')),
+            body: Center(child: Text('try again later')),
           );
         } else if (snapshot.hasData) {
           var status = snapshot.data!;
@@ -269,12 +269,17 @@ class _MyOrdersState extends State<MyOrders> {
                   children: [
                     Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        'Registration to be able to see orders',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: deepPurple),
+                      child: Container(
+                        width: 300,
+                        child: Center(
+                          child: Text(
+                            'Continue Registration \nto be able to see orders',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: deepPurple),
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -303,113 +308,112 @@ class _MyOrdersState extends State<MyOrders> {
   Widget buildOrdersLayout() {
     return Scaffold(
       body: SafeArea(
-       
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
 
-                Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Orders',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: deepPurple,
-                        ),
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'Orders',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: deepPurple,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              MobileLayoutScreen()));
-                                },
-                                icon: Stack(
-                                  children: <Widget>[
-                                    Icon(Icons.notifications,
-                                        size: 35, color: deepPurple),
-                                    FutureBuilder<int>(
-                                      future:
-                                          fetchUnreadMessageCount(), // your fetch function here
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<int> snapshot) {
-                                        if (snapshot.hasData &&
-                                            snapshot.data! > 0) {
-                                          return Positioned(
-                                            right: 0,
-                                            child: Container(
-                                              padding: EdgeInsets.all(1),
-                                              decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                              ),
-                                              constraints: BoxConstraints(
-                                                minWidth: 16,
-                                                minHeight: 16,
-                                              ),
-                                              child: Text(
-                                                '${snapshot.data}',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 8,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MobileLayoutScreen()));
+                              },
+                              icon: Stack(
+                                children: <Widget>[
+                                  Icon(Icons.notifications,
+                                      size: 35, color: deepPurple),
+                                  FutureBuilder<int>(
+                                    future:
+                                        fetchUnreadMessageCount(), // your fetch function here
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<int> snapshot) {
+                                      if (snapshot.hasData &&
+                                          snapshot.data! > 0) {
+                                        return Positioned(
+                                          right: 0,
+                                          child: Container(
+                                            padding: EdgeInsets.all(1),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
                                             ),
-                                          );
-                                        } else {
-                                          return Container();
-                                        }
-                                      },
-                                    )
-                                  ],
-                                ))
-                          ],
-                        ),
+                                            constraints: BoxConstraints(
+                                              minWidth: 16,
+                                              minHeight: 16,
+                                            ),
+                                            child: Text(
+                                              '${snapshot.data}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 8,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    },
+                                  )
+                                ],
+                              ))
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                //...orders.map((order) => orderDetails(order)).toList(),
+              ),
+              //...orders.map((order) => orderDetails(order)).toList(),
 
-                StreamBuilder<List<Order>>(
-                  stream: ordersStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      var orders = snapshot.data!;
-                      return ListView.builder(
-                        itemCount: orders.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          return orderDetails(orders[index]);
-                        },
-                      );
-                    } else {
-                      return Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-              ],
-            ),
+              FutureBuilder<List<Order>>(
+                future: _futureOrders,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(
+                        child: Text('Error: ${snapshot.error.toString()}'));
+                  } else if (snapshot.hasData) {
+                    var orders = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: orders.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return orderDetails(orders[index]);
+                      },
+                    );
+                  } else {
+                    return Center(child: Text('No data available'));
+                  }
+                },
+              ),
+            ],
           ),
         ),
-      
+      ),
     );
   }
 
@@ -519,7 +523,7 @@ class _MyOrdersState extends State<MyOrders> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomButton3(
-                text: 'Accept',
+                text: 'make offer',
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -901,7 +905,8 @@ class Order {
   final String pieceDetailName;
   final String? address;
   final List<File> files;
-
+  bool bottomSheetShown = false;
+  bool rated;
   Order({
     required this.id,
     required this.carPiece,
@@ -919,13 +924,15 @@ class Order {
     required this.pieceDetailName,
     this.address,
     required this.files,
+    this.bottomSheetShown = false,
+    this.rated = false,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'],
-      carPiece: json['car_piece'],
-      carModel: json['car_model'],
+      carPiece: json['car_piece'].toString(),
+      carModel: json['car_model'].toString(),
       chassisNumber: json['chassis_number'],
       date: DateTime.parse(json['date']),
       status: json['status'],
@@ -941,6 +948,8 @@ class Order {
       files: (json['files'] as List)
           .map((fileJson) => File.fromJson(fileJson))
           .toList(),
+      bottomSheetShown: false,
+      rated: json['rated'] ?? false,
     );
   }
 }

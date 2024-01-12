@@ -254,10 +254,10 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      imageUrl: json['image_url'] as String? ?? 'default_image_url', // Provide a default URL if null
-      avgRating: json['avg_rating'] as String? ?? 'N/A', // Provide a default value if null
+      id: json['id'],
+      name: json['name'],
+      imageUrl: json['image_url'] ?? 'default_image_url', // Provide a default URL if null
+      avgRating: json['avg_rating'].toString(), // Convert to string
     );
   }
 }
@@ -279,11 +279,12 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-      id: json['id'] as int,
-      content: json['content'] as String,
-      isSeen: json['is_seen'] as String? ?? '0', // Provide a default value if null
-      time: json['time'] as String? ?? 'Unknown time', // Provide a default value if null
+      id: json['id'],
+      content: json['content'],
+      isSeen: json['is_seen'].toString(), // Convert to string
+      time: json['time'] ?? 'Unknown time', // Provide a default value if null
       iSentThis: json['i_sent_this'] == true,
     );
   }
 }
+

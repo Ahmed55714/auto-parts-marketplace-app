@@ -13,6 +13,8 @@ import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
 
+import 'paymet_check2.dart';
+
 class CarForm2 extends StatefulWidget {
   const CarForm2({Key? key}) : super(key: key);
 
@@ -21,7 +23,7 @@ class CarForm2 extends StatefulWidget {
 }
 
 class _CarForm2State extends State<CarForm2> {
-  bool isAgreed = false;
+  int isAgreed = 0;
   bool _isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
@@ -243,62 +245,121 @@ class _CarForm2State extends State<CarForm2> {
         detailsController.isLoading, detailsController.PieceDeltals);
   }
 
-  Widget buildDropdownField(String text, String hint,
-      TextEditingController controller, RxBool isLoading, List<dynamic> items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: text,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        const SizedBox(height: 8),
-        Obx(() {
-          if (isLoading.isTrue) {
-            return CircularProgressIndicator();
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: hint,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-                    ),
-                    value: controller.text,
-                    onChanged: (String? newValue) {
-                      controller.text = newValue ?? '';
-                    },
-                    items: items.map((item) {
-                      return DropdownMenuItem<String>(
-                        value: item['id'].toString(),
-                        child: Text(item['name']),
-                      );
-                    }).toList(),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter $text';
-                      }
-                      return null;
-                    },
+  // Widget buildDropdownField(String text, String hint,
+  //     TextEditingController controller, RxBool isLoading, List<dynamic> items) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       CustomText(
+  //         text: text,
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //       const SizedBox(height: 8),
+  //       Obx(() {
+  //         if (isLoading.isTrue) {
+  //           return CircularProgressIndicator();
+  //         } else {
+  //           return Padding(
+  //             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+  //             child: Container(
+  //               padding: EdgeInsets.symmetric(horizontal: 10),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(10),
+  //                 border: Border.all(color: Colors.grey.shade300),
+  //               ),
+  //               child: DropdownButtonHideUnderline(
+  //                 child: DropdownButtonFormField<String>(
+  //                   decoration: InputDecoration(
+  //                     labelText: hint,
+  //                     border: InputBorder.none,
+  //                     contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+  //                   ),
+  //                   value: controller.text,
+  //                   onChanged: (String? newValue) {
+  //                     controller.text = newValue ?? '';
+  //                   },
+  //                   items: items.map((item) {
+  //                     return DropdownMenuItem<String>(
+  //                       value: item['id'].toString(),
+  //                       child: Text(item['name']),
+  //                     );
+  //                   }).toList(),
+  //                   validator: (value) {
+  //                     if (value == null || value.isEmpty) {
+  //                       return 'Please enter $text';
+  //                     }
+  //                     return null;
+  //                   },
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         }
+  //       }),
+  //       const SizedBox(height: 8),
+  //     ],
+  //   );
+  // }
+  Widget buildDropdownField(String text, String hint, TextEditingController controller, RxBool isLoading, List<dynamic> items) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomText(
+        text: text,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      const SizedBox(height: 8),
+      Obx(() {
+        if (isLoading.isTrue) {
+          // Show loading indicator when data is being fetched
+          return Center(child: CircularProgressIndicator());
+        } else {
+          // Ensure controller's text matches one of the items, or is null
+          String? dropdownValue = items.any((item) => item['id'].toString() == controller.text) ? controller.text : null;
+
+          return Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: hint,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
                   ),
+                  value: dropdownValue,
+                  onChanged: (String? newValue) {
+                    controller.text = newValue ?? '';
+                  },
+                  items: items.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item['id'].toString(),
+                      child: Text(item['name']),
+                    );
+                  }).toList(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select $text';
+                    }
+                    return null;
+                  },
                 ),
               ),
-            );
-          }
-        }),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
+            ),
+          );
+        }
+      }),
+      const SizedBox(height: 8),
+    ],
+  );
+}
 
   Widget buildDateFieldDate(String label, TextEditingController controller,
       {String? initialText}) {
@@ -522,13 +583,13 @@ class _CarForm2State extends State<CarForm2> {
         InkWell(
           onTap: () {
             setState(() {
-              isAgreed = !isAgreed;
+              isAgreed = isAgreed == 0 ? 1 : 0; // Toggle isAgreed between 0 and 1
             });
           },
           child: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: SvgPicture.asset(
-              isAgreed
+              isAgreed == 1
                   ? 'assets/images/Object.svg'
                   : 'assets/images/Object1.svg',
               height: 24,
@@ -549,85 +610,100 @@ class _CarForm2State extends State<CarForm2> {
     );
   }
 
-  Widget buildSubmitButton(BuildContext context) {
+   Widget buildSubmitButton(BuildContext context) {
     final OrdersController ordersController = Get.find<OrdersController>();
 
     return Column(
       children: [
         const SizedBox(height: 10),
-        const Padding(
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16,
-          ),
-          child: Text(''),
-        ),
-        const SizedBox(height: 27),
-        CustomButton(
-          text: 'Order',
-          onPressed: () async {
-            if (_formKey.currentState!.validate() && validateField1() == null) {
-              setState(() {
-                _isLoading = true; // Start loading
-              });
+        if (isAgreed == 0)
+          CustomButton(
+            text: 'Order',
+            onPressed: () async {
+              if (_formKey.currentState!.validate() &&
+                  validateField1() == null) {
+                setState(() {
+                  _isLoading = true; // Start loading
+                });
 
-              var latLong = locationController.text.split(',');
-              if (latLong.length != 2) {
-                // Handle error
+                var latLong = locationController.text.split(',');
+                if (latLong.length != 2) {
+                  // Handle error
 
-                return;
+                  return;
+                }
+                try {
+                  await ordersController.carFormClient(
+                    carPiece: pieceCarController.text,
+                    carTypeIds: [
+                      carTypeController.text
+                    ], // Assuming single selection
+                    carModelIds: carModelController.text,
+                    chassisNumber: chassisNumberController.text,
+                    pieceType: [
+                      piecetypeController.text
+                    ], // Assuming single selection
+                    pieceDetail: [
+                      piecedetailsController.text
+                    ], // Assuming single selection
+                    images: _images
+                        .expand((xFiles) => xFiles)
+                        .whereType<XFile>()
+                        .toList(),
+                    birthDate: dateController.text,
+                    latitude: latLong[0].trim(),
+                    longitude: latLong[1].trim(),
+                    for_government: "0",
+                  );
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TrueOrderClinetScreen2(),
+                    ),
+                  );
+                } catch (e) {
+                  // Handle error
+                } finally {
+                  setState(() {
+                    _isLoading = false; // Stop loading
+                  });
+                }
               }
+            },
+          ),
+                  if (isAgreed == 1)
 
-              try {
-                await ordersController.carFormClient(
-                  carPiece: pieceCarController.text,
-                  carTypeIds: [
-                    carTypeController.text
-                  ], // Assuming single selection
-                  carModelIds: carModelController.text,
-                  chassisNumber: chassisNumberController.text,
-                  pieceType: [
-                    piecetypeController.text
-                  ], // Assuming single selection
-                  pieceDetail: [
-                    piecedetailsController.text
-                  ], // Assuming single selection
-                  images: _images
-                      .expand((xFiles) => xFiles)
-                      .whereType<XFile>()
-                      .toList(),
-                  birthDate: dateController.text,
-                  latitude: latLong[0].trim(),
-                  longitude: latLong[1].trim(),
-                  for_government: isAgreed ? "1" : "0",
-                );
-
-                Navigator.push(
-                  context,
+          CustomButton(
+            text: 'Next',
+            onPressed: () {
+              if (_formKey.currentState!.validate() &&
+                  validateField1() == null) {
+                Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => TrueOrderClinetScreen2(),
+                    builder: (context) => PaymentOfferCheck2(
+                      carPiece: pieceCarController.text,
+                      carTypeIds: [carTypeController.text],
+                      carModelIds: carModelController.text,
+                      chassisNumber: chassisNumberController.text,
+                      pieceType: [piecetypeController.text],
+                      pieceDetail: [piecedetailsController.text],
+                      images: _images
+                          .expand((xFiles) => xFiles)
+                          .whereType<XFile>()
+                          .toList(),
+                      birthDate: dateController.text,
+                      latitude: locationController.text.split(',')[0].trim(),
+                      longitude: locationController.text.split(',')[1].trim(),
+                      forGovernment: "1",
+                    ),
                   ),
                 );
-                
-              } catch (e) {
-                // Handle error
-              } finally {
-                setState(() {
-                  _isLoading = false; // Stop loading
-                });
               }
-            }
-          },
-        ),
+            },
+          ),
         const SizedBox(height: 15),
       ],
     );
-  }
-
-  Widget _buildLoadingIndicator() {
-    if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-    return SizedBox(); // Empty box when not loading
   }
 }

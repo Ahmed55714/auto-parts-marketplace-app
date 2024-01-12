@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
 
@@ -8,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../constants/colors.dart';
 import '../../getx/orders.dart';
 import '../../getx/regestration.dart';
@@ -19,7 +21,11 @@ import 'offer_client.dart';
 import 'order_repo.dart';
 
 class OrdersClient extends StatefulWidget {
-  const OrdersClient({super.key});
+
+  const OrdersClient({
+    Key? key,
+    
+  }) : super(key: key);
 
   @override
   State<OrdersClient> createState() => _OrdersClientState();
@@ -138,6 +144,7 @@ class _OrdersClientState extends State<OrdersClient> {
 
   @override
   void initState() {
+    
     super.initState();
     fetchUnreadMessageCount();
     fetchOrders().then((fetchedOrders) {
@@ -258,6 +265,7 @@ class _OrdersClientState extends State<OrdersClient> {
                     CustomContainerButton(
                       text: "New Request",
                       onPressed: () {
+                        
                         //List<int> orderIds = getOrderIds();
                         regesterController.navigateBasedClint2(context);
                       },

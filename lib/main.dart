@@ -43,6 +43,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
   final userType = prefs.getString('user_type');
+  
 
   String initialRoute = '/';
 
@@ -63,7 +64,7 @@ void main() async {
 
 Future initialization(BuildContext? context) async {
   // Load resources
-  await Future.delayed(const Duration(seconds: 3));
+  await Future.delayed(const Duration(seconds: 20));
 }
 
 class MyApp extends StatefulWidget {

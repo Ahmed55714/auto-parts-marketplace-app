@@ -1,25 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_fatoorah/my_fatoorah.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import 'package:work2/widgets/custom_button.dart';
-import 'package:http/http.dart' as http;
+import '../../getx/orders.dart';
 import '../../widgets/custom_continer.dart';
-import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
-
 import 'orders_clint.dart';
 
-class Payment extends StatefulWidget {
-  final int offerId;
+class PaymentOfferCheck2 extends StatefulWidget {
 
-  const Payment({Key? key, required this.offerId}) : super(key: key);
+  final String carPiece;
+  final List<String> carTypeIds;
+  final String carModelIds;
+  final String chassisNumber;
+  final List<String> pieceType;
+  final List<String> pieceDetail;
+  final List<XFile> images;
+  final String birthDate;
+  final String latitude;
+  final String longitude;
+  final String forGovernment;
+
+  const PaymentOfferCheck2({
+    Key? key,
+    required this.carPiece,
+    required this.carTypeIds,
+    required this.carModelIds,
+    required this.chassisNumber,
+    required this.pieceType,
+    required this.pieceDetail,
+    required this.images,
+    required this.birthDate,
+    required this.latitude,
+    required this.longitude,
+    required this.forGovernment,
+  }) : super(key: key);
 
   @override
-  State<Payment> createState() => _PaymentState();
+  State<PaymentOfferCheck2> createState() => _PaymentOfferCheckState();
 }
 
-class _PaymentState extends State<Payment> {
+class _PaymentOfferCheckState extends State<PaymentOfferCheck2> {
+   final OrdersController ordersController = Get.find<OrdersController>();
   int selectedContainerIndex = -1;
   String _selectedAddress = '';
   String _selectedAddressId = '';
@@ -29,23 +54,15 @@ class _PaymentState extends State<Payment> {
     super.initState();
     fetchSelectedAddress();
   }
-void onPaymentSuccess() async {
-  await acceptOffer(widget.offerId, _selectedAddressId, selectedContainerIndex);
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => OrdersClient()),
-  );
-}
+
   void startMyFatoorahPayment() async {
     try {
       var response = await MyFatoorah.startPayment(
         context: context,
         request: MyfatoorahRequest.test(
           currencyIso: Country.SaudiArabia,
-          successUrl:
-              'https://media.istockphoto.com/id/1077567192/ko/%EB%B2%A1%ED%84%B0/%EB%B2%A1%ED%84%B0-%EC%82%AC%EC%8B%A4-%ED%99%95%EC%9D%B8-%ED%91%9C%EC%8B%9C-%EC%95%84%EC%9D%B4%EC%BD%98.jpg?s=170667a&w=0&k=20&c=RCuI9gkfeh3h7JUDZSHlXX7aJrEqOzgXx4-jpqAbstk=',
-          errorUrl:
-              'https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_1280.png',
+          successUrl: 'https://media.istockphoto.com/id/1077567192/ko/%EB%B2%A1%ED%84%B0/%EB%B2%A1%ED%84%B0-%EC%82%AC%EC%8B%A4-%ED%99%95%EC%9D%B8-%ED%91%9C%EC%8B%9C-%EC%95%84%EC%9D%B4%EC%BD%98.jpg?s=170667a&w=0&k=20&c=RCuI9gkfeh3h7JUDZSHlXX7aJrEqOzgXx4-jpqAbstk=',
+          errorUrl: 'https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_1280.png',
           invoiceAmount: 100,
           language: ApiLanguage.English,
           token:
@@ -53,17 +70,47 @@ void onPaymentSuccess() async {
         ),
       );
       //print(response.paymentId.toString());
-      if (response.isSuccess) {
-        onPaymentSuccess();
-      } else {
-        SnackBar(content: Text('Payment failed or was cancelled'));
-      }
-    } catch (e) {
-    } catch (e) {
-      //print('Payment Error: $e');
-    }
-  }
+    if (response.isSuccess) {
+      // Payment successful
+      // Call your API here
+      try {
+        await ordersController.carFormClient(
+          carPiece: widget.carPiece,
+          carTypeIds: widget.carTypeIds,
+          carModelIds: widget.carModelIds,
+          chassisNumber: widget.chassisNumber,
+          pieceType: widget.pieceType,
+          pieceDetail: widget.pieceDetail,
+          images: widget.images,
+          birthDate: widget.birthDate,
+          latitude: widget.latitude,
+          longitude: widget.longitude,
+          for_government: widget.forGovernment,
+        );
 
+        // Navigate to the success screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => OrdersClient(
+            
+          )),
+        );
+      } catch (e) {
+        
+      }
+    } else {
+      // Payment failed or was cancelled
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Payment failed or was cancelled')),
+      );
+    }
+  } catch (e) {
+    // Handle the payment error here
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Payment Error')),
+    );
+  }
+}
   Future<void> fetchSelectedAddress() async {
     final prefs = await SharedPreferences.getInstance();
     String address = prefs.getString('selected_address') ?? '';
@@ -78,49 +125,6 @@ void onPaymentSuccess() async {
     });
   }
 
-  Future<void> acceptOffer(
-      int offerId, String addressId, int paymentMethodIndex) async {
-    String paymentMethodId = paymentMethodIndex.toString();
-    final Uri apiEndpoint = Uri.parse(
-        "https://slfsparepart.com/api/client/orders/offers/$offerId/accept");
-    final prefs = await SharedPreferences.getInstance();
-    final String? authToken = prefs.getString('auth_token');
-
-    try {
-      final response = await http.post(
-        apiEndpoint,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-        body: {
-          'address_id': addressId,
-          'payment_method_id': paymentMethodId,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Offer accepted successfully')),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => TruePayment()),
-        );
-      } else {
-        // Handle error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to accept offer')),
-        );
-      }
-    } catch (e) {
-      // Handle any exceptions here
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error occurred while accepting offer: $e')),
-      );
-    }
-  }
 
   void selectContainer(int index) {
     setState(() {
@@ -227,15 +231,7 @@ void onPaymentSuccess() async {
                 ],
               ),
               SizedBox(height: 10),
-              CustomSelection1(
-                index: 2,
-                isSelected: selectedContainerIndex == 2,
-                title: "Cash on delivery",
-                description: "ST - Building - Floor",
-                onTap: () {
-                  selectContainer(2);
-                },
-              ),
+            
               CustomButton(
                 text: 'Pay',
                 onPressed: () {
@@ -257,8 +253,8 @@ void onPaymentSuccess() async {
                     startMyFatoorahPayment();
                   } else {
                     // Handle other payment methods
-                    acceptOffer(widget.offerId, _selectedAddressId,
-                        selectedContainerIndex);
+                    // acceptOffer(widget.offerId, _selectedAddressId,
+                    //     selectedContainerIndex);
                   }
                 },
               ),
@@ -268,4 +264,8 @@ void onPaymentSuccess() async {
       ),
     );
   }
+ 
 }
+
+
+

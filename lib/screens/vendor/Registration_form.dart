@@ -232,71 +232,72 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-  Widget buildCarTypeField1() {
-    final RegesterController regesterController =
-        Get.find<RegesterController>();
+Widget buildCarTypeField1() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomText(
+        text: 'Car type',
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      const SizedBox(height: 8),
+      Obx(() {
+        if (regesterController.isLoading.isTrue) {
+          return CircularProgressIndicator();
+        } else {
+          var carTypeItems = regesterController.carTypes
+              .map((car) => MultiSelectItem(car['id'].toString(), car['name']))
+              .toList();
 
-    // This line will trigger the API call when the widget is being built
-    regesterController.fetchCarTypes();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: 'Car type',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        const SizedBox(height: 8),
-        Obx(() {
-          if (regesterController.isLoading.isTrue) {
-            return CircularProgressIndicator();
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: MultiSelectDialogField(
-                items: regesterController.carTypes
-                    .map((car) =>
-                        MultiSelectItem(car['id'].toString(), car['name']))
-                    .toList(),
-                title: Text("Car Types"),
-                selectedColor: deepPurple,
-                decoration: BoxDecoration(
-                  color: deepPurple.withOpacity(0.1),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  border: Border.all(
-                    color: deepPurple,
-                    width: 2,
-                  ),
-                ),
-                buttonIcon: Icon(
-                  Icons.car_rental,
+          return Padding(
+            padding: const EdgeInsets.only(left:16, right:16),
+            child: MultiSelectDialogField(
+              items: carTypeItems,
+              title: Text("Car Types"),
+              selectedColor: deepPurple,
+              decoration: BoxDecoration(
+                color: greyColor.withOpacity(0.1),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                border: Border.all(
                   color: deepPurple,
+                  width: 2,
                 ),
-                buttonText: Text(
-                  "Select Car Types",
-                  style: TextStyle(
-                    color: deepPurple,
-                    fontSize: 16,
-                  ),
-                ),
-                onConfirm: (List selectedValues) {
-                  carTypes = selectedValues as List<String>;
-                },
-                validator: (values) {
-                  if (values == null || values.isEmpty) {
-                    return "Please select one or more car types";
-                  }
-                  return null;
-                },
               ),
-            );
-          }
-        }),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
+              buttonIcon: Icon(
+                Icons.car_rental,
+                color: deepPurple,
+              ),
+              buttonText: Text(
+                "Select Car Types",
+                style: TextStyle(
+                  color: deepPurple,
+                  fontSize: 16,
+                ),
+              ),
+              onConfirm: (List selectedValues) {
+                setState(() {
+                  carTypes = selectedValues.map((e) => e.toString()).toList();
+                });
+              },
+              initialValue: carTypes.map((e) => e.toString()).toList(),
+              validator: (values) {
+                if (values == null || values.isEmpty) {
+                  return "Please select one or more car types";
+                }
+                return null;
+              },
+            ),
+          );
+        }
+      }),
+      const SizedBox(height: 8),
+      // Displaying selected car types
+     
+    ],
+  );
+}
+
 
   Widget buildTextFieldLocation(
       String label,
@@ -509,7 +510,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             right: 16,
           ),
           child: Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
+              'By clicking on the register button, you agree to the terms and conditions of the application'),
         ),
         const SizedBox(height: 27),
         CustomButton(

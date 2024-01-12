@@ -58,16 +58,16 @@ class _OfferClientState extends State<OfferClient> {
               jsonList.map((json) => Offer.fromJson(json)).toList();
           if (fetchedOffers.isNotEmpty) {
             offers[orderId] = fetchedOffers;
-          
           }
-        } else {
-         
         }
+        print(offers);
       } else {
-       
+        // Handle error
+        print('Failed to fetch offers');
+        print(response.body);
       }
     } catch (e) {
-     
+      print('Error occurred while fetching offers: $e');
     }
   }
 
@@ -88,7 +88,7 @@ class _OfferClientState extends State<OfferClient> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-       
+
         if (responseData['status'] == true) {
           // Offer has been declined successfully
           ScaffoldMessenger.of(context).showSnackBar(
@@ -107,14 +107,14 @@ class _OfferClientState extends State<OfferClient> {
         }
       } else {
         // Handle error
-       
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to decline offer')),
         );
       }
     } catch (e) {
       // Handle any exceptions here
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error occurred while declining offer')),
       );
@@ -344,15 +344,15 @@ class Offer {
 
   factory Offer.fromJson(Map<String, dynamic> json) {
     return Offer(
-      id: json['id'] as int,
-      piece: json['piece'] as String,
-      country: json['country'] as String,
-      yearModel: json['year_model'] as String,
-      condition: json['condition'] as String,
-      price: json['price'] as String,
-      notes: json['notes'] as String,
-      isAccepted: json['is_accepted'] as String,
-      user: User.fromJson(json['user'] as Map<String, dynamic>),
+      id: json['id'],
+      piece: json['piece'].toString(),
+      country: json['country'].toString(),
+      yearModel: json['year_model'].toString(),
+      condition: json['condition'].toString(),
+      price: json['price'].toString(),
+      notes: json['notes'].toString(),
+      isAccepted: json['is_accepted'].toString(),
+      user: User.fromJson(json['user']),
     );
   }
 }
@@ -372,9 +372,9 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] as int,
-      name: json['name'] as String? ?? '',
-      imageUrl: json['image_url'] as String? ?? '',
+      id: json['id'],
+      name: json['name'] ?? '',
+      imageUrl: json['image_url'] ?? '',
       avgRating: double.tryParse(json['avg_rating']?.toString() ?? '0'),
     );
   }

@@ -105,7 +105,7 @@ class BackButtonDeep extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context,true);
             },
             child: Container(
               decoration: BoxDecoration(
