@@ -149,7 +149,7 @@ class _MyOrdersState extends State<MyOrders> {
   }
 void refreshOrders() async {
   setState(() {
-    _futureOrders = fetchOrders(); // Fetch and update the orders list
+    _futureOrders = fetchOrders(); 
   });
 }
   Future<void> markOrderAsDelivered(int orderId) async {
@@ -171,6 +171,7 @@ void refreshOrders() async {
       );
 
       if (response.statusCode == 200) {
+        refreshOrders();
       } else {}
     } catch (e) {}
   }

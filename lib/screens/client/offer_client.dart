@@ -21,11 +21,20 @@ class OfferClient extends StatefulWidget {
 
 class _OfferClientState extends State<OfferClient> {
   var offers = <int, List<Offer>>{}.obs;
+  Map<int, bool> canDownloadOffersMap = {};
 
   @override
   void initState() {
     super.initState();
-    fetchAllOffers();
+  }
+
+  Future<bool> checkCanDownloadOffers() async {
+    bool canDownload = false;
+    for (var orderId in widget.orderIds) {
+      await fetchOffers(orderId);
+      canDownload |= canDownloadOffersMap[orderId] ?? false;
+    }
+    return canDownload;
   }
 
   Future<void> fetchAllOffers() async {
@@ -52,6 +61,8 @@ class _OfferClientState extends State<OfferClient> {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        bool canDownload = jsonResponse['can_download_offers'] ?? false;
+        canDownloadOffersMap[orderId] = canDownload;
         if (jsonResponse['offers'] is List) {
           List<dynamic> jsonList = jsonResponse['offers'];
           var fetchedOffers =
@@ -60,7 +71,6 @@ class _OfferClientState extends State<OfferClient> {
             offers[orderId] = fetchedOffers;
           }
         }
-        print(offers);
       } else {
         // Handle error
         print('Failed to fetch offers');
@@ -268,54 +278,74 @@ class _OfferClientState extends State<OfferClient> {
                   ],
                 ),
               ),
-              Obx(() {
-                List<Widget> orderWidgets = [];
-                bool hasOffers = false;
-
-                offers.forEach((orderId, offersList) {
-                  if (offersList.isNotEmpty) {
-                    hasOffers = true;
-                    orderWidgets.add(Text("Offers for Order : $orderId",
-                        style: TextStyle(fontWeight: FontWeight.w500)));
-                    orderWidgets.addAll(offersList
-                        .map((offer) => GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => VenforProfile(
-                                            userId: offer.user.id)));
-                              },
-                              child: offerCard(offer),
-                            ))
-                        .toList());
+              FutureBuilder<bool>(
+                future: checkCanDownloadOffers(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
                   }
-                });
 
-                if (!hasOffers) {
-                  orderWidgets.add(
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Text(
-                          'No offers for this moment',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey,
-                          ),
+                  // Build the offer list widgets here
+                  List<Widget> offerWidgets = _buildOfferList();
+
+                  // Check and add the Download PDF button at the end
+                  if (snapshot.data == true) {
+                    offerWidgets.add(
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: CustomButton(
+                          text: 'Download PDF',
+                          onPressed: () {
+                            // Implement your PDF download functionality here
+                          },
                         ),
                       ),
-                    ),
-                  );
-                }
+                    );
+                  }
 
-                return Column(children: orderWidgets);
-              }),
+                  return Column(children: offerWidgets);
+                },
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildOfferList() {
+    List<Widget> offerWidgets = [];
+
+    offers.forEach((orderId, offersList) {
+      if (offersList.isNotEmpty) {
+        offerWidgets.add(Text("Offers for Order : $orderId",
+            style: TextStyle(fontWeight: FontWeight.w500)));
+        offerWidgets.addAll(offersList
+            .map((offer) => GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                VenforProfile(userId: offer.user.id)));
+                  },
+                  child: offerCard(offer),
+                ))
+            .toList());
+      }
+    });
+
+    if (offerWidgets.isEmpty) {
+      offerWidgets.add(Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Text('No offers at this moment',
+              style: TextStyle(fontSize: 18, color: Colors.grey)),
+        ),
+      ));
+    }
+
+    return offerWidgets;
   }
 }
 
@@ -329,6 +359,7 @@ class Offer {
   final String notes;
   final String isAccepted;
   final User user;
+  final bool canDownloadOffers;
 
   Offer({
     required this.id,
@@ -340,6 +371,7 @@ class Offer {
     required this.notes,
     required this.isAccepted,
     required this.user,
+    this.canDownloadOffers = false,
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) {
@@ -353,6 +385,7 @@ class Offer {
       notes: json['notes'].toString(),
       isAccepted: json['is_accepted'].toString(),
       user: User.fromJson(json['user']),
+      canDownloadOffers: json['can_download_offers'] ?? false,
     );
   }
 }
