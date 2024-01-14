@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,13 +52,54 @@ class _PaymentOfferCheckState extends State<PaymentOfferCheck> {
   int selectedContainerIndex = -1;
   String _selectedAddress = '';
   String _selectedAddressId = '';
+  double? _price;
+
+
+  // Add a callback parameter to the function
+Future<void> Pdfprice(BuildContext context, Function(double) onPriceFetched) async {
+  var url = Uri.parse('https://slfsparepart.com/api/settings/pdf');
+  final prefs = await SharedPreferences.getInstance();
+  final String? authToken = prefs.getString('auth_token');
+  try {
+    var response = await http.get(
+      url,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      double price = (jsonResponse['pdf_price'] as num).toDouble();
+
+      onPriceFetched(price); 
+      print('Response body: ${response.body}');
+    } else {
+      // Handle error or invalid status code
+    }
+  } catch (e) {
+    // Handle any exceptions
+    print('Error occurred: $e');
+  }
+}
+
 
   @override
   void initState() {
     super.initState();
     fetchSelectedAddress();
+    fetchPrice();
   }
-
+  void fetchPrice() {
+    Pdfprice(context, (double price) {
+      setState(() {
+        _price = price;
+      });
+    });
+  }
   void startMyFatoorahPayment() async {
     try {
       var response = await MyFatoorah.startPayment(
@@ -65,7 +108,7 @@ class _PaymentOfferCheckState extends State<PaymentOfferCheck> {
           currencyIso: Country.SaudiArabia,
           successUrl: 'https://media.istockphoto.com/id/1077567192/ko/%EB%B2%A1%ED%84%B0/%EB%B2%A1%ED%84%B0-%EC%82%AC%EC%8B%A4-%ED%99%95%EC%9D%B8-%ED%91%9C%EC%8B%9C-%EC%95%84%EC%9D%B4%EC%BD%98.jpg?s=170667a&w=0&k=20&c=RCuI9gkfeh3h7JUDZSHlXX7aJrEqOzgXx4-jpqAbstk=',
           errorUrl: 'https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_1280.png',
-          invoiceAmount: 100,
+          invoiceAmount: _price!,
           language: ApiLanguage.English,
           token:
               'rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL',
@@ -217,6 +260,17 @@ class _PaymentOfferCheckState extends State<PaymentOfferCheck> {
                   selectContainer(1);
                 },
               ),
+              if (_price != null)
+              Text(
+                'Price: $_price',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: deepPurple,
+                  fontFamily: 'Roboto',
+                ),
+              ),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

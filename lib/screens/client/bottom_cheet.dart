@@ -129,7 +129,7 @@ Future<void> rateOrder(int orderId, int stars, String comment) async {
                     return;
                   }
 
-                  await rateOrder(widget.orderId, _rating, commentController.text);
+                  await rateOrder(widget.orderId, _rating, commentController.text?? 'Great');
                   Navigator.pop(context); // Dismiss bottom sheet after submitting
                   // Optionally, navigate to another page if needed
                 },

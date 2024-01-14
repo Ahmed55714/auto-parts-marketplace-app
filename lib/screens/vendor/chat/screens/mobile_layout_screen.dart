@@ -119,7 +119,7 @@ class ContactsList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text("Error: ${snapshot.error}"));
+          return Center(child: Text("No Messages now try Agin later"));
         } else if (snapshot.hasData) {
           return ListView.builder(
             shrinkWrap: true,
