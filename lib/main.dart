@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,7 @@ import 'package:work2/getx/update_profile.dart';
 
 import 'package:work2/screens/client/Complain_client.dart';
 
+import 'generated/l10n.dart';
 import 'getx/auth.dart';
 
 import 'getx/orders.dart';
@@ -33,17 +35,17 @@ import 'screens/vendor/profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await initialization(null); 
+  await initialization(null);
   HttpOverrides.global = MyHttpOverrides();
   Get.put(AuthController());
   Get.put(RegesterController());
   Get.put(UpdateProfileController());
   Get.put(OrdersController());
- 
+  Get.put(LocaleController());
+
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
   final userType = prefs.getString('user_type');
-  
 
   String initialRoute = '/';
 
@@ -76,10 +78,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      locale: const Locale('ar'),
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+
       debugShowCheckedModeBanner: false,
       title: 'Flutter App',
       theme: ThemeData(
@@ -89,7 +99,7 @@ class _MyAppState extends State<MyApp> {
       ),
       // home: const OnboardingScreen(),
       initialRoute: widget.initialRoute,
-      
+
       onGenerateRoute: (settings) {
         final routes = <String, WidgetBuilder>{
           '/': (context) => const OnboardingScreen(),
@@ -105,18 +115,14 @@ class _MyAppState extends State<MyApp> {
           '/RegisterationForm': (context) => const RegistrationForm(),
           '/offerform': (context) => OfferForm(
                 orderId: settings.arguments as String,
-          ),
+              ),
           '/ordersrate': (context) => const MyOrders_rate(),
           '/reprt': (context) => const Report(),
-      
           '/profile': (context) => const MyProfile(),
           '/CarForm': (context) => const CarForm(),
           '/Report': (context) => const ReportClient(),
           '/TrueOfferScreen': (context) => TrueOfferScreen(),
-         '/chat': (context) => const MobileLayoutScreen(),
-        
-     
-   
+          '/chat': (context) => const MobileLayoutScreen(),
         };
         final builder = routes[settings.name];
         if (builder == null) {

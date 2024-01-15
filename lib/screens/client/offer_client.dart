@@ -220,10 +220,10 @@ void showPermissionPermanentlyDeniedDialog() {
         } else {
           Get.snackbar(
             "Download Error",
-            "Failed to download the PDF. Status code: ${response.statusCode}",
+            "Failed to Save the PDF. Status code: ${response.statusCode}",
             snackPosition: SnackPosition.BOTTOM,
           );
-          print('Failed to download PDF. Status code: ${response.statusCode}');
+          print('Failed to Save PDF. Status code: ${response.statusCode}');
           print('Response body: ${response.body}');
         }
       } else {
@@ -413,14 +413,14 @@ void showPermissionPermanentlyDeniedDialog() {
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 20),
                         child: CustomButton(
-                          text: 'Download PDF',
+                          text: 'Save PDF',
                           onPressed: () {
                             if (widget.orderIds.isNotEmpty) {
                               savePdf(widget.orderIds);
                             } else {
                               Get.snackbar(
-                                "Download Error",
-                                "Failed to download the PDF. Error: No orders found",
+                                "Save Error",
+                                "Failed to Save the PDF. Error: No orders found",
                                 snackPosition: SnackPosition.BOTTOM,
                               );
                             }

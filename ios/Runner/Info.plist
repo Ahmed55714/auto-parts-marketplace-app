@@ -57,10 +57,16 @@
 		<dict>
 			<key>NSAllowsArbitraryLoads</key>
 			<key>UIFileSharingEnabled</key>
+			<true/>
 			<key>LSSupportsOpeningDocumentsInPlace</key>
 			<true/>
 
-
+<key>CFBundleLocalizations</key>
+<array>
+    <string>en</string>
+    <string>ar</string>
+   
+</array>
 
 	</dict>
 </plist>

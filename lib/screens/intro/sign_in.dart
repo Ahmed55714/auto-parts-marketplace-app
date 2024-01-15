@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:work2/constants/colors.dart';
 import 'package:work2/widgets/custom_button.dart';
 
+import '../../generated/l10n.dart';
 import '../../getx/auth.dart';
 
 class SignIn extends StatefulWidget {
@@ -30,7 +31,7 @@ class _SignInState extends State<SignIn> {
     if (value.isEmpty) {
       setState(() {
         phoneNumberError = 'Please enter your phone number';
-         buttonText = 'Next'; // Reset button text
+        buttonText = 'Next'; // Reset button text
       });
     } else if (value.length < 9) {
       setState(() {
@@ -53,6 +54,8 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    bool isRTL = Directionality.of(context) == TextDirection.rtl;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -63,8 +66,8 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 children: [
                   const SizedBox(height: 139),
-                  const Text(
-                    'Sign in',
+                  Text(
+                    S.of(context).SingIn,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -74,8 +77,8 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Enter your phone number',
+                  Text(
+                    S.of(context).SignIn2,
                     style: TextStyle(
                       fontSize: 16,
 
@@ -115,11 +118,13 @@ class _SignInState extends State<SignIn> {
                               });
                             },
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: isRTL
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Country / Region',
+                                    S.of(context).SignIn4,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -210,9 +215,9 @@ class _SignInState extends State<SignIn> {
                             keyboardType: TextInputType.phone,
                             maxLines: 1,
                             controller: phoneController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: InputBorder.none, // Hides the border
-                              hintText: 'Phone Number',
+                              hintText: S.of(context).SingIn5,
 
                               hintStyle: TextStyle(
                                 fontSize: 14,
@@ -240,14 +245,17 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   const SizedBox(height: 16),
-                  const Center(
-                    child: Text(
-                      'By continuing, you agree to our',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'Roboto',
-                        color: greyColor,
+                  Center(
+                    child: Container(
+                      width: 300,
+                      child: Text(
+                        S.of(context).SignIn3,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Roboto',
+                          color: greyColor,
+                        ),
                       ),
                     ),
                   ),

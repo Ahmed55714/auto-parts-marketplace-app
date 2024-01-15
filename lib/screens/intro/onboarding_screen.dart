@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 import '../../constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../widgets/custom_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -10,10 +12,18 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final LocaleController localeController = Get.put(LocaleController());
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    bool isRTL = Directionality.of(context) == TextDirection.rtl;
+
+    // Adjust alignments and paddings based on the locale
+    EdgeInsetsGeometry padding = isRTL
+        ? const EdgeInsets.only(left: 63.49)
+        : const EdgeInsets.only(right: 63.49);
     return Scaffold(
       backgroundColor: deepPurple,
       body: SafeArea(
@@ -21,6 +31,29 @@ class OnboardingScreen extends StatelessWidget {
           padding: const EdgeInsets.only(top: 63.49),
           child: Column(
             children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: Get.locale?.languageCode == 'en'
+                      ? Image.asset(
+                          'assets/images/unitedstates.png',
+                          width: 35,
+                          height: 35,
+                        )
+                      : Image.asset(
+                          'assets/images/saudiarabia.png',
+                          width: 35,
+                          height: 35,
+                        ),
+                  onPressed: () {
+                    if (Get.locale?.languageCode == 'en') {
+                      localeController.changeLanguage('ar');
+                    } else {
+                      localeController.changeLanguage('en');
+                    }
+                  },
+                ),
+              ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -31,8 +64,8 @@ class OnboardingScreen extends StatelessWidget {
                       height: 25.375,
                     ),
                     const SizedBox(height: 18.13),
-                    const Text(
-                      'Welcome to Your Journey',
+                    Text(
+                      S.of(context).titleBording2,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w400,
@@ -45,8 +78,8 @@ class OnboardingScreen extends StatelessWidget {
                       child: Container(
                         width: 305,
                         height: 50,
-                        child: const Text(
-                          'Explore a world of possibilities and unlock your potential with us!',
+                        child: Text(
+                          S.of(context).titleBording,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,
@@ -62,7 +95,8 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(height: 37.84),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    isRTL ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   Container(
                     child: SvgPicture.asset(
@@ -127,5 +161,12 @@ class OnboardingScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class LocaleController extends GetxController {
+  void changeLanguage(String languageCode) {
+    Locale newLocale = Locale(languageCode);
+    Get.updateLocale(newLocale);
   }
 }

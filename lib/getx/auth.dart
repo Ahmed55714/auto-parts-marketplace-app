@@ -157,41 +157,12 @@ class AuthController extends GetxController {
     return prefs.getString('user_type');
   }
 
-// get list of car types
-
-  // var carTypes = <String>[].obs;
-
-  // @override
-  // void onInit() {
-  //   fetchCarTypes();
-  //   super.onInit();
-  // }
-
-  // void fetchCarTypes() async {
-  //   isLoading(true);
-  //   var url = Uri.parse('https://slfsparepart.com/api/lists/cars');
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final String? authToken = prefs.getString('auth_token');
-  //   try {
-  //     var response = await http.get(
-  //       url,
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Authorization': 'Bearer $authToken',
-  //       },
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       List<dynamic> carTypesJson = json.decode(response.body);
-
-  //       carTypes.value = List<String>.from(carTypesJson);
-  //     } else {
-
-  //     }
-  //   } catch (e) {
-
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
+void switchLanguage() {
+  Locale currentLocale = Get.locale!;
+  if (currentLocale.languageCode == 'en') {
+    Get.updateLocale(Locale('ar', 'AR'));
+  } else {
+    Get.updateLocale(Locale('en', 'US'));
+  }
+}
 }
