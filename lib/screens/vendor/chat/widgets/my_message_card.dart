@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:work2/constants/colors.dart';
 
 class MyMessageCard extends StatelessWidget {
   final String message;
-  final bool isSeen; // Add this property to hold the isSeen status
+  final bool isSeen; 
 
   const MyMessageCard({
     Key? key,
     required this.message,
-    required this.isSeen, // Make sure to pass this in the constructor
+    required this.isSeen, 
   }) : super(key: key);
 
   @override
@@ -58,6 +57,7 @@ class MyMessageCard extends StatelessWidget {
                       size: 20,
                       color: isSeen ? Colors.white : Colors.purple,
                     ),
+                    
                   ],
                 ),
               ),

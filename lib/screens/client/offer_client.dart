@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/payment.dart';
-
 import '../../widgets/custom_button.dart';
 import 'vedor_profile.dart';
 import 'package:http/http.dart' as http;
@@ -22,10 +25,12 @@ class OfferClient extends StatefulWidget {
 class _OfferClientState extends State<OfferClient> {
   var offers = <int, List<Offer>>{}.obs;
   Map<int, bool> canDownloadOffersMap = {};
+  var isLoading = false.obs;
 
   @override
   void initState() {
     super.initState();
+  
   }
 
   Future<bool> checkCanDownloadOffers() async {
@@ -131,6 +136,117 @@ class _OfferClientState extends State<OfferClient> {
     }
   }
 
+Future<void> requestStoragePermission() async {
+  PermissionStatus status = await Permission.manageExternalStorage.request();
+
+  if (status.isGranted) {
+    print("Permission granted");
+    // Proceed with file operations
+    savePdf(widget.orderIds);
+  } else if (status.isDenied) {
+    print("Permission denied");
+    // Handle permission denied (show a message to the user)
+   
+  } else if (status.isPermanentlyDenied) {
+    print("Permission permanently denied");
+    // Handle permanent denial (show a dialog to guide the user)
+    showPermissionPermanentlyDeniedDialog();
+  }
+}
+void showPermissionPermanentlyDeniedDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Permission Required"),
+        content: Text("Please enable storage permission in the app settings."),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Open Settings"),
+            onPressed: () {
+              openAppSettings();
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+
+
+  Future<void> savePdf(List<int> orderIds) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+    final Uri apiEndpoint = Uri.parse(
+        "https://slfsparepart.com/api/orders/${orderIds[0]}/offers/download");
+    isLoading(true);
+    try {
+      final status = await Permission.manageExternalStorage.request();
+
+      if (status.isGranted) {
+        final response = await http.get(
+          apiEndpoint,
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $authToken',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final directory = await getExternalStorageDirectory();
+          final filePath = '${directory?.path ?? ''}/offers_${orderIds[0]}.pdf';
+          final file = File(filePath);
+
+          await file.writeAsBytes(response.bodyBytes);
+
+          // Check if the file exists before attempting to open it
+          if (await file.exists()) {
+            final result = await OpenFile.open(filePath);
+            if (result.type != ResultType.done) {
+              throw Exception('Failed to open the file: ${result.message}');
+            }
+          } else {
+            throw Exception('File does not exist at path: $filePath');
+          }
+        } else {
+          Get.snackbar(
+            "Download Error",
+            "Failed to download the PDF. Status code: ${response.statusCode}",
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          print('Failed to download PDF. Status code: ${response.statusCode}');
+          print('Response body: ${response.body}');
+        }
+      } else {
+        Get.snackbar(
+          "Permission Denied",
+          "Permission to manage external storage is required to download PDF.",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Download Error",
+        "Failed to download the PDF. Error: $e",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      print('Error during PDF download: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+
+
   int current = 0;
   final PageController pageController = PageController();
 
@@ -216,7 +332,10 @@ class _OfferClientState extends State<OfferClient> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Payment(offerId: offer.id),
+                      builder: (context) => Payment(
+                        offerId: offer.id,
+                        price: offer.price,
+                      ),
                     ),
                   );
                 },
@@ -296,7 +415,15 @@ class _OfferClientState extends State<OfferClient> {
                         child: CustomButton(
                           text: 'Download PDF',
                           onPressed: () {
-                            // Implement your PDF download functionality here
+                            if (widget.orderIds.isNotEmpty) {
+                              savePdf(widget.orderIds);
+                            } else {
+                              Get.snackbar(
+                                "Download Error",
+                                "Failed to download the PDF. Error: No orders found",
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                            }
                           },
                         ),
                       ),

@@ -21,10 +21,8 @@ import 'offer_client.dart';
 import 'order_repo.dart';
 
 class OrdersClient extends StatefulWidget {
-
   const OrdersClient({
     Key? key,
-    
   }) : super(key: key);
 
   @override
@@ -144,7 +142,6 @@ class _OrdersClientState extends State<OrdersClient> {
 
   @override
   void initState() {
-    
     super.initState();
     fetchUnreadMessageCount();
     fetchOrders().then((fetchedOrders) {
@@ -265,7 +262,6 @@ class _OrdersClientState extends State<OrdersClient> {
                     CustomContainerButton(
                       text: "New Request",
                       onPressed: () {
-                        
                         //List<int> orderIds = getOrderIds();
                         regesterController.navigateBasedClint2(context);
                       },
@@ -391,6 +387,8 @@ class _OrdersClientState extends State<OrdersClient> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => OrderRepo(orderId: order.id)));
+           
+              
             },
           )
         else if (order.status != 'Canceled')

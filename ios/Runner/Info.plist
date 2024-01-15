@@ -56,7 +56,10 @@
 		<key>NSAppTransportSecurity</key>
 		<dict>
 			<key>NSAllowsArbitraryLoads</key>
+			<key>UIFileSharingEnabled</key>
+			<key>LSSupportsOpeningDocumentsInPlace</key>
 			<true/>
+
 
 
 	</dict>

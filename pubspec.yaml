@@ -51,7 +51,9 @@ dependencies:
   firebase_auth: ^4.15.3
   photo_view: ^0.14.0
   my_fatoorah: ^3.3.0
-  
+  open_file: ^3.2.1
+  path_provider: ^2.1.2
+  permission_handler: ^10.3.0
 
  
 

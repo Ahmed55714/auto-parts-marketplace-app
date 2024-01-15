@@ -29,6 +29,9 @@ class MobileChatScreen extends StatefulWidget {
 
 class _MobileChatScreenState extends State<MobileChatScreen> {
   final TextEditingController _messageController = TextEditingController();
+    final ScrollController _scrollController = ScrollController();
+
+
   var messages = <Message>[].obs;
   Timer? _timer;
 
@@ -58,14 +61,15 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
         var data = jsonDecode(response.body);
    
         await fetchMessages(widget.userId);
+        print(data);
       } else {
         // Handle error
         
-       
+       print(response.body);
       }
     } catch (e) {
       // Handle any exceptions here
-      
+      print(e);
     } finally {
       // Stop loading indication
       // isLoading(false);
@@ -94,6 +98,15 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
           .map((message) => Message.fromJson(message))
           .toList();
       messages.assignAll(fetchedMessages);
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
       
     } else {
       throw Exception('Failed to load messages: ${response.body}');
@@ -104,6 +117,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
   void initState() {
     super.initState();
     fetchMessages(widget.userId);
+    
     _startRefreshTimer();
   }
 
@@ -168,6 +182,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                   }
 
                   return ListView.builder(
+                    controller: _scrollController,
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
                       var message = messages[index];
@@ -265,7 +280,7 @@ class Message {
     return Message(
       id: json['id'],
       content: json['content'],
-      isSeen: json['is_seen'] == "1", // Parse the string to a boolean
+      isSeen: json['is_seen'].toString() == "1", // Parse the string to a boolean
       iSentThis: json['i_sent_this'] == true,
     );
   }
