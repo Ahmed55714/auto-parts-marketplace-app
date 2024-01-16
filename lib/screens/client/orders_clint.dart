@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../getx/orders.dart';
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
@@ -848,14 +849,18 @@ class ImageViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageUrl = ModalRoute.of(context)!.settings.arguments as String?;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Image View'),
-      ),
-      body: Center(
-        child: imageUrl != null
-            ? Image.network(imageUrl)
-            : Text('Image not available'),
+    return Directionality(
+      textDirection: ui.TextDirection.ltr,
+      child: Scaffold(
+        appBar: AppBar(
+          title:
+            Text(S.of(context).ImageView)
+        ),
+        body: Center(
+          child: imageUrl != null
+              ? Image.network(imageUrl)
+              : Text(S.of(context).Imagenot),
+        ),
       ),
     );
   }
@@ -868,17 +873,20 @@ class LocationViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Location View'),
-      ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: location,
-          zoom: 14.0,
+    return Directionality(
+      textDirection: ui.TextDirection.ltr,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(S.of(context).LocationView),
         ),
-        markers: {Marker(markerId: MarkerId('loc'), position: location)},
-        zoomControlsEnabled: false,
+        body: GoogleMap(
+          initialCameraPosition: CameraPosition(
+            target: location,
+            zoom: 14.0,
+          ),
+          markers: {Marker(markerId: MarkerId('loc'), position: location)},
+          zoomControlsEnabled: false,
+        ),
       ),
     );
   }

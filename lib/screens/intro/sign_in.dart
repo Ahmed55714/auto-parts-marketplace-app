@@ -163,27 +163,43 @@ class _SignInState extends State<SignIn> {
                                           S.of(context).Picker,
                                           style: TextStyle(
                                             fontSize: 36,
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight: FontWeight.w500,
                                             color: Colors.black,
                                           ),
                                         ),
                                       ),
                                       searchBarDecoration: InputDecoration(
                                         hintText: S.of(context).Search,
-                                        contentPadding: EdgeInsets.all(
-                                            12.0), // Adjust padding as needed
+                                        contentPadding: EdgeInsets.all(12.0),
                                         border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              20.0), // Adjust the radius as needed
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey,
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          // Added this line
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
                                           borderSide: BorderSide(
                                             color: Colors
-                                                .grey, // Specify the border color
-                                            width:
-                                                1.0, // Specify the border width
+                                                .grey, // You can change this color as needed
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          // And this line
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .grey, // And the color here
+                                            width: 1.0,
                                           ),
                                         ),
                                       ),
-                                      
                                     ).showPicker(context: context);
 
                                     setState(() {
@@ -223,7 +239,7 @@ class _SignInState extends State<SignIn> {
                                         width: 35,
                                         alignment: Alignment.center,
                                         countryCode: countryCode!)
-                                    :  Text(
+                                    : Text(
                                         S.of(context).KSA,
                                         style: TextStyle(
                                           fontSize: 14,
@@ -294,19 +310,25 @@ class _SignInState extends State<SignIn> {
                     ),
                   const SizedBox(height: 16),
                   Center(
-                    child: Container(
-                      width: 300,
-                      child: Text(
-                        S.of(context).SignIn3,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Roboto',
-                          color: greyColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width *
+                              0.9, // Adjust the width as needed
+                          child: Text(
+                           S.of(context).SignIn3,
+                            textAlign:
+                                TextAlign.center, // Center align the text
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Roboto',
+                              color: greyColor,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   const SizedBox(height: 34),
                   CustomButton(
                       text: buttonText,

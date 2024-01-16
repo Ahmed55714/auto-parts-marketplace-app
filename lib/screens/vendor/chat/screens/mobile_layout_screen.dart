@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:work2/constants/colors.dart';
+import 'package:work2/generated/l10n.dart';
 
 import '../../Bottom_nav.dart';
 import 'package:http/http.dart' as http;
@@ -66,35 +67,38 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      BackButtonDeep(),
-                    ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        BackButtonDeep(),
+                      ],
+                    ),
                   ),
-                ),
-                Text(
-                  'Chat',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: deepPurple,
+                  Text(
+                    S.of(context).Chat,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: deepPurple,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-               ContactsList(
-                  contactsFuture: contactsFuture,
-               ),
-              ],
+                  const SizedBox(height: 10),
+                 ContactsList(
+                    contactsFuture: contactsFuture,
+                 ),
+                ],
+              ),
             ),
           ),
         ),

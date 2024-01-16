@@ -8,6 +8,7 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../generated/l10n.dart';
 import '../../Bottom_nav.dart';
 import '../widgets/my_message_card.dart';
 import '../widgets/sender_message_card.dart';
@@ -129,127 +130,130 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
                 ),
-              ),
-              child: Row(
-                children: [
-                  BackButtonDeep(),
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      widget.pic ?? 'https://picsum.photos/250?image=9',
+                child: Row(
+                  children: [
+                    BackButtonDeep(),
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        widget.pic ?? 'https://picsum.photos/250?image=9',
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.name ?? 'Loading...',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      // Text(
-                      //   'Active Now',
-                      //   style: TextStyle(
-                      //     fontSize: 12,
-                      //     color: Colors.green,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                  Spacer(),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Obx(
-                () {
-                  if (messages.isEmpty) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      var message = messages[index];
-                      if (message.iSentThis) {
-                        return MyMessageCard(
-                          message: message.content,
-                          isSeen: message.isSeen,
-                        );
-                      } else {
-                        return SenderMessageCard(
-                          message: message.content,
-                        );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30.0),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(0, 3),
-                        blurRadius: 5,
-                        color: Colors.grey.withOpacity(0.5),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _messageController,
-                          decoration: InputDecoration(
-                            hintText: "Write your message",
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 10.0),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.name ?? 'Loading...',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.send,
-                            color: Theme.of(context).primaryColor),
-                        onPressed: () {
-                          if (_messageController.text.isNotEmpty) {
-                            postMessage(content: _messageController.text)
-                                .then((_) {
-                              // Clear the message input field after sending the message
-                              setState(() {
-                                _messageController.clear();
+                        // Text(
+                        //   'Active Now',
+                        //   style: TextStyle(
+                        //     fontSize: 12,
+                        //     color: Colors.green,
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                    Spacer(),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Obx(
+                  () {
+                    if (messages.isEmpty) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+    
+                    return ListView.builder(
+                      controller: _scrollController,
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        var message = messages[index];
+                        if (message.iSentThis) {
+                          return MyMessageCard(
+                            message: message.content,
+                            isSeen: message.isSeen,
+                          );
+                        } else {
+                          return SenderMessageCard(
+                            message: message.content,
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30.0),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0, 3),
+                          blurRadius: 5,
+                          color: Colors.grey.withOpacity(0.5),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _messageController,
+                            decoration: InputDecoration(
+                              hintText: S.of(context).Write,
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 10.0),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send,
+                              color: Theme.of(context).primaryColor),
+                          onPressed: () {
+                            if (_messageController.text.isNotEmpty) {
+                              postMessage(content: _messageController.text)
+                                  .then((_) {
+                                // Clear the message input field after sending the message
+                                setState(() {
+                                  _messageController.clear();
+                                });
+                                // Optionally, handle any UI updates here
                               });
-                              // Optionally, handle any UI updates here
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                )),
-          ],
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  )),
+            ],
+          ),
         ),
       ),
     );

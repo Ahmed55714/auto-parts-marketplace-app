@@ -10,6 +10,7 @@ import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 
+import '../../generated/l10n.dart';
 import '../../getx/update_profile.dart';
 import '../../widgets/custom_button.dart';
 
@@ -216,8 +217,8 @@ class _MyProfileState extends State<ProfileClient> {
                       ],
                     ),
                   ),
-                  const Text(
-                    'Profile',
+                   Text(
+                    S.of(context).Profile,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -272,12 +273,12 @@ class _MyProfileState extends State<ProfileClient> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                  const Row(
+                   Row(
                     children: [
                       Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
-                          'Personal data',
+                          S.of(context).Profile2,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -288,17 +289,17 @@ class _MyProfileState extends State<ProfileClient> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  buildTextField('Name', nameController, TextInputType.text),
-                  buildTextField('Phone Number', phoneNumberController,
+                  buildTextField(S.of(context).Profile3, nameController, TextInputType.text),
+                  buildTextField(S.of(context).Profile4, phoneNumberController,
                       TextInputType.number),
                   buildTextField(
-                      'Email', emailController, TextInputType.emailAddress),
-                  const Row(
+                      S.of(context).Profile5, emailController, TextInputType.emailAddress),
+                  Row(
                     children: [
                       Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
-                          'Addresses',
+                          S.of(context).Profile6,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -312,7 +313,7 @@ class _MyProfileState extends State<ProfileClient> {
                       ? Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            'Please add an address in your profile.',
+                            S.of(context).Profile10,
                             style: TextStyle(
                               fontSize: 16,
                               color: deepPurple,
@@ -345,7 +346,7 @@ class _MyProfileState extends State<ProfileClient> {
                           ),
                         ),
                   CustomButtongrey(
-                    text: '+ Add address',
+                    text: S.of(context).Profile8,
                     onPressed: () {
                       _showEditAddressBottomSheet(context);
                     },
@@ -388,14 +389,13 @@ class _MyProfileState extends State<ProfileClient> {
                         icon: const Icon(Icons.close),
                         onPressed: () => Navigator.pop(context),
                       ),
-                      const Text(
-                        'Edit Address',
+                       Text(
+                        S.of(context).Edit,
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
                             color: deepPurple),
                       ),
-                      // Use an empty container to center the title if there is no right-side icon.
                       Container(width: 48, height: 48),
                     ],
                   ),
@@ -415,30 +415,30 @@ class _MyProfileState extends State<ProfileClient> {
                           ),
                         ),
                         buildTextField(
-                            'Name', namePlaceController, TextInputType.text),
+                            S.of(context).Profile3, namePlaceController, TextInputType.text),
                         const SizedBox(height: 16),
                         buildTextField(
-                            'Street', streetController, TextInputType.text),
+                            S.of(context).Edit2, streetController, TextInputType.text),
                         const SizedBox(height: 16),
                         Row(
                           children: [
                             Expanded(
-                              child: buildTextField('Building',
+                              child: buildTextField(S.of(context).Edit3,
                                   buildingController, TextInputType.number),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: buildTextField('Floor', floorController,
+                              child: buildTextField(S.of(context).Edit4, floorController,
                                   TextInputType.number),
                             ),
                             const SizedBox(width: 16),
                           ],
                         ),
                         buildTextField(
-                            'Apt', aptController, TextInputType.number),
+                            S.of(context).Edit5, aptController, TextInputType.number),
                         const SizedBox(height: 16),
                         CustomButton(
-                            text: 'save',
+                            text: S.of(context).Profile9,
                             onPressed: () async {
                               if (_bottomSheetFormKey.currentState!
                                   .validate()) {
@@ -483,12 +483,12 @@ class _MyProfileState extends State<ProfileClient> {
         ),
         const SizedBox(height: 8),
         CustomTextField(
-          labelText: 'Enter $label',
+          labelText: '${S.of(context).Name2} $label',
           controller: controller,
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -565,7 +565,7 @@ class _MyProfileState extends State<ProfileClient> {
         const SizedBox(height: 10),
         const SizedBox(height: 27),
         CustomButton(
-          text: 'Save',
+          text: S.of(context).Profile9,
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               await updateController.updateProfile(
@@ -783,8 +783,8 @@ class _CustomSelectionState extends State<CustomSelection> {
                     margin: const EdgeInsets.only(right: 16, bottom: 10),
                     child: GestureDetector(
                       onTap: widget.onDelete,
-                      child: const Text(
-                        'Delete',
+                      child: Text(
+                        S.of(context).Profile7,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,

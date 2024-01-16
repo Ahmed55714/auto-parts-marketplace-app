@@ -209,6 +209,866 @@ class S {
       args: [],
     );
   }
+
+  /// `New OTP sent successfully`
+  String get snack {
+    return Intl.message(
+      'New OTP sent successfully',
+      name: 'snack',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error resending OTP`
+  String get snack2 {
+    return Intl.message(
+      'Error resending OTP',
+      name: 'snack2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verification Code`
+  String get verification {
+    return Intl.message(
+      'Verification Code',
+      name: 'verification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We sent you the 6 digit code to  Enter the code below to confirm your phone number`
+  String get verification2 {
+    return Intl.message(
+      'We sent you the 6 digit code to  Enter the code below to confirm your phone number',
+      name: 'verification2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify`
+  String get Verification3 {
+    return Intl.message(
+      'Verify',
+      name: 'Verification3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don’t received link? `
+  String get Dont {
+    return Intl.message(
+      'Don’t received link? ',
+      name: 'Dont',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resend`
+  String get Resend {
+    return Intl.message(
+      'Resend',
+      name: 'Resend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Up`
+  String get SignUP {
+    return Intl.message(
+      'Sign Up',
+      name: 'SignUP',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to SLF please choose your account type to continue`
+  String get SignUp2 {
+    return Intl.message(
+      'Welcome to SLF please choose your account type to continue',
+      name: 'SignUp2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign up as Client`
+  String get SignUP3 {
+    return Intl.message(
+      'Sign up as Client',
+      name: 'SignUP3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign up as service provider`
+  String get SignUP4 {
+    return Intl.message(
+      'Sign up as service provider',
+      name: 'SignUP4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Special Client`
+  String get SignUP5 {
+    return Intl.message(
+      'Special Client',
+      name: 'SignUP5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Account`
+  String get MyAccount {
+    return Intl.message(
+      'My Account',
+      name: 'MyAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit your Profile`
+  String get MyAccount2 {
+    return Intl.message(
+      'Edit your Profile',
+      name: 'MyAccount2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Complain`
+  String get MyAccount3 {
+    return Intl.message(
+      'Add Complain',
+      name: 'MyAccount3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms and conditions`
+  String get MyAccount4 {
+    return Intl.message(
+      'Terms and conditions',
+      name: 'MyAccount4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log out`
+  String get MyAccount5 {
+    return Intl.message(
+      'Log out',
+      name: 'MyAccount5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get Name {
+    return Intl.message(
+      'Name',
+      name: 'Name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile`
+  String get Profile {
+    return Intl.message(
+      'Profile',
+      name: 'Profile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal data`
+  String get Profile2 {
+    return Intl.message(
+      'Personal data',
+      name: 'Profile2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get Profile3 {
+    return Intl.message(
+      'Name',
+      name: 'Profile3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter`
+  String get Name2 {
+    return Intl.message(
+      'Enter',
+      name: 'Name2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone Number`
+  String get Profile4 {
+    return Intl.message(
+      'Phone Number',
+      name: 'Profile4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter`
+  String get Name3 {
+    return Intl.message(
+      'Please enter',
+      name: 'Name3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get Profile5 {
+    return Intl.message(
+      'Email',
+      name: 'Profile5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Addresses`
+  String get Profile6 {
+    return Intl.message(
+      'Addresses',
+      name: 'Profile6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get Profile7 {
+    return Intl.message(
+      'Delete',
+      name: 'Profile7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `+ Add address`
+  String get Profile8 {
+    return Intl.message(
+      '+ Add address',
+      name: 'Profile8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get Profile9 {
+    return Intl.message(
+      'Save',
+      name: 'Profile9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please add an address in your profile.`
+  String get Profile10 {
+    return Intl.message(
+      'Please add an address in your profile.',
+      name: 'Profile10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Address`
+  String get Edit {
+    return Intl.message(
+      'Edit Address',
+      name: 'Edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Street`
+  String get Edit2 {
+    return Intl.message(
+      'Street',
+      name: 'Edit2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Building`
+  String get Edit3 {
+    return Intl.message(
+      'Building',
+      name: 'Edit3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Floor`
+  String get Edit4 {
+    return Intl.message(
+      'Floor',
+      name: 'Edit4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apt`
+  String get Edit5 {
+    return Intl.message(
+      'Apt',
+      name: 'Edit5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Orders`
+  String get Orders {
+    return Intl.message(
+      'Orders',
+      name: 'Orders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Needed car piece`
+  String get Needed {
+    return Intl.message(
+      'Needed car piece',
+      name: 'Needed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Car Model`
+  String get CarModel {
+    return Intl.message(
+      'Car Model',
+      name: 'CarModel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chassis number`
+  String get Chassis {
+    return Intl.message(
+      'Chassis number',
+      name: 'Chassis',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece type`
+  String get pieceType {
+    return Intl.message(
+      'Piece type',
+      name: 'pieceType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece details`
+  String get pieceDetails {
+    return Intl.message(
+      'Piece details',
+      name: 'pieceDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get Date {
+    return Intl.message(
+      'Date',
+      name: 'Date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Car Licence`
+  String get carLicence {
+    return Intl.message(
+      'Car Licence',
+      name: 'carLicence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Near places`
+  String get nearPlaces {
+    return Intl.message(
+      'Near places',
+      name: 'nearPlaces',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Order Status`
+  String get orderStatus {
+    return Intl.message(
+      'Order Status',
+      name: 'orderStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Out for delivery`
+  String get Outfordelivery {
+    return Intl.message(
+      'Out for delivery',
+      name: 'Outfordelivery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delivered`
+  String get Delivered {
+    return Intl.message(
+      'Delivered',
+      name: 'Delivered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make Offer`
+  String get makeoffer {
+    return Intl.message(
+      'Make Offer',
+      name: 'makeoffer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decline`
+  String get Decline {
+    return Intl.message(
+      'Decline',
+      name: 'Decline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Order is already delivered`
+  String get DeleverdText {
+    return Intl.message(
+      'Order is already delivered',
+      name: 'DeleverdText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image 1`
+  String get Image1 {
+    return Intl.message(
+      'Image 1',
+      name: 'Image1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image 2`
+  String get Image2 {
+    return Intl.message(
+      'Image 2',
+      name: 'Image2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show Location`
+  String get ShowLocation {
+    return Intl.message(
+      'Show Location',
+      name: 'ShowLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image View`
+  String get ImageView {
+    return Intl.message(
+      'Image View',
+      name: 'ImageView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image not available`
+  String get Imagenot {
+    return Intl.message(
+      'Image not available',
+      name: 'Imagenot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location View`
+  String get LocationView {
+    return Intl.message(
+      'Location View',
+      name: 'LocationView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `try again later`
+  String get Try {
+    return Intl.message(
+      'try again later',
+      name: 'Try',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue Registration to be able to see orders`
+  String get Re {
+    return Intl.message(
+      'Continue Registration to be able to see orders',
+      name: 'Re',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete Registration`
+  String get Re2 {
+    return Intl.message(
+      'Complete Registration',
+      name: 'Re2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your application is under review, please wait for the approval`
+  String get Re3 {
+    return Intl.message(
+      'Your application is under review, please wait for the approval',
+      name: 'Re3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error occurred while loading orders`
+  String get error {
+    return Intl.message(
+      'Error occurred while loading orders',
+      name: 'error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No data available`
+  String get error2 {
+    return Intl.message(
+      'No data available',
+      name: 'error2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to cancel Your Order?`
+  String get Are {
+    return Intl.message(
+      'Are you sure you want to cancel Your Order?',
+      name: 'Are',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can you tell us the reason?`
+  String get Are2 {
+    return Intl.message(
+      'Can you tell us the reason?',
+      name: 'Are2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment`
+  String get comment {
+    return Intl.message(
+      'Comment',
+      name: 'comment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get Done {
+    return Intl.message(
+      'Done',
+      name: 'Done',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please provide a reason for cancellation`
+  String get Please {
+    return Intl.message(
+      'Please provide a reason for cancellation',
+      name: 'Please',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chat`
+  String get Chat {
+    return Intl.message(
+      'Chat',
+      name: 'Chat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write your message`
+  String get Write {
+    return Intl.message(
+      'Write your message',
+      name: 'Write',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offer Form`
+  String get Offer1 {
+    return Intl.message(
+      'Offer Form',
+      name: 'Offer1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece`
+  String get Offer2 {
+    return Intl.message(
+      'Piece',
+      name: 'Offer2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country Made in`
+  String get Offer3 {
+    return Intl.message(
+      'Country Made in',
+      name: 'Offer3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country`
+  String get Offer31 {
+    return Intl.message(
+      'Country',
+      name: 'Offer31',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year Model`
+  String get Offer4 {
+    return Intl.message(
+      'Year Model',
+      name: 'Offer4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year`
+  String get Offer41 {
+    return Intl.message(
+      'Year',
+      name: 'Offer41',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New/Used`
+  String get Offer5 {
+    return Intl.message(
+      'New/Used',
+      name: 'Offer5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get Offer6 {
+    return Intl.message(
+      'Price',
+      name: 'Offer6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add photos`
+  String get Offer7 {
+    return Intl.message(
+      'Add photos',
+      name: 'Offer7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `please update an image for license`
+  String get Offer8 {
+    return Intl.message(
+      'please update an image for license',
+      name: 'Offer8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extra note`
+  String get Offer9 {
+    return Intl.message(
+      'Extra note',
+      name: 'Offer9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make an Offer`
+  String get Offer10 {
+    return Intl.message(
+      'Make an Offer',
+      name: 'Offer10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Note`
+  String get Offers11 {
+    return Intl.message(
+      'Enter Note',
+      name: 'Offers11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Car Type`
+  String get Offers12 {
+    return Intl.message(
+      'Select Car Type',
+      name: 'Offers12',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You made an Offer!`
+  String get Offers13 {
+    return Intl.message(
+      'You made an Offer!',
+      name: 'Offers13',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check your orders to see the status of your order from Order page.`
+  String get Offers14 {
+    return Intl.message(
+      'Check your orders to see the status of your order from Order page.',
+      name: 'Offers14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Orders`
+  String get Offers15 {
+    return Intl.message(
+      'Orders',
+      name: 'Offers15',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

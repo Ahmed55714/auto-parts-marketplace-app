@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:work2/widgets/custom_button.dart';
 
 import '../../constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../getx/auth.dart';
 
 class SignUp extends StatefulWidget {
@@ -18,7 +19,6 @@ class _SignUpState extends State<SignUp> {
   void handleSignUp(String userType) async {
     // Call the postType method from AuthController
     await authController.postType(userType);
-    
 
     // After posting the type, navigate to the next screen based on userType
     if (userType == 'client') {
@@ -41,9 +41,9 @@ class _SignUpState extends State<SignUp> {
         child: Column(
           children: [
             const SizedBox(height: 100),
-            const Center(
+             Center(
               child: Text(
-                'Sign Up',
+                S.of(context).SignUP,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -58,13 +58,24 @@ class _SignUpState extends State<SignUp> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: 340,
-                    child: const Text(
-                      'Welecome to SLF please choose your account type to continue. ',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Roboto',
-                        color: greyColor,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width *
+                              0.9, // Adjust the width as needed
+                          child: Text(
+                           S.of(context).SignUp2,
+                            textAlign:
+                                TextAlign.center, // Center align the text
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Roboto',
+                              color: greyColor,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -79,19 +90,19 @@ class _SignUpState extends State<SignUp> {
             ),
             const SizedBox(height: 59),
             CustomButton2(
-                text: 'Sign up as Client',
+                text: S.of(context).SignUP3,
                 onPressed: () {
                   handleSignUp('client');
                 }),
             const SizedBox(height: 12),
             CustomButton2(
-                text: 'Sign up as service provider',
+                text: S.of(context).SignUP4,
                 onPressed: () {
                   handleSignUp('vendor');
                 }),
             const SizedBox(height: 12),
             CustomButton2(
-                text: 'Special Client',
+                text: S.of(context).SignUP5,
                 onPressed: () {
                   handleSignUp('special_client');
                 })

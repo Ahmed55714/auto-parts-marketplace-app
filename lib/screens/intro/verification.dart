@@ -3,8 +3,8 @@ import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../getx/auth.dart';
 import '../../widgets/custom_button.dart';
 
@@ -35,12 +35,12 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
       // Show a message to the user indicating that the OTP has been resent
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('New OTP sent successfully')),
+        SnackBar(content: Text(S.of(context).snack)),
       );
     } catch (e) {
       // Handle any errors that occur during OTP resending
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error resending OTP: $e')),
+        SnackBar(content: Text(S.of(context).snack2)),
       );
     }
   }
@@ -53,14 +53,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
         verificationCompleted: (PhoneAuthCredential credential) {},
         verificationFailed: (FirebaseAuthException e) {
           // Handle verification failure
-         
         },
         codeSent: (String verificationId, int? resendToken) {},
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
-    } catch (e) {
-    
-    }
+    } catch (e) {}
   }
 
   Future<void> verifyOTP(String smsCode) async {
@@ -75,7 +72,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       Navigator.pushNamed(context, '/signup');
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.message}')),
+        SnackBar(content: Text(S.of(context).snack2)),
       );
     }
   }
@@ -83,6 +80,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
   @override
   Widget build(BuildContext context) {
     //  final number = ModalRoute.of(context)!.settings.arguments as String;
+    var textDirection = Directionality.of(context);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -92,9 +91,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 86),
-                const Column(
+                Column(
                   children: [
-                    Text('Verification Code',
+                    Text(S.of(context).verification,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -112,13 +111,25 @@ class _VerificationScreenState extends State<VerificationScreen> {
                             child: SizedBox(
                               width: 290,
                               height: 75,
-                              child: Text(
-                                'We sent you the 6 digit code to  Enter the code below to confirm your phone number',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Roboto',
-                                    color: Colors.grey),
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    width:
+                                        290, // You can adjust the width as needed
+                                    child: Text(
+                                      S.of(context).verification2,
+                                      textAlign: TextAlign
+                                          .center, // Center align the text
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Roboto',
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -132,7 +143,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 const SizedBox(height: 37),
                 Center(
                   child: CustomButton(
-                    text: 'Verify',
+                    text: S.of(context).Verification3,
                     onPressed: () {
                       // Navigator.pushNamed(context, '/signup');
                       String completeOTP = _otpControllers
@@ -149,8 +160,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text(
-                        "Don’t received link? ",
+                      Text(
+                        S.of(context).Dont,
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
@@ -161,8 +172,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
                         onTap: () {
                           resendOTP(widget.phoneNumber);
                         },
-                        child: const Text(
-                          "Resend",
+                        child: Text(
+                          S.of(context).Resend,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
@@ -214,10 +225,13 @@ class VerificationCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var textDirection = Directionality.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        textDirection: textDirection,
         children: List.generate(
           6,
           (index) => SizedBox(
@@ -238,6 +252,9 @@ class VerificationCodeForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var textDirection =
+        Directionality.of(context); // Get the current text direction
+
     return TextFormField(
       controller: controller,
       onChanged: (value) {
@@ -247,6 +264,7 @@ class VerificationCodeForm extends StatelessWidget {
       },
       keyboardType: TextInputType.number,
       textAlign: TextAlign.center,
+      textDirection: textDirection,
       inputFormatters: [
         LengthLimitingTextInputFormatter(1),
         FilteringTextInputFormatter.digitsOnly,

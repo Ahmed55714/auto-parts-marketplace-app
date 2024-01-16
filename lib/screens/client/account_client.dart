@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/Terms_and_conditions.dart';
 
 import '../../constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../intro/onboarding_screen.dart';
 import 'Complain_client.dart';
 import 'Profile_clint.dart';
@@ -50,31 +51,27 @@ class _AccountClientState extends State<AccountClient> {
         });
       } else {
         // Handle error
-      
-    
       }
     } catch (e) {
       // Handle any exceptions here
-   
     }
   }
+
   @override
   void initState() {
     super.initState();
     fetchProfilePic();
   }
 
-Future<void> signOut() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove('auth_token');
+  Future<void> signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
 
-  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-    MaterialPageRoute(builder: (context) => OnboardingScreen()),
-    (_) => false, // Remove all routes below the pushed route
-  );
-}
-
-
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => OnboardingScreen()),
+      (_) => false, // Remove all routes below the pushed route
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,11 +79,11 @@ Future<void> signOut() async {
       body: SafeArea(
         child: Column(
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: 20),
               child: Center(
                 child: Text(
-                  'My account',
+                  S.of(context).MyAccount,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -118,7 +115,7 @@ Future<void> signOut() async {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${_name ?? "Name"}',
+                        '${_name ?? S.of(context).Name}',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -130,7 +127,9 @@ Future<void> signOut() async {
                           onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ProfileClient()),
+                                    builder: (context) => Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: ProfileClient())),
                               ))
                     ],
                   ),
@@ -146,7 +145,7 @@ Future<void> signOut() async {
                 MaterialPageRoute(builder: (context) => ReportClient()),
               ),
               child: _buildOptionRow(
-                  'assets/images/clipboard-tick.svg', 'Add Complain'),
+                  'assets/images/clipboard-tick.svg', S.of(context).MyAccount3),
             ),
             const SizedBox(height: 12),
             const _CustomDivider(),
@@ -157,14 +156,15 @@ Future<void> signOut() async {
                 MaterialPageRoute(builder: (context) => TermsAndConditions()),
               ),
               child: _buildOptionRow(
-                  'assets/images/info-circle.svg', 'Terms and conditions'),
+                  'assets/images/info-circle.svg', S.of(context).MyAccount4),
             ),
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),
             GestureDetector(
-              onTap: () => signOut(),
-              child: _buildOptionRow('assets/images/login.svg', 'Log out')),
+                onTap: () => signOut(),
+                child: _buildOptionRow(
+                    'assets/images/login.svg', S.of(context).MyAccount5)),
           ],
         ),
       ),
@@ -207,10 +207,10 @@ class _ProfileInfo extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: onTap,
-          child: const Padding(
+          child: Padding(
             padding: EdgeInsets.only(right: 30),
             child: Text(
-              'Edit your profile',
+              S.of(context).MyAccount2,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,

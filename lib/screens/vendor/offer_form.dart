@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:work2/constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
@@ -55,7 +56,7 @@ class _OfferFormState extends State<OfferForm> {
 
   String? validateField1() {
     if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
-      return 'Please upload an image for license';
+      return S.of(context).Offer8;
     }
     return null;
   }
@@ -83,8 +84,8 @@ class _OfferFormState extends State<OfferForm> {
                       BackButtonDeep(),
                     ],
                   ),
-                  const Text(
-                    'Offer Form',
+                   Text(
+                    S.of(context).Offer1,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -92,24 +93,24 @@ class _OfferFormState extends State<OfferForm> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  buildTextField('Piece', PrieceController, TextInputType.text,
-                      'Piece'),
-                  buildTextField('Country Made in', CountryController,
-                      TextInputType.text, 'Country'),
-                  buildTextField('Year Model', ModelController,
-                      TextInputType.number, 'Year'),
+                  buildTextField(S.of(context).Offer2, PrieceController, TextInputType.text,
+                      S.of(context).Offer2),
+                  buildTextField(S.of(context).Offer3, CountryController,
+                      TextInputType.text, S.of(context).Offer31),
+                  buildTextField(S.of(context).Offer4, ModelController,
+                      TextInputType.number, S.of(context).Offer41,),
                   buildCarTypeField(),
                   buildTextField(
-                      'Price', PriceController, TextInputType.number, 'Price'),
+                      S.of(context).Offer6, PriceController, TextInputType.number, S.of(context).Offer6),
                   Row(
                     children: [
                       CustomText(
-                          text: 'Add photos',
+                          text: S.of(context).Offer7,
                           fontSize: 16,
                           fontWeight: FontWeight.w500),
                     ],
                   ),
-                  buildImagePicker('Add photos', 0),
+                  buildImagePicker(S.of(context).Offer7, 0),
                   if (validateField1() != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
@@ -130,14 +131,14 @@ class _OfferFormState extends State<OfferForm> {
                   Row(
                     children: [
                       CustomText(
-                          text: 'Extra note',
+                          text: S.of(context).Offer9,
                           fontSize: 16,
                           fontWeight: FontWeight.w500),
                     ],
                   ),
                   CustomMultiLineFormField(
                     keyboardType: TextInputType.multiline,
-                    labelText: 'Placeholder',
+                    labelText: S.of(context).Offers11,
                     controller: noteController,
                   ),
 
@@ -164,12 +165,13 @@ class _OfferFormState extends State<OfferForm> {
         ),
         SizedBox(height: 8),
         CustomTextField(
+          fieldHeight: 100,
           labelText: text,
           controller: controller,
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -196,7 +198,7 @@ class _OfferFormState extends State<OfferForm> {
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -212,7 +214,7 @@ String selectedCarType = 'new'; // default value
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       CustomText(
-        text: 'New/Used',
+        text: S.of(context).Offer5,
         fontSize: 16,
         fontWeight: FontWeight.w500,
       ),
@@ -239,7 +241,7 @@ void _showCarTypeDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Select Car Type'),
+        title: Text(S.of(context).Offers12),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: carTypeOptions.map((String option) {
@@ -373,15 +375,7 @@ void _showCarTypeDialog(BuildContext context) {
             ),
           ),
         ),
-        Column(
-          children: [
-            CustomText(
-              text: 'Agree to terms and conditions',
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ],
-        ),
+        
       ],
     );
   }
@@ -391,7 +385,7 @@ void _showCarTypeDialog(BuildContext context) {
       children: [
         const SizedBox(height: 20),
         CustomButton(
-          text: 'Make an Offer',
+          text: S.of(context).Offer10,
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               List<XFile> images = _images
@@ -410,7 +404,9 @@ void _showCarTypeDialog(BuildContext context) {
                 notes: noteController.text,
                 images:images,
               );
-              Navigator.push(context, MaterialPageRoute(builder: (context) => TrueOfferScreen()) );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Directionality(
+                textDirection: TextDirection.ltr,
+                child: TrueOfferScreen())) );
             }
             
             // Navigator.pushNamed(context, '/ordersrate');

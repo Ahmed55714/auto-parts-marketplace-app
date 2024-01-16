@@ -4,6 +4,7 @@ import 'package:work2/screens/vendor/Bottom_nav.dart';
 import 'package:work2/screens/vendor/orders.dart';
 import 'package:work2/widgets/custom_button.dart';
 
+import '../../generated/l10n.dart';
 import '../client/account_client.dart';
 import '../client/map_client.dart';
 import '../client/orders_clint.dart';
@@ -339,8 +340,8 @@ class TrueOfferScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'You made an Offer!',
+               Text(
+                S.of(context).Offers13,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -349,8 +350,8 @@ class TrueOfferScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child: const Text(
-                  'Check your orders to see the status of your order from Order page.',
+                child:  Text(
+                  S.of(context).Offers14,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
@@ -358,12 +359,14 @@ class TrueOfferScreen extends StatelessWidget {
               const SizedBox(height: 32.0),
 
               CustomButton(
-                text: 'Orders',
+                text:  S.of(context).Offers15,
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyOrders(),
+                      builder: (context) => Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: MyOrders()),
                       // const CarForm(),
                     ),
                   );

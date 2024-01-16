@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import 'package:http/http.dart' as http;
 
+import '../../generated/l10n.dart';
 import '../../getx/orders.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
@@ -143,15 +145,17 @@ class _MyOrdersState extends State<MyOrders> {
       );
 
       if (response.statusCode == 200) {
-       refreshOrders();
+        refreshOrders();
       } else {}
     } catch (e) {}
   }
-void refreshOrders() async {
-  setState(() {
-    _futureOrders = fetchOrders(); 
-  });
-}
+
+  void refreshOrders() async {
+    setState(() {
+      _futureOrders = fetchOrders();
+    });
+  }
+
   Future<void> markOrderAsDelivered(int orderId) async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/vendor/orders/$orderId/update");
@@ -236,7 +240,7 @@ void refreshOrders() async {
           );
         } else if (snapshot.hasError) {
           return Scaffold(
-            body: Center(child: Text('try again later')),
+            body: Center(child: Text(S.of(context).Try)),
           );
         } else if (snapshot.hasData) {
           var status = snapshot.data!;
@@ -250,7 +254,7 @@ void refreshOrders() async {
           //       child: Padding(
           //         padding: EdgeInsets.all(16.0),
           //         child: Text(
-          //           'Your application is under review, please wait for the approval',
+          //           S.of(context).Re3,
           //           style: TextStyle(
           //               fontSize: 20,
           //               fontWeight: FontWeight.w500,
@@ -273,19 +277,30 @@ void refreshOrders() async {
                       child: Container(
                         width: 300,
                         child: Center(
-                          child: Text(
-                            'Continue Registration \nto be able to see orders',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: deepPurple),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width *
+                                  0.9, // Adjust the width as needed
+                              child: Text(
+                                S.of(context).Re,
+                                textAlign:
+                                    TextAlign.center, // Center align the text
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Roboto',
+                                  color: greyColor,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20),
                     CustomButton(
-                      text: 'Complete Registration',
+                      text: S.of(context).Re2,
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -319,7 +334,7 @@ void refreshOrders() async {
                 child: Column(
                   children: [
                     Text(
-                      'Orders',
+                      S.of(context).Orders,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
@@ -394,8 +409,7 @@ void refreshOrders() async {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(
-                        child: Text('Error: ${snapshot.error.toString()}'));
+                    return Center(child: Text(S.of(context).error));
                   } else if (snapshot.hasData) {
                     var orders = snapshot.data!;
                     return ListView.builder(
@@ -407,7 +421,7 @@ void refreshOrders() async {
                       },
                     );
                   } else {
-                    return Center(child: Text('No data available'));
+                    return Center(child: Text(S.of(context).error2));
                   }
                 },
               ),
@@ -446,31 +460,31 @@ void refreshOrders() async {
                 ),
                 SizedBox(height: 8),
                 OrderDetailLine(
-                  title: 'Needed car piece',
+                  title: S.of(context).Needed,
                   placeholder: order.carPiece,
                 ),
                 OrderDetailLine(
-                  title: 'Car model',
+                  title: S.of(context).CarModel,
                   placeholder: order.carModel,
                 ),
                 OrderDetailLine(
-                  title: 'Chassis number',
+                  title: S.of(context).Chassis,
                   placeholder: order.chassisNumber,
                 ),
                 OrderDetailLine(
-                  title: 'Piece type',
+                  title: S.of(context).pieceType,
                   placeholder: order.pieceType,
                 ),
                 OrderDetailLine(
-                  title: 'Piece details',
+                  title: S.of(context).pieceDetails,
                   placeholder: order.pieceDetail,
                 ),
                 OrderDetailLine(
-                  title: 'Date',
+                  title: S.of(context).Date,
                   placeholder: DateFormat('yyyy-MM-dd').format(order.date),
                 ),
                 OrderDetailLine(
-                  title: 'Car Licence',
+                  title: S.of(context).carLicence,
                   placeholder: 'Show Image',
                   imageUrl:
                       order.files.isNotEmpty ? order.files[0].fileUrl : null,
@@ -478,12 +492,12 @@ void refreshOrders() async {
                       order.files.length > 1 ? order.files[1].fileUrl : null,
                 ),
                 OrderDetailLine(
-                  title: 'Near places',
+                  title: S.of(context).nearPlaces,
                   placeholder: 'Show Location',
                   location: LatLng(order.latitude, order.longitude),
                 ),
                 OrderDetailLine(
-                  title: 'Order Status',
+                  title: S.of(context).orderStatus,
                   placeholder: order.status,
                   placeholderColor:
                       order.status == 'Pending' ? Colors.red : Colors.green,
@@ -494,7 +508,7 @@ void refreshOrders() async {
         ),
         if (isOrderAccepted)
           CustomButton(
-            text: 'Out for delivery',
+            text: S.of(context).Outfordelivery,
             onPressed: () {
               updateOrderStatus(order.id);
               setState(() {});
@@ -502,7 +516,7 @@ void refreshOrders() async {
           )
         else if (isOrderOutForDelivery)
           CustomButton(
-            text: 'Delivered',
+            text: S.of(context).Delivered,
             onPressed: () async {
               await markOrderAsDelivered(order.id);
 
@@ -512,7 +526,7 @@ void refreshOrders() async {
         else if (isOrderDelivered)
           // Display a message or UI element indicating that the order is already delivered
           Text(
-            'Order is already delivered',
+            S.of(context).DeleverdText,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -524,20 +538,22 @@ void refreshOrders() async {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomButton3(
-                text: 'make offer',
+                text: S.of(context).makeoffer,
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          OfferForm(orderId: order.id.toString()),
+                          Directionality(
+textDirection: ui.TextDirection.ltr,
+                            child: OfferForm(orderId: order.id.toString())),
                     ),
                   );
                 },
               ),
               SizedBox(width: 20),
               CustomButton4(
-                text: 'Decline',
+                text: S.of(context).Decline,
                 onPressed: () {
                   declineOrder(order.id);
                   setState(() {});
@@ -594,16 +610,16 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
           child: Column(
             children: [
               const SizedBox(height: 15),
-              const Text(
-                'Are you sure you want to cancel Your Order?',
+              Text(
+                S.of(context).Are,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 25,
                 ),
               ),
-              const Text(
-                'Can you tell us the reason?',
+              Text(
+                S.of(context).Are2,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -615,12 +631,12 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
               SizedBox(
                 height: 70,
                 child: CustomMultiLineFormField(
-                  labelText: 'comment',
+                  labelText: S.of(context).comment,
                   controller: cancelReasonController,
                 ),
               ),
               CustomButton(
-                text: 'Done',
+                text: S.of(context).Done,
                 onPressed: () {
                   String cancelReason = cancelReasonController.text;
                   if (cancelReason.isNotEmpty) {
@@ -628,9 +644,8 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
                     Navigator.pop(context);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text('Please provide a reason for cancellation'),
+                      SnackBar(
+                        content: Text(S.of(context).Please),
                       ),
                     );
                   }
@@ -668,8 +683,10 @@ class OrderDetailLine extends StatelessWidget {
   Widget build(BuildContext context) {
     Color textColor = _getTextColorBasedOnStatus(placeholder);
     bool isLocationLine =
-        title == 'Near places' && placeholder == 'Show Location';
-    bool isImageLine = title == 'Car Licence' && placeholder == 'Show Image';
+        title == S.of(context).nearPlaces && placeholder == 'Show Location';
+
+    bool isImageLine =
+        title == S.of(context).carLicence && placeholder == 'Show Image';
     bool isCanceledStatus =
         title == 'Order Status' && placeholder == 'Canceled';
     return Row(
@@ -703,7 +720,7 @@ class OrderDetailLine extends StatelessWidget {
                       }
                     },
                     child: Text(
-                      placeholder,
+                      S.of(context).ShowLocation,
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         fontSize: 14,
@@ -728,7 +745,7 @@ class OrderDetailLine extends StatelessWidget {
                               }
                             },
                             child: Text(
-                              'Image 1',
+                              S.of(context).Image1,
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 fontSize: 14,
@@ -750,7 +767,7 @@ class OrderDetailLine extends StatelessWidget {
                               }
                             },
                             child: Text(
-                              'Image 2', // Display the second image text
+                              S.of(context).Image2,
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 fontSize: 14,
@@ -808,85 +825,6 @@ void _showMapDialog(BuildContext context, LatLng location) {
       );
     },
   );
-}
-
-class CancelOrderSection extends StatelessWidget {
-  const CancelOrderSection({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomButton5(text: 'Cancel Order', onPressed: () {}),
-          ],
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 1),
-        ),
-        Text('Your order has been canceled.',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w300,
-              color: greyColor,
-            )),
-        const SizedBox(height: 10)
-      ],
-    );
-  }
-}
-
-class CustomContainerButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-  final String svgIconPath; // Path to your SVG icon
-
-  const CustomContainerButton({
-    Key? key,
-    required this.text,
-    required this.onPressed,
-    required this.svgIconPath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 20 * 17,
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.deepPurple, width: 2.0),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              svgIconPath,
-              color: Colors.deepPurple,
-              height: 24,
-              width: 24,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.26,
-                fontWeight: FontWeight.w500,
-                color: Colors.deepPurple,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class Order {

@@ -172,63 +172,6 @@ class _ClientMapState extends State<MyMap> {
   }
 }
 
-class CustomGoogleMap extends StatefulWidget {
-  final List<PersonLocation> locations;
-
-  const CustomGoogleMap({Key? key, required this.locations}) : super(key: key);
-
-  @override
-  State<CustomGoogleMap> createState() => _CustomGoogleMapState();
-}
-
-class _CustomGoogleMapState extends State<CustomGoogleMap> {
-  final Completer<GoogleMapController> _controller = Completer();
-  final LatLng _initialPosition = const LatLng(37.33500926, -122.03272188);
-  Set<Marker> markers = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _setMarkers(widget.locations);
-  }
-
-  void _setMarkers(List<PersonLocation> locations) {
-    final Set<Marker> _markers = {};
-    for (var location in locations) {
-      _markers.add(
-        Marker(
-          markerId: MarkerId(location.id.toString()),
-          position: LatLng(location.latitude, location.longitude),
-          infoWindow: InfoWindow(title: location.name),
-
-          // Optional: if you want to use custom images as marker icons
-          // icon: BitmapDescriptor.fromNetwork(location.imageUrl),
-        ),
-      );
-    }
-
-    setState(() {
-      markers = _markers;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GoogleMap(
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      },
-      initialCameraPosition: CameraPosition(
-        target: _initialPosition,
-        zoom: 12.0,
-      ),
-      markers: markers,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: true,
-      zoomControlsEnabled: false,
-    );
-  }
-}
 
 // Placeholder for CustomSearchBar
 class CustomSearchBar extends StatelessWidget {
