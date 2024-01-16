@@ -1,11 +1,24 @@
 {
     "titleBording": "Explore a world of cars and unlock your potential with us!",
     "titleBording2": "Welcome to Your Journey",
+    "titleBording3": "Get Started",
 
     "SingIn": "Sing In",
     "SignIn2": "Enter your phone number",
     "SignIn3": "by continuing you agree to our terms of service and privacy & legal policy",
     "SignIn4": "Country / Region",
-    "SingIn5": "Phone Number"
+    "SingIn5": "Phone Number",
+    "valid1": "Please enter your phone number",
+    "valid2": "Please enter a valid phone number",
+    "valid3": "Please select your country code",
+
+    "button": "Next",
+    "button2": "Please Wait...",
+    "Picker": "Select Country",
+    "Search": "Search",
+    "KSA": "KSA"
+
+
+
 
 }

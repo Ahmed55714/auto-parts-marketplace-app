@@ -129,7 +129,7 @@ class OnboardingScreen extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 60),
                                   child: CustomButton(
-                                    text: 'Get Started',
+                                    text: S.of(context).titleBording3,
                                     onPressed: () {
                                       Navigator.pushNamed(context, '/signin');
                                     },

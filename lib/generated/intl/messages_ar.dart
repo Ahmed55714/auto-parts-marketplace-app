@@ -22,15 +22,27 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "KSA": MessageLookupByLibrary.simpleMessage("السعودية"),
+        "Picker": MessageLookupByLibrary.simpleMessage("حدد الدولة"),
+        "Search": MessageLookupByLibrary.simpleMessage("بحث"),
         "SignIn2": MessageLookupByLibrary.simpleMessage("أدخل رقم هاتفك"),
         "SignIn3": MessageLookupByLibrary.simpleMessage(
             "من خلال الاستمرار فإنك توافق على شروط الخدمة وسياسة الخصوصية والقانونية\n الخاصة بنا"),
         "SignIn4": MessageLookupByLibrary.simpleMessage("البلد / المنطقة"),
         "SingIn": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "SingIn5": MessageLookupByLibrary.simpleMessage("رقم التليفون"),
+        "button": MessageLookupByLibrary.simpleMessage("التالي"),
+        "button2": MessageLookupByLibrary.simpleMessage("انتظر من فضلك..."),
         "titleBording": MessageLookupByLibrary.simpleMessage(
             "اكتشف عالمًا من السيارات واطلق العنان لإمكاناتك معنا!"),
         "titleBording2":
-            MessageLookupByLibrary.simpleMessage("مرحبًا بك في رحلتك")
+            MessageLookupByLibrary.simpleMessage("مرحبًا بك في رحلتك"),
+        "titleBording3": MessageLookupByLibrary.simpleMessage("البدء"),
+        "valid1": MessageLookupByLibrary.simpleMessage(
+            "يرجى إدخال رقم الهاتف الخاص بك"),
+        "valid2":
+            MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتف صالح"),
+        "valid3": MessageLookupByLibrary.simpleMessage(
+            "الرجاء تحديد رمز البلد الخاص بك")
       };
 }

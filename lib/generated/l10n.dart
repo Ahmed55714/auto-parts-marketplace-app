@@ -70,6 +70,16 @@ class S {
     );
   }
 
+  /// `Get Started`
+  String get titleBording3 {
+    return Intl.message(
+      'Get Started',
+      name: 'titleBording3',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Sing In`
   String get SingIn {
     return Intl.message(
@@ -115,6 +125,86 @@ class S {
     return Intl.message(
       'Phone Number',
       name: 'SingIn5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your phone number`
+  String get valid1 {
+    return Intl.message(
+      'Please enter your phone number',
+      name: 'valid1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid phone number`
+  String get valid2 {
+    return Intl.message(
+      'Please enter a valid phone number',
+      name: 'valid2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select your country code`
+  String get valid3 {
+    return Intl.message(
+      'Please select your country code',
+      name: 'valid3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get button {
+    return Intl.message(
+      'Next',
+      name: 'button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Wait...`
+  String get button2 {
+    return Intl.message(
+      'Please Wait...',
+      name: 'button2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Country`
+  String get Picker {
+    return Intl.message(
+      'Select Country',
+      name: 'Picker',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get Search {
+    return Intl.message(
+      'Search',
+      name: 'Search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `KSA`
+  String get KSA {
+    return Intl.message(
+      'KSA',
+      name: 'KSA',
       desc: '',
       args: [],
     );

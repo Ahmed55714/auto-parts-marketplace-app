@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -11,7 +12,7 @@ import 'package:work2/getx/regestration.dart';
 import 'package:work2/getx/update_profile.dart';
 
 import 'package:work2/screens/client/Complain_client.dart';
-
+import 'package:fl_country_code_picker/fl_country_code_picker.dart' as flc;
 import 'generated/l10n.dart';
 import 'getx/auth.dart';
 
@@ -66,7 +67,7 @@ void main() async {
 
 Future initialization(BuildContext? context) async {
   // Load resources
-  await Future.delayed(const Duration(seconds: 20));
+  await Future.delayed(const Duration(seconds: 5));
 }
 
 class MyApp extends StatefulWidget {
@@ -87,8 +88,11 @@ class _MyAppState extends State<MyApp> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        CountryLocalizations.delegate,
       ],
-      supportedLocales: S.delegate.supportedLocales,
+
+      supportedLocales:
+          flc.CountryLocalizations.supportedLocales.map(Locale.new),
 
       debugShowCheckedModeBanner: false,
       title: 'Flutter App',

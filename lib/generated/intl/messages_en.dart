@@ -22,6 +22,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "KSA": MessageLookupByLibrary.simpleMessage("KSA"),
+        "Picker": MessageLookupByLibrary.simpleMessage("Select Country"),
+        "Search": MessageLookupByLibrary.simpleMessage("Search"),
         "SignIn2":
             MessageLookupByLibrary.simpleMessage("Enter your phone number"),
         "SignIn3": MessageLookupByLibrary.simpleMessage(
@@ -29,9 +32,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "SignIn4": MessageLookupByLibrary.simpleMessage("Country / Region"),
         "SingIn": MessageLookupByLibrary.simpleMessage("Sing In"),
         "SingIn5": MessageLookupByLibrary.simpleMessage("Phone Number"),
+        "button": MessageLookupByLibrary.simpleMessage("Next"),
+        "button2": MessageLookupByLibrary.simpleMessage("Please Wait..."),
         "titleBording": MessageLookupByLibrary.simpleMessage(
             "Explore a world of cars and unlock your potential with us!"),
         "titleBording2":
-            MessageLookupByLibrary.simpleMessage("Welcome to Your Journey")
+            MessageLookupByLibrary.simpleMessage("Welcome to Your Journey"),
+        "titleBording3": MessageLookupByLibrary.simpleMessage("Get Started"),
+        "valid1": MessageLookupByLibrary.simpleMessage(
+            "Please enter your phone number"),
+        "valid2": MessageLookupByLibrary.simpleMessage(
+            "Please enter a valid phone number"),
+        "valid3": MessageLookupByLibrary.simpleMessage(
+            "Please select your country code")
       };
 }

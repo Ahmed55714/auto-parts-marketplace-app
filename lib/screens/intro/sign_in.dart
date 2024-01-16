@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +9,7 @@ import 'package:work2/widgets/custom_button.dart';
 
 import '../../generated/l10n.dart';
 import '../../getx/auth.dart';
+import 'onboarding_screen.dart';
 
 class SignIn extends StatefulWidget {
   SignIn({super.key});
@@ -16,32 +19,34 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  String buttonText = 'Next';
+  late String buttonText;
+
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController phoneController = TextEditingController();
   String? phoneNumberError;
   String? verificationId;
-
+  Key countryPickerKey = UniqueKey();
   final AuthController authController = Get.put(AuthController());
+  final LocaleController localeController = Get.put(LocaleController());
 
   void validatePhoneNumber(String value) async {
     String? value = phoneController.text;
     if (value.isEmpty) {
       setState(() {
-        phoneNumberError = 'Please enter your phone number';
-        buttonText = 'Next'; // Reset button text
+        phoneNumberError = S.of(context).valid1;
+        buttonText = S.of(context).button;
       });
     } else if (value.length < 9) {
       setState(() {
-        phoneNumberError = 'Please enter a valid phone number';
-        buttonText = 'Next'; // Reset button text
+        phoneNumberError = S.of(context).valid2;
+        buttonText = S.of(context).button;
       });
     } else if (countryCode == null) {
       setState(() {
-        phoneNumberError = 'Please select your country code';
-        buttonText = 'Next'; // Reset button text
+        phoneNumberError = S.of(context).valid3;
+        buttonText = S.of(context).button;
       });
     } else {
       setState(() {
@@ -53,9 +58,30 @@ class _SignInState extends State<SignIn> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    bool isRTL = Directionality.of(context) == TextDirection.rtl;
+  void initState() {
+    super.initState();
+    buttonText = 'Next';
+    localeController.addListener(_updateCountryPickerKey);
+  }
 
+  void _updateCountryPickerKey() {
+    setState(() {
+      // Update the key to force a rebuild
+      countryPickerKey = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    buttonText = S.of(context).button;
+    bool isRTL = Directionality.of(context) == TextDirection.rtl;
+    EdgeInsets paddingForTextFields = isRTL
+        ? const EdgeInsets.only(right: 8)
+        : const EdgeInsets.only(left: 8);
+
+    EdgeInsets paddingForErrorMessages = isRTL
+        ? const EdgeInsets.only(top: 8.0, right: 26.0)
+        : const EdgeInsets.only(top: 8.0, left: 26.0);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -71,9 +97,7 @@ class _SignInState extends State<SignIn> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
-
-                      color:
-                          deepPurple, // Ensure deepPurple is defined in your colors constants
+                      color: deepPurple,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -81,12 +105,9 @@ class _SignInState extends State<SignIn> {
                     S.of(context).SignIn2,
                     style: TextStyle(
                       fontSize: 16,
-
                       fontWeight: FontWeight.w400,
                       fontFamily: 'Roboto',
-
-                      color:
-                          deepPurple, // Ensure deepPurple is defined in your colors constants
+                      color: deepPurple,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -107,20 +128,20 @@ class _SignInState extends State<SignIn> {
                       children: [
                         // First TextField (above the line)
                         Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                          padding: paddingForTextFields,
                           child: GestureDetector(
+                            key: countryPickerKey,
                             onTap: () async {
-                              final code = await countryPicker.showPicker(
-                                  context: context);
+                              final code = await FlCountryCodePicker(
+                                localize: true, // Ensure this is set
+                              ).showPicker(context: context);
 
                               setState(() {
                                 countryCode = code;
                               });
                             },
                             child: Row(
-                              mainAxisAlignment: isRTL
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
                                   child: Text(
@@ -134,8 +155,36 @@ class _SignInState extends State<SignIn> {
                                 ),
                                 GestureDetector(
                                   onTap: () async {
-                                    final code = await countryPicker.showPicker(
-                                        context: context);
+                                    final code = await FlCountryCodePicker(
+                                      localize: true,
+                                      title: Padding(
+                                        padding: paddingForTextFields,
+                                        child: Text(
+                                          S.of(context).Picker,
+                                          style: TextStyle(
+                                            fontSize: 36,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      searchBarDecoration: InputDecoration(
+                                        hintText: S.of(context).Search,
+                                        contentPadding: EdgeInsets.all(
+                                            12.0), // Adjust padding as needed
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              20.0), // Adjust the radius as needed
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .grey, // Specify the border color
+                                            width:
+                                                1.0, // Specify the border width
+                                          ),
+                                        ),
+                                      ),
+                                      
+                                    ).showPicker(context: context);
 
                                     setState(() {
                                       countryCode = code;
@@ -166,8 +215,7 @@ class _SignInState extends State<SignIn> {
                             });
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8, top: 8, bottom: 8),
+                            padding: paddingForTextFields,
                             child: Row(
                               children: [
                                 countryCode != null
@@ -175,8 +223,8 @@ class _SignInState extends State<SignIn> {
                                         width: 35,
                                         alignment: Alignment.center,
                                         countryCode: countryCode!)
-                                    : const Text(
-                                        'KSA',
+                                    :  Text(
+                                        S.of(context).KSA,
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
@@ -210,7 +258,7 @@ class _SignInState extends State<SignIn> {
 
                         // Second TextField (below the line)
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: paddingForTextFields,
                           child: TextFormField(
                             keyboardType: TextInputType.phone,
                             maxLines: 1,
@@ -233,7 +281,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   if (phoneNumberError != null)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0, left: 16.0),
+                      padding: paddingForErrorMessages,
                       child: Row(
                         children: [
                           Text(
@@ -268,7 +316,7 @@ class _SignInState extends State<SignIn> {
                             phoneNumberError == null) {
                           validatePhoneNumber(value);
                           setState(() {
-                            buttonText = 'Please Wait...';
+                            buttonText = S.of(context).button2;
                           });
                         }
                       }),
@@ -280,9 +328,15 @@ class _SignInState extends State<SignIn> {
       ),
     );
   }
+
 //   @override
 //   void dispose() {
 //     phoneController.dispose();
 //     super.dispose();
 //   }
+  @override
+  void dispose() {
+    localeController.removeListener(_updateCountryPickerKey);
+    super.dispose();
+  }
 }
