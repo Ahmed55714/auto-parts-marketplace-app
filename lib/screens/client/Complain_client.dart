@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
 import 'package:http/http.dart' as http;
-
+import 'dart:ui' as ui;
 
 class ReportClient extends StatefulWidget {
   const ReportClient({Key? key}) : super(key: key);
@@ -32,69 +33,74 @@ class _ReportState extends State<ReportClient> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
+    return Directionality(
+      textDirection: ui.TextDirection.ltr,
+      child: Scaffold(
+        body: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BackButtonDeep(),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      S.of(context).Com,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: deepPurple,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        BackButtonDeep(),
+                        CustomText(
+                          text: S.of(context).Name,
+                        ),
                       ],
                     ),
-                  ),
-                  const Text(
-                    'Complain',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: deepPurple,
+                    const SizedBox(height: 10),
+                    CustomTextField(
+                      labelText: S.of(context).Name,
+                      controller: nameController,
+                      keyboardType: TextInputType.name,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '${S.of(context).Name3} ${S.of(context).Name}';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CustomText(text: 'Name'),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  CustomTextField(
-                    labelText: 'Name',
-                    controller: nameController,
-                    keyboardType: TextInputType.name,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter name';
-                      }
-                      return null;
-                    },
-                  ),
-                  buildDateFieldDate(
-                    'complaint Date',
-                    dateController,
-                  ),
-                  CustomMultiLineFormFieldWidget(
-                    label: 'Report',
-                    controller: reportController,
-                    type: TextInputType.multiline,
-                    text: 'Placeholder',
-                  ),
-                  SubmitButtonWidget(
-                    formKey: _formKey,
-                    nameController: nameController,
-                    dateController: dateController,
-                    reportController: reportController,
-                  ),
-                  const SizedBox(height: 15),
-                ],
+                    buildDateFieldDate(
+                      S.of(context).Com2,
+                      dateController,
+                    ),
+                    CustomMultiLineFormFieldWidget(
+                      label: S.of(context).Com3,
+                      controller: reportController,
+                      type: TextInputType.multiline,
+                      text: S.of(context).Com3,
+                    ),
+                    SubmitButtonWidget(
+                      formKey: _formKey,
+                      nameController: nameController,
+                      dateController: dateController,
+                      reportController: reportController,
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                ),
               ),
             ),
           ),
@@ -138,12 +144,12 @@ class _ReportState extends State<ReportClient> {
             // Prevents keyboard from showing
             child: CustomTextField(
               labelText:
-                  controller.text.isEmpty ? 'YYYY-MM-DD' : controller.text,
+                  controller.text.isEmpty ? S.of(context).sucess3 : controller.text,
               controller: controller,
               keyboardType: TextInputType.datetime,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter $label';
+                  return '${S.of(context).Name3} $label';
                 }
                 return null;
               },
@@ -187,7 +193,7 @@ class CustomMultiLineFormFieldWidget extends StatelessWidget {
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -217,13 +223,12 @@ class SubmitButtonWidget extends StatelessWidget {
       children: [
         const SizedBox(height: 20),
         CustomButton(
-          text: 'Submit',
+          text: S.of(context).Com5,
           onPressed: () async {
             if (formKey.currentState!.validate()) {
               // If the form is valid, perform the HTTP request
-              await submitComplain(
-                  nameController.text,
-                  dateController.text, reportController.text, context);
+              await submitComplain(nameController.text, dateController.text,
+                  reportController.text, context);
             }
           },
         ),
@@ -232,8 +237,8 @@ class SubmitButtonWidget extends StatelessWidget {
   }
 }
 
-Future<void> submitComplain(String name,
-    String date, String report, BuildContext context) async {
+Future<void> submitComplain(
+    String name, String date, String report, BuildContext context) async {
   final Uri apiEndpoint =
       Uri.parse('https://slfsparepart.com/api/vendor/complain');
   final prefs = await SharedPreferences.getInstance();
@@ -255,9 +260,9 @@ Future<void> submitComplain(String name,
 
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Complain submitted successfully')),
+        SnackBar(content: Text(S.of(context).success)),
       );
-      
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -267,13 +272,12 @@ Future<void> submitComplain(String name,
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Failed to submit complaint${response.statusCode}}')),
+            content: Text(S.of(context).success1)),
       );
-   
     }
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error occurred while submitting complaint: $e')),
+      SnackBar(content: Text(S.of(context).success2)),
     );
   }
 }

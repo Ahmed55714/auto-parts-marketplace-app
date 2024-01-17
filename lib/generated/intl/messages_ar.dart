@@ -29,6 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "CarModel": MessageLookupByLibrary.simpleMessage("طراز السيارة"),
         "Chassis": MessageLookupByLibrary.simpleMessage("رقم الهيكل"),
         "Chat": MessageLookupByLibrary.simpleMessage("محادثة"),
+        "Com": MessageLookupByLibrary.simpleMessage("الشكوى"),
+        "Com2": MessageLookupByLibrary.simpleMessage("تاريخ الشكوى"),
+        "Com3": MessageLookupByLibrary.simpleMessage("تقرير"),
+        "Com5": MessageLookupByLibrary.simpleMessage("أرسال"),
         "Date": MessageLookupByLibrary.simpleMessage("تاريخ"),
         "Decline": MessageLookupByLibrary.simpleMessage("تجاهل"),
         "DeleverdText":
@@ -47,6 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Imagenot": MessageLookupByLibrary.simpleMessage("الصورة غير متاحة"),
         "KSA": MessageLookupByLibrary.simpleMessage("السعودية"),
         "LocationView": MessageLookupByLibrary.simpleMessage("عرض الموقع"),
+        "Map": MessageLookupByLibrary.simpleMessage("أطلب الان"),
         "MyAccount": MessageLookupByLibrary.simpleMessage("حسابي"),
         "MyAccount2": MessageLookupByLibrary.simpleMessage("عدل ملفك الشخصي"),
         "MyAccount3": MessageLookupByLibrary.simpleMessage("أضف شكوى"),
@@ -112,12 +117,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "مرحبًا بك في SLF، يرجى اختيار نوع حسابك للمتابعة"),
         "SingIn": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "SingIn5": MessageLookupByLibrary.simpleMessage("رقم التليفون"),
+        "Terms": MessageLookupByLibrary.simpleMessage("الأحكام والشروط"),
         "Try":
             MessageLookupByLibrary.simpleMessage("حاول مرة أخرى في وقت لاحق"),
         "Verification3": MessageLookupByLibrary.simpleMessage("يؤكد"),
         "Write": MessageLookupByLibrary.simpleMessage("أكتب رسالتك"),
         "button": MessageLookupByLibrary.simpleMessage("التالي"),
-        "button2": MessageLookupByLibrary.simpleMessage("...انتظر من فضلك"),
+        "button2": MessageLookupByLibrary.simpleMessage("انتظر من فضلك"),
         "carLicence": MessageLookupByLibrary.simpleMessage("رخصة السيارة"),
         "comment": MessageLookupByLibrary.simpleMessage("تعليق"),
         "error":
@@ -132,6 +138,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "تم إرسال كلمة المرور الجديدة بنجاح"),
         "snack2": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ أثناء إعادة إرسال كلمة المرور "),
+        "success":
+            MessageLookupByLibrary.simpleMessage("تم تقديم الشكوى بنجاح"),
+        "success1": MessageLookupByLibrary.simpleMessage(
+            "فشل تقديم الشكوى حاول مرة أخرى لاحقاً"),
+        "success2":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ أثناء تقديم الشكوى"),
+        "sucess3": MessageLookupByLibrary.simpleMessage("السنة-الشهر-اليوم"),
         "titleBording": MessageLookupByLibrary.simpleMessage(
             "اكتشف عالمًا من السيارات واطلق العنان لإمكاناتك معنا!"),
         "titleBording2":

@@ -29,6 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "CarModel": MessageLookupByLibrary.simpleMessage("Car Model"),
         "Chassis": MessageLookupByLibrary.simpleMessage("Chassis number"),
         "Chat": MessageLookupByLibrary.simpleMessage("Chat"),
+        "Com": MessageLookupByLibrary.simpleMessage("Complain"),
+        "Com2": MessageLookupByLibrary.simpleMessage("complaint Date"),
+        "Com3": MessageLookupByLibrary.simpleMessage("Report"),
+        "Com5": MessageLookupByLibrary.simpleMessage("Submit"),
         "Date": MessageLookupByLibrary.simpleMessage("Date"),
         "Decline": MessageLookupByLibrary.simpleMessage("Decline"),
         "DeleverdText":
@@ -47,6 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Imagenot": MessageLookupByLibrary.simpleMessage("Image not available"),
         "KSA": MessageLookupByLibrary.simpleMessage("KSA"),
         "LocationView": MessageLookupByLibrary.simpleMessage("Location View"),
+        "Map": MessageLookupByLibrary.simpleMessage("Order Now"),
         "MyAccount": MessageLookupByLibrary.simpleMessage("My Account"),
         "MyAccount2": MessageLookupByLibrary.simpleMessage("Edit your Profile"),
         "MyAccount3": MessageLookupByLibrary.simpleMessage("Add Complain"),
@@ -115,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Welcome to SLF please choose your account type to continue"),
         "SingIn": MessageLookupByLibrary.simpleMessage("Sing In"),
         "SingIn5": MessageLookupByLibrary.simpleMessage("Phone Number"),
+        "Terms": MessageLookupByLibrary.simpleMessage("Terms and Conditions"),
         "Try": MessageLookupByLibrary.simpleMessage("try again later"),
         "Verification3": MessageLookupByLibrary.simpleMessage("Verify"),
         "Write": MessageLookupByLibrary.simpleMessage("Write your message"),
@@ -133,6 +139,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "snack":
             MessageLookupByLibrary.simpleMessage("New OTP sent successfully"),
         "snack2": MessageLookupByLibrary.simpleMessage("Error resending OTP"),
+        "success": MessageLookupByLibrary.simpleMessage(
+            "Complain submitted successfully"),
+        "success1": MessageLookupByLibrary.simpleMessage(
+            "Failed to submit complaint try again later"),
+        "success2": MessageLookupByLibrary.simpleMessage(
+            "Error occurred while submitting complaint"),
+        "sucess3": MessageLookupByLibrary.simpleMessage("YYYY-MM-DD"),
         "titleBording": MessageLookupByLibrary.simpleMessage(
             "Explore a world of cars and unlock your potential with us!"),
         "titleBording2":

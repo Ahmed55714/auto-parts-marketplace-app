@@ -1069,6 +1069,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Terms and Conditions`
+  String get Terms {
+    return Intl.message(
+      'Terms and Conditions',
+      name: 'Terms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complain`
+  String get Com {
+    return Intl.message(
+      'Complain',
+      name: 'Com',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `complaint Date`
+  String get Com2 {
+    return Intl.message(
+      'complaint Date',
+      name: 'Com2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report`
+  String get Com3 {
+    return Intl.message(
+      'Report',
+      name: 'Com3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get Com5 {
+    return Intl.message(
+      'Submit',
+      name: 'Com5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complain submitted successfully`
+  String get success {
+    return Intl.message(
+      'Complain submitted successfully',
+      name: 'success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to submit complaint try again later`
+  String get success1 {
+    return Intl.message(
+      'Failed to submit complaint try again later',
+      name: 'success1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error occurred while submitting complaint`
+  String get success2 {
+    return Intl.message(
+      'Error occurred while submitting complaint',
+      name: 'success2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `YYYY-MM-DD`
+  String get sucess3 {
+    return Intl.message(
+      'YYYY-MM-DD',
+      name: 'sucess3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Order Now`
+  String get Map {
+    return Intl.message(
+      'Order Now',
+      name: 'Map',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

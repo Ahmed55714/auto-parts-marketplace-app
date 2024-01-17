@@ -19,7 +19,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  late String buttonText;
+  bool isProcessing = false;
 
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode;
@@ -32,21 +32,22 @@ class _SignInState extends State<SignIn> {
   final LocaleController localeController = Get.put(LocaleController());
 
   void validatePhoneNumber(String value) async {
+    setState(() {
+      isProcessing = false;
+    });
+
     String? value = phoneController.text;
     if (value.isEmpty) {
       setState(() {
         phoneNumberError = S.of(context).valid1;
-        buttonText = S.of(context).button;
       });
     } else if (value.length < 9) {
       setState(() {
         phoneNumberError = S.of(context).valid2;
-        buttonText = S.of(context).button;
       });
     } else if (countryCode == null) {
       setState(() {
         phoneNumberError = S.of(context).valid3;
-        buttonText = S.of(context).button;
       });
     } else {
       setState(() {
@@ -54,26 +55,28 @@ class _SignInState extends State<SignIn> {
       });
       final fullNumber = '${countryCode?.dialCode ?? ''}$value';
       authController.verifyPhoneNumber(fullNumber);
+      setState(() {
+        isProcessing = true;
+      });
     }
   }
 
   @override
   void initState() {
     super.initState();
-    buttonText = 'Next';
+
     localeController.addListener(_updateCountryPickerKey);
   }
 
   void _updateCountryPickerKey() {
     setState(() {
-      // Update the key to force a rebuild
+      phoneNumberError = null;
       countryPickerKey = UniqueKey();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    buttonText = S.of(context).button;
     bool isRTL = Directionality.of(context) == TextDirection.rtl;
     EdgeInsets paddingForTextFields = isRTL
         ? const EdgeInsets.only(right: 8)
@@ -310,35 +313,41 @@ class _SignInState extends State<SignIn> {
                     ),
                   const SizedBox(height: 16),
                   Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width *
-                              0.9, // Adjust the width as needed
-                          child: Text(
-                           S.of(context).SignIn3,
-                            textAlign:
-                                TextAlign.center, // Center align the text
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Roboto',
-                              color: greyColor,
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width *
+                            0.9, // Adjust the width as needed
+                        child: Text(
+                          S.of(context).SignIn3,
+                          textAlign: TextAlign.center, // Center align the text
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Roboto',
+                            color: greyColor,
                           ),
                         ),
                       ),
                     ),
+                  ),
                   const SizedBox(height: 34),
                   CustomButton(
-                      text: buttonText,
+                      text: isProcessing
+                          ? S
+                              .of(context)
+                              .button2 // "انتظر قليلا" when processing
+                          : (phoneNumberError == null
+                              ? S.of(context).button
+                              : S
+                                  .of(context)
+                                  .button2), // "التالي" or error text
                       onPressed: () {
                         final value = phoneController.text;
                         if (formKey.currentState!.validate() &&
                             phoneNumberError == null) {
-                          validatePhoneNumber(value);
                           setState(() {
-                            buttonText = S.of(context).button2;
+                            validatePhoneNumber(value);
                           });
                         }
                       }),

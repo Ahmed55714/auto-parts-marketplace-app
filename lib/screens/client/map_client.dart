@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../generated/l10n.dart';
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
 import '../vendor/profile.dart';
@@ -84,7 +85,7 @@ class _ClientMapState extends State<ClientMap> {
               left: 20,
               right: 20,
               child: CustomButton(
-                  text: 'Order Now',
+                  text: S.of(context).Map,
                   onPressed: () {
                     regesterController.navigateBasedClint(context);
                   }),

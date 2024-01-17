@@ -82,109 +82,112 @@ class _VerificationScreenState extends State<VerificationScreen> {
     //  final number = ModalRoute.of(context)!.settings.arguments as String;
     var textDirection = Directionality.of(context);
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 86),
-                Column(
-                  children: [
-                    Text(S.of(context).verification,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: deepPurple,
-                        )),
-                    SizedBox(height: 16),
-                    // TitleWidget(number: Text(number))
-                    Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              width: 290,
-                              height: 75,
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    width:
-                                        290, // You can adjust the width as needed
-                                    child: Text(
-                                      S.of(context).verification2,
-                                      textAlign: TextAlign
-                                          .center, // Center align the text
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Roboto',
-                                        color: Colors.grey,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 86),
+                  Column(
+                    children: [
+                      Text(S.of(context).verification,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: deepPurple,
+                          )),
+                      SizedBox(height: 16),
+                      // TitleWidget(number: Text(number))
+                      Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 290,
+                                height: 75,
+                                child: Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      width:
+                                          290, // You can adjust the width as needed
+                                      child: Text(
+                                        S.of(context).verification2,
+                                        textAlign: TextAlign
+                                            .center, // Center align the text
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Roboto',
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16)
-                  ],
-                ),
-                VerificationCode(otpControllers: _otpControllers),
-                const SizedBox(height: 37),
-                Center(
-                  child: CustomButton(
-                    text: S.of(context).Verification3,
-                    onPressed: () {
-                      // Navigator.pushNamed(context, '/signup');
-                      String completeOTP = _otpControllers
-                          .map((controller) => controller.text)
-                          .join();
-                      authController.verifyOtp(widget.verificationId,
-                          completeOTP, widget.phoneNumber);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        S.of(context).Dont,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey,
+                          ],
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          resendOTP(widget.phoneNumber);
-                        },
-                        child: Text(
-                          S.of(context).Resend,
+                      SizedBox(height: 16)
+                    ],
+                  ),
+                  VerificationCode(otpControllers: _otpControllers),
+                  const SizedBox(height: 37),
+                  Center(
+                    child: CustomButton(
+                      text: S.of(context).Verification3,
+                      onPressed: () {
+                        // Navigator.pushNamed(context, '/signup');
+                        String completeOTP = _otpControllers
+                            .map((controller) => controller.text)
+                            .join();
+                        authController.verifyOtp(widget.verificationId,
+                            completeOTP, widget.phoneNumber);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          S.of(context).Dont,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
-                            color: deepPurple,
+                            color: Colors.grey,
                           ),
                         ),
-                      ),
-                    ],
+                        GestureDetector(
+                          onTap: () {
+                            resendOTP(widget.phoneNumber);
+                          },
+                          child: Text(
+                            S.of(context).Resend,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: deepPurple,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

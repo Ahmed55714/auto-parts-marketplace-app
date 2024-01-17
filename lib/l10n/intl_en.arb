@@ -111,7 +111,21 @@
     "Offers12": "Select Car Type",
     "Offers13": "You made an Offer!",
     "Offers14": "Check your orders to see the status of your order from Order page.",
-    "Offers15": "Orders"
+    "Offers15": "Orders",
+
+    "Terms": "Terms and Conditions",
+
+    "Com": "Complain",
+    "Com2": "complaint Date",
+    "Com3": "Report",
+    "Com5": "Submit",
+
+    "success": "Complain submitted successfully",
+    "success1": "Failed to submit complaint try again later",
+    "success2": "Error occurred while submitting complaint",
+    "sucess3": "YYYY-MM-DD",
+
+    "Map": "Order Now"
 
     
     
