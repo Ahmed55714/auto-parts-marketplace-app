@@ -22,17 +22,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "Agreee": MessageLookupByLibrary.simpleMessage(
+            "By clicking on the register button, you agree to the terms and conditions of the application"),
         "Are": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to cancel Your Order?"),
         "Are2":
             MessageLookupByLibrary.simpleMessage("Can you tell us the reason?"),
         "CarModel": MessageLookupByLibrary.simpleMessage("Car Model"),
+        "CarType": MessageLookupByLibrary.simpleMessage("Car Type"),
         "Chassis": MessageLookupByLibrary.simpleMessage("Chassis number"),
         "Chat": MessageLookupByLibrary.simpleMessage("Chat"),
         "Com": MessageLookupByLibrary.simpleMessage("Complain"),
         "Com2": MessageLookupByLibrary.simpleMessage("complaint Date"),
         "Com3": MessageLookupByLibrary.simpleMessage("Report"),
         "Com5": MessageLookupByLibrary.simpleMessage("Submit"),
+        "CommercialRegister":
+            MessageLookupByLibrary.simpleMessage("Commercial Register"),
         "Date": MessageLookupByLibrary.simpleMessage("Date"),
         "Decline": MessageLookupByLibrary.simpleMessage("Decline"),
         "DeleverdText":
@@ -45,13 +50,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "Edit3": MessageLookupByLibrary.simpleMessage("Building"),
         "Edit4": MessageLookupByLibrary.simpleMessage("Floor"),
         "Edit5": MessageLookupByLibrary.simpleMessage("Apt"),
+        "EnterYourLocation":
+            MessageLookupByLibrary.simpleMessage("Enter your location"),
+        "EnterYourName":
+            MessageLookupByLibrary.simpleMessage("Enter your name"),
+        "Enteryouremail":
+            MessageLookupByLibrary.simpleMessage("Enter your email"),
         "Image1": MessageLookupByLibrary.simpleMessage("Image 1"),
         "Image2": MessageLookupByLibrary.simpleMessage("Image 2"),
         "ImageView": MessageLookupByLibrary.simpleMessage("Image View"),
         "Imagenot": MessageLookupByLibrary.simpleMessage("Image not available"),
         "KSA": MessageLookupByLibrary.simpleMessage("KSA"),
+        "Location": MessageLookupByLibrary.simpleMessage("Location"),
         "LocationView": MessageLookupByLibrary.simpleMessage("Location View"),
         "Map": MessageLookupByLibrary.simpleMessage("Order Now"),
+        "MunicipalityCertificatee":
+            MessageLookupByLibrary.simpleMessage("Municipality Certificate"),
         "MyAccount": MessageLookupByLibrary.simpleMessage("My Account"),
         "MyAccount2": MessageLookupByLibrary.simpleMessage("Edit your Profile"),
         "MyAccount3": MessageLookupByLibrary.simpleMessage("Add Complain"),
@@ -85,6 +99,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "Outfordelivery":
             MessageLookupByLibrary.simpleMessage("Out for delivery"),
         "Picker": MessageLookupByLibrary.simpleMessage("Select Country"),
+        "Placeholder": MessageLookupByLibrary.simpleMessage(
+            "Please upload your documents"),
+        "Pleace4": MessageLookupByLibrary.simpleMessage(
+            "Please select one or more car types"),
         "Please": MessageLookupByLibrary.simpleMessage(
             "Please provide a reason for cancellation"),
         "Profile": MessageLookupByLibrary.simpleMessage("Profile"),
@@ -103,6 +121,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "Re2": MessageLookupByLibrary.simpleMessage("Complete Registration"),
         "Re3": MessageLookupByLibrary.simpleMessage(
             "Your application is under review, please wait for the approval"),
+        "Register": MessageLookupByLibrary.simpleMessage("Register"),
+        "Register2": MessageLookupByLibrary.simpleMessage(
+            "Agree to terms and conditions"),
+        "Registration":
+            MessageLookupByLibrary.simpleMessage("Registration Form"),
         "Resend": MessageLookupByLibrary.simpleMessage("Resend"),
         "Search": MessageLookupByLibrary.simpleMessage("Search"),
         "ShowLocation": MessageLookupByLibrary.simpleMessage("Show Location"),
@@ -120,7 +143,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "Welcome to SLF please choose your account type to continue"),
         "SingIn": MessageLookupByLibrary.simpleMessage("Sing In"),
         "SingIn5": MessageLookupByLibrary.simpleMessage("Phone Number"),
+        "TaxCertificate":
+            MessageLookupByLibrary.simpleMessage("Tax Certificate"),
         "Terms": MessageLookupByLibrary.simpleMessage("Terms and Conditions"),
+        "TrueScreen":
+            MessageLookupByLibrary.simpleMessage("We got your request!"),
+        "TrueScreen1": MessageLookupByLibrary.simpleMessage(
+            "The request is being reviewed and will be responded to as soon as possible."),
+        "TrueScreen2": MessageLookupByLibrary.simpleMessage("Edit"),
+        "TrueScreen3": MessageLookupByLibrary.simpleMessage("Home page"),
         "Try": MessageLookupByLibrary.simpleMessage("try again later"),
         "Verification3": MessageLookupByLibrary.simpleMessage("Verify"),
         "Write": MessageLookupByLibrary.simpleMessage("Write your message"),
@@ -136,6 +167,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "orderStatus": MessageLookupByLibrary.simpleMessage("Order Status"),
         "pieceDetails": MessageLookupByLibrary.simpleMessage("Piece details"),
         "pieceType": MessageLookupByLibrary.simpleMessage("Piece type"),
+        "registerLocation": MessageLookupByLibrary.simpleMessage(
+            "Location services are disabled."),
+        "registerLocation1": MessageLookupByLibrary.simpleMessage(
+            "Location permissions are denied"),
+        "registerLocation2": MessageLookupByLibrary.simpleMessage(
+            "Location permissions are permanently denied, we cannot request permissions."),
         "snack":
             MessageLookupByLibrary.simpleMessage("New OTP sent successfully"),
         "snack2": MessageLookupByLibrary.simpleMessage("Error resending OTP"),

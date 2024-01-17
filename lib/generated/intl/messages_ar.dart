@@ -22,17 +22,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "Agreee": MessageLookupByLibrary.simpleMessage(
+            "بالضغط على زر التسجيل فإنك توافق على شروط وأحكام التطبيق"),
         "Are": MessageLookupByLibrary.simpleMessage(
             "هل أنت متأكد أنك تريد إلغاء طلبك؟"),
         "Are2":
             MessageLookupByLibrary.simpleMessage("هل يمكنك إخبارنا بالسبب؟"),
         "CarModel": MessageLookupByLibrary.simpleMessage("طراز السيارة"),
+        "CarType": MessageLookupByLibrary.simpleMessage("نوع السيارة"),
         "Chassis": MessageLookupByLibrary.simpleMessage("رقم الهيكل"),
         "Chat": MessageLookupByLibrary.simpleMessage("محادثة"),
         "Com": MessageLookupByLibrary.simpleMessage("الشكوى"),
         "Com2": MessageLookupByLibrary.simpleMessage("تاريخ الشكوى"),
         "Com3": MessageLookupByLibrary.simpleMessage("تقرير"),
         "Com5": MessageLookupByLibrary.simpleMessage("أرسال"),
+        "CommercialRegister":
+            MessageLookupByLibrary.simpleMessage("تسجيل تجاري"),
         "Date": MessageLookupByLibrary.simpleMessage("تاريخ"),
         "Decline": MessageLookupByLibrary.simpleMessage("تجاهل"),
         "DeleverdText":
@@ -45,13 +50,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "Edit3": MessageLookupByLibrary.simpleMessage("مبنى"),
         "Edit4": MessageLookupByLibrary.simpleMessage("الطابق"),
         "Edit5": MessageLookupByLibrary.simpleMessage("شقه"),
+        "EnterYourLocation": MessageLookupByLibrary.simpleMessage("أدخل موقعك"),
+        "EnterYourName": MessageLookupByLibrary.simpleMessage("أدخل أسمك"),
+        "Enteryouremail":
+            MessageLookupByLibrary.simpleMessage("أدخل بريدك الإلكتروني"),
         "Image1": MessageLookupByLibrary.simpleMessage("الصورة 1"),
         "Image2": MessageLookupByLibrary.simpleMessage("الصورة 2"),
         "ImageView": MessageLookupByLibrary.simpleMessage("عرض الصورة"),
         "Imagenot": MessageLookupByLibrary.simpleMessage("الصورة غير متاحة"),
         "KSA": MessageLookupByLibrary.simpleMessage("السعودية"),
+        "Location": MessageLookupByLibrary.simpleMessage("موقع"),
         "LocationView": MessageLookupByLibrary.simpleMessage("عرض الموقع"),
         "Map": MessageLookupByLibrary.simpleMessage("أطلب الان"),
+        "MunicipalityCertificatee":
+            MessageLookupByLibrary.simpleMessage("شهادة البلدية"),
         "MyAccount": MessageLookupByLibrary.simpleMessage("حسابي"),
         "MyAccount2": MessageLookupByLibrary.simpleMessage("عدل ملفك الشخصي"),
         "MyAccount3": MessageLookupByLibrary.simpleMessage("أضف شكوى"),
@@ -83,6 +95,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "Orders": MessageLookupByLibrary.simpleMessage("طلبات"),
         "Outfordelivery": MessageLookupByLibrary.simpleMessage("خارج للتوصيل"),
         "Picker": MessageLookupByLibrary.simpleMessage("حدد الدولة"),
+        "Placeholder": MessageLookupByLibrary.simpleMessage(
+            "يرجى تحميل المستندات الخاصة بك"),
+        "Pleace4": MessageLookupByLibrary.simpleMessage(
+            "الرجاء تحديد نوع واحد أو أكثر من أنواع السيارات"),
         "Please":
             MessageLookupByLibrary.simpleMessage("يرجى تقديم سبب الإلغاء"),
         "Profile": MessageLookupByLibrary.simpleMessage("حساب تعريفي"),
@@ -101,6 +117,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "Re2": MessageLookupByLibrary.simpleMessage("اكمل التسجيل"),
         "Re3": MessageLookupByLibrary.simpleMessage(
             "طلبك قيد المراجعة، يرجى انتظار الموافقة"),
+        "Register": MessageLookupByLibrary.simpleMessage("سجل"),
+        "Register2": MessageLookupByLibrary.simpleMessage(
+            "الموافقة على الشروط والأحكام"),
+        "Registration": MessageLookupByLibrary.simpleMessage("إستمارة تسجيل"),
         "Resend": MessageLookupByLibrary.simpleMessage("إعادة إرسال"),
         "Search": MessageLookupByLibrary.simpleMessage("بحث"),
         "ShowLocation": MessageLookupByLibrary.simpleMessage("عرض الموقع"),
@@ -117,7 +137,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "مرحبًا بك في SLF، يرجى اختيار نوع حسابك للمتابعة"),
         "SingIn": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "SingIn5": MessageLookupByLibrary.simpleMessage("رقم التليفون"),
+        "TaxCertificate": MessageLookupByLibrary.simpleMessage("شهادة الضرائب"),
         "Terms": MessageLookupByLibrary.simpleMessage("الأحكام والشروط"),
+        "TrueScreen":
+            MessageLookupByLibrary.simpleMessage("لقد حصلنا على طلبك"),
+        "TrueScreen1": MessageLookupByLibrary.simpleMessage(
+            "جاري مراجعة الطلب وسيتم الرد عليه في أقرب وقت ممكن"),
+        "TrueScreen2": MessageLookupByLibrary.simpleMessage("تعديل الطلب"),
+        "TrueScreen3": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
         "Try":
             MessageLookupByLibrary.simpleMessage("حاول مرة أخرى في وقت لاحق"),
         "Verification3": MessageLookupByLibrary.simpleMessage("يؤكد"),
@@ -134,6 +161,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "orderStatus": MessageLookupByLibrary.simpleMessage("حالة الطلب"),
         "pieceDetails": MessageLookupByLibrary.simpleMessage("تفاصيل القطعة"),
         "pieceType": MessageLookupByLibrary.simpleMessage("نوع القطعة"),
+        "registerLocation":
+            MessageLookupByLibrary.simpleMessage("تم تعطيل خدمات الموقع"),
+        "registerLocation1":
+            MessageLookupByLibrary.simpleMessage("تم رفض أذونات الموقع"),
+        "registerLocation2": MessageLookupByLibrary.simpleMessage(
+            "تم رفض أذونات الموقع بشكل دائم، ولا يمكننا طلب الأذونات"),
         "snack": MessageLookupByLibrary.simpleMessage(
             "تم إرسال كلمة المرور الجديدة بنجاح"),
         "snack2": MessageLookupByLibrary.simpleMessage(

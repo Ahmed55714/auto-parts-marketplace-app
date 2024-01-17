@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:work2/constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
@@ -121,8 +122,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       ],
                     ),
                   ),
-                  const Text(
-                    'Registration Form',
+                  Text(
+                    S.of(context).Registration,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -130,23 +131,23 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  buildTextField('Name', nameController, TextInputType.text,
-                      'Enter your name'),
+                  buildTextField(S.of(context).Name, nameController,
+                      TextInputType.text, S.of(context).EnterYourName),
                   // buildTextField('Phone Number', phoneNumberController,
                   //     TextInputType.number, 'Enter your phone number'),
-                  buildTextField('Email', emailController,
-                      TextInputType.emailAddress, 'Enter your email'),
+                  buildTextField(S.of(context).Profile5, emailController,
+                      TextInputType.emailAddress, S.of(context).Enteryouremail),
                   buildCarTypeField1(),
                   const SizedBox(height: 10),
 
                   buildTextFieldLocation(
-                      'Location',
+                      S.of(context).Location,
                       locationdoneController,
                       locationController,
                       TextInputType.text,
-                      'Enter your location',
+                      S.of(context).EnterYourLocation,
                       context),
-                  buildImagePicker('Tax Certificate', 0),
+                  buildImagePicker(S.of(context).TaxCertificate, 0),
 
                   if (validateField1() != null)
                     Padding(
@@ -159,7 +160,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       ),
                     ),
                   SizedBox(height: 10),
-                  buildImagePicker('Commercial Register', 1),
+                  buildImagePicker(S.of(context).CommercialRegister, 1),
 
                   if (validateField2() != null)
                     Padding(
@@ -172,7 +173,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       ),
                     ),
                   SizedBox(height: 10),
-                  buildImagePicker('Municipality Certificate', 2),
+                  buildImagePicker(S.of(context).MunicipalityCertificatee, 2),
 
                   if (validateField3() != null)
                     Padding(
@@ -217,12 +218,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
         ),
         const SizedBox(height: 8),
         CustomTextField(
-          labelText: text ?? 'Placeholder',
+          labelText: text ?? S.of(context).Placeholder,
           controller: controller,
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -232,72 +233,71 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-Widget buildCarTypeField1() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CustomText(
-        text: 'Car type',
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
-      const SizedBox(height: 8),
-      Obx(() {
-        if (regesterController.isLoading.isTrue) {
-          return CircularProgressIndicator();
-        } else {
-          var carTypeItems = regesterController.carTypes
-              .map((car) => MultiSelectItem(car['id'].toString(), car['name']))
-              .toList();
+  Widget buildCarTypeField1() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          text: S.of(context).CarType,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        const SizedBox(height: 8),
+        Obx(() {
+          if (regesterController.isLoading.isTrue) {
+            return CircularProgressIndicator();
+          } else {
+            var carTypeItems = regesterController.carTypes
+                .map(
+                    (car) => MultiSelectItem(car['id'].toString(), car['name']))
+                .toList();
 
-          return Padding(
-            padding: const EdgeInsets.only(left:16, right:16),
-            child: MultiSelectDialogField(
-              items: carTypeItems,
-              title: Text("Car Types"),
-              selectedColor: deepPurple,
-              decoration: BoxDecoration(
-                color: greyColor.withOpacity(0.1),
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                border: Border.all(
-                  color: deepPurple,
-                  width: 2,
+            return Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: MultiSelectDialogField(
+                items: carTypeItems,
+                title: Text(S.of(context).CarType),
+                selectedColor: deepPurple,
+                decoration: BoxDecoration(
+                  color: greyColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  border: Border.all(
+                    color: deepPurple,
+                    width: 2,
+                  ),
                 ),
-              ),
-              buttonIcon: Icon(
-                Icons.car_rental,
-                color: deepPurple,
-              ),
-              buttonText: Text(
-                "Select Car Types",
-                style: TextStyle(
+                buttonIcon: Icon(
+                  Icons.car_rental,
                   color: deepPurple,
-                  fontSize: 16,
                 ),
+                buttonText: Text(
+                  S.of(context).Offers12,
+                  style: TextStyle(
+                    color: deepPurple,
+                    fontSize: 16,
+                  ),
+                ),
+                onConfirm: (List selectedValues) {
+                  setState(() {
+                    carTypes = selectedValues.map((e) => e.toString()).toList();
+                  });
+                },
+                initialValue: carTypes.map((e) => e.toString()).toList(),
+                validator: (values) {
+                  if (values == null || values.isEmpty) {
+                    return S.of(context).Pleace4;
+                  }
+                  return null;
+                },
               ),
-              onConfirm: (List selectedValues) {
-                setState(() {
-                  carTypes = selectedValues.map((e) => e.toString()).toList();
-                });
-              },
-              initialValue: carTypes.map((e) => e.toString()).toList(),
-              validator: (values) {
-                if (values == null || values.isEmpty) {
-                  return "Please select one or more car types";
-                }
-                return null;
-              },
-            ),
-          );
-        }
-      }),
-      const SizedBox(height: 8),
-      // Displaying selected car types
-     
-    ],
-  );
-}
-
+            );
+          }
+        }),
+        const SizedBox(height: 8),
+        // Displaying selected car types
+      ],
+    );
+  }
 
   Widget buildTextFieldLocation(
       String label,
@@ -315,7 +315,7 @@ Widget buildCarTypeField1() {
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         // Location services are not enabled, handle this case
-        return Future.error('Location services are disabled.');
+        return Future.error(S.of(context).registerLocation);
       }
 
       permission = await Geolocator.checkPermission();
@@ -323,14 +323,14 @@ Widget buildCarTypeField1() {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           // Permissions are denied, handle this case
-          return Future.error('Location permissions are denied');
+          return Future.error(S.of(context).registerLocation1);
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle this case
         return Future.error(
-            'Location permissions are permanently denied, we cannot request permissions.');
+            S.of(context).registerLocation2);
       }
 
       // When permissions are granted, get the current location
@@ -339,7 +339,7 @@ Widget buildCarTypeField1() {
         // Update the locationController with latitude and longitude
         locationController.text = '${position.latitude}, ${position.longitude}';
         // Update the display controller with "Done"
-        controller.text = 'Done';
+        controller.text = S.of(context).Done;
       });
     }
 
@@ -355,14 +355,14 @@ Widget buildCarTypeField1() {
         CustomTextField(
           controller: controller,
           keyboardType: type,
-          labelText: text ?? 'Placeholder',
+          labelText: text ?? S.of(context).Placeholder,
           suffixIcon: IconButton(
             icon: Icon(Icons.location_on),
             onPressed: () => _getCurrentLocation(),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -373,7 +373,7 @@ Widget buildCarTypeField1() {
   }
 
   Widget buildImagePicker(String label, int fieldIndex) {
-    bool hasImage = _images.isNotEmpty; // Check if images list is not empty
+    bool hasImage = _images.isNotEmpty; 
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +488,7 @@ Widget buildCarTypeField1() {
         Column(
           children: [
             CustomText(
-              text: 'Agree to terms and conditions',
+              text: S.of(context).Register2,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -504,17 +504,17 @@ Widget buildCarTypeField1() {
     return Column(
       children: [
         const SizedBox(height: 10),
-        const Padding(
+         Padding(
           padding: EdgeInsets.only(
             left: 16.0,
             right: 16,
           ),
           child: Text(
-              'By clicking on the register button, you agree to the terms and conditions of the application'),
+              S.of(context).Agreee),
         ),
         const SizedBox(height: 27),
         CustomButton(
-          text: 'Register',
+          text: S.of(context).Register,
           onPressed: () async {
             if (_formKey.currentState!.validate() &&
                 validateField1() == null &&
@@ -549,7 +549,10 @@ Widget buildCarTypeField1() {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TrueScreen(),
+                    builder: (context) => Directionality(
+                        textDirection: TextDirection.ltr,
+                        
+                      child: TrueScreen()),
                   ),
                 );
               } catch (e) {

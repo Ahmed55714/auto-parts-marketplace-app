@@ -109,6 +109,7 @@
     "Offer10": "Make an Offer",
     "Offers11": "Enter Note",
     "Offers12": "Select Car Type",
+    "CarType": "Car Type",
     "Offers13": "You made an Offer!",
     "Offers14": "Check your orders to see the status of your order from Order page.",
     "Offers15": "Orders",
@@ -125,7 +126,33 @@
     "success2": "Error occurred while submitting complaint",
     "sucess3": "YYYY-MM-DD",
 
-    "Map": "Order Now"
+    "Map": "Order Now",
+
+    "Registration": "Registration Form",
+    "EnterYourName": "Enter your name",
+    "Enteryouremail": "Enter your email",
+    "Location": "Location",
+    "EnterYourLocation": "Enter your location",
+    "TaxCertificate": "Tax Certificate",
+    "CommercialRegister": "Commercial Register",
+    "MunicipalityCertificatee": "Municipality Certificate",
+    "Placeholder": "Please upload your documents",
+    "Pleace4": "Please select one or more car types",
+    "registerLocation": "Location services are disabled.",
+    "registerLocation1": "Location permissions are denied",
+    "registerLocation2": "Location permissions are permanently denied, we cannot request permissions.",
+    "Agreee": "By clicking on the register button, you agree to the terms and conditions of the application",
+    "Register": "Register",
+    "Register2": "Agree to terms and conditions",
+
+    "TrueScreen": "We got your request!",
+    "TrueScreen1": "The request is being reviewed and will be responded to as soon as possible.",
+    "TrueScreen2": "Edit",
+    "TrueScreen3": "Home page"
+
+
+
+
 
     
     

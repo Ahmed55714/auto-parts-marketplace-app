@@ -67,6 +67,10 @@
     <string>ar</string>
    
 </array>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Need location access to show on map</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>Need location access to show on map</string>
 
 	</dict>
 </plist>

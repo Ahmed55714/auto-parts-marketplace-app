@@ -247,23 +247,26 @@ class _MyOrdersState extends State<MyOrders> {
           if (status.completeRegistration == "1" && status.isVerified == "1") {
             return buildOrdersLayout(); // Replace with your orders layout
           }
-          //  else if (status.completeRegistration == "1" &&
-          //     status.isVerified == "0") {
-          //   return const Scaffold(
-          //     body: Center(
-          //       child: Padding(
-          //         padding: EdgeInsets.all(16.0),
-          //         child: Text(
-          //           S.of(context).Re3,
-          //           style: TextStyle(
-          //               fontSize: 20,
-          //               fontWeight: FontWeight.w500,
-          //               color: deepPurple),
-          //         ),
-          //       ),
-          //     ),
-          //   );
-          // }
+           else if (status.completeRegistration == "1" &&
+              status.isVerified == "0") {
+            return Directionality(
+              textDirection: ui.TextDirection.ltr,
+              child: Scaffold(
+                body: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      S.of(context).Re3,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
           else if (status.completeRegistration == "0" &&
               status.isVerified == "0") {
             return Scaffold(
@@ -305,7 +308,9 @@ class _MyOrdersState extends State<MyOrders> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RegistrationForm(),
+                            builder: (context) => Directionality(
+                              textDirection: ui.TextDirection.ltr,
+                              child: RegistrationForm()),
                           ),
                         );
                       },

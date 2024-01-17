@@ -32,8 +32,8 @@ class _TrueScreenState extends State<TrueScreen> {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'We got your request!',
+               Text(
+                S.of(context).TrueScreen,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -42,22 +42,22 @@ class _TrueScreenState extends State<TrueScreen> {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child: const Text(
-                  'The request is being reviewed and will be responded to as soon as possible.',
+                child:  Text(
+                  S.of(context).TrueScreen1,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
               ),
               const SizedBox(height: 32.0),
               CustomButton2(
-                text: 'Edit',
+                text: S.of(context).TrueScreen2,
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               const SizedBox(height: 12.0),
               CustomButton(
-                  text: 'Homepage',
+                  text: S.of(context).TrueScreen3,
                   onPressed: () {
                     Navigator.push(
                       context,

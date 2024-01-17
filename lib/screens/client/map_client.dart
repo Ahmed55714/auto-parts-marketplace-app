@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../generated/l10n.dart';
@@ -108,13 +109,55 @@ class CustomGoogleMap extends StatefulWidget {
 
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
   final Completer<GoogleMapController> _controller = Completer();
-  final LatLng _initialPosition = const LatLng(37.33500926, -122.03272188);
+  final Location _location = Location();
+  LocationData? _currentLocation;
   Set<Marker> markers = {};
 
   @override
   void initState() {
     super.initState();
+    _getCurrentLocation();
     _setMarkers(widget.locations);
+  }
+
+  void _getCurrentLocation() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await _location.requestService();
+      if (!_serviceEnabled) return;
+    }
+
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) return;
+    }
+
+    _location.onLocationChanged.listen((LocationData currentLocation) {
+      setState(() {
+        _currentLocation = currentLocation;
+      });
+
+      _updateCameraPosition();
+    });
+  }
+
+  void _updateCameraPosition() {
+    if (_controller.isCompleted && _currentLocation != null) {
+      _controller.future.then((controller) {
+        controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+              zoom: 17.0,
+            ),
+          ),
+        );
+      });
+    }
   }
 
   void _setMarkers(List<PersonLocation> locations) {
@@ -125,9 +168,6 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
           markerId: MarkerId(location.id.toString()),
           position: LatLng(location.latitude, location.longitude),
           infoWindow: InfoWindow(title: location.name),
-
-          // Optional: if you want to use custom images as marker icons
-          // icon: BitmapDescriptor.fromNetwork(location.imageUrl),
         ),
       );
     }
@@ -142,9 +182,12 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     return GoogleMap(
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
+        _updateCameraPosition();
       },
       initialCameraPosition: CameraPosition(
-        target: _initialPosition,
+        target: _currentLocation != null
+            ? LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!)
+            : LatLng(37.33500926, -122.03272188), // Default position
         zoom: 12.0,
       ),
       markers: markers,
@@ -156,32 +199,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
 }
 
 // Placeholder for CustomSearchBar
-class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SvgPicture.asset('assets/images/filled.svg',
-                height: 24, width: 24),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class PersonLocation {
   final int id;

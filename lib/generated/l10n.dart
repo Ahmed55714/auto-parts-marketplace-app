@@ -1040,6 +1040,16 @@ class S {
     );
   }
 
+  /// `Car Type`
+  String get CarType {
+    return Intl.message(
+      'Car Type',
+      name: 'CarType',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You made an Offer!`
   String get Offers13 {
     return Intl.message(
@@ -1165,6 +1175,206 @@ class S {
     return Intl.message(
       'Order Now',
       name: 'Map',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Registration Form`
+  String get Registration {
+    return Intl.message(
+      'Registration Form',
+      name: 'Registration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your name`
+  String get EnterYourName {
+    return Intl.message(
+      'Enter your name',
+      name: 'EnterYourName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your email`
+  String get Enteryouremail {
+    return Intl.message(
+      'Enter your email',
+      name: 'Enteryouremail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location`
+  String get Location {
+    return Intl.message(
+      'Location',
+      name: 'Location',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your location`
+  String get EnterYourLocation {
+    return Intl.message(
+      'Enter your location',
+      name: 'EnterYourLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tax Certificate`
+  String get TaxCertificate {
+    return Intl.message(
+      'Tax Certificate',
+      name: 'TaxCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commercial Register`
+  String get CommercialRegister {
+    return Intl.message(
+      'Commercial Register',
+      name: 'CommercialRegister',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Municipality Certificate`
+  String get MunicipalityCertificatee {
+    return Intl.message(
+      'Municipality Certificate',
+      name: 'MunicipalityCertificatee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please upload your documents`
+  String get Placeholder {
+    return Intl.message(
+      'Please upload your documents',
+      name: 'Placeholder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select one or more car types`
+  String get Pleace4 {
+    return Intl.message(
+      'Please select one or more car types',
+      name: 'Pleace4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location services are disabled.`
+  String get registerLocation {
+    return Intl.message(
+      'Location services are disabled.',
+      name: 'registerLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location permissions are denied`
+  String get registerLocation1 {
+    return Intl.message(
+      'Location permissions are denied',
+      name: 'registerLocation1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location permissions are permanently denied, we cannot request permissions.`
+  String get registerLocation2 {
+    return Intl.message(
+      'Location permissions are permanently denied, we cannot request permissions.',
+      name: 'registerLocation2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By clicking on the register button, you agree to the terms and conditions of the application`
+  String get Agreee {
+    return Intl.message(
+      'By clicking on the register button, you agree to the terms and conditions of the application',
+      name: 'Agreee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Register`
+  String get Register {
+    return Intl.message(
+      'Register',
+      name: 'Register',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Agree to terms and conditions`
+  String get Register2 {
+    return Intl.message(
+      'Agree to terms and conditions',
+      name: 'Register2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We got your request!`
+  String get TrueScreen {
+    return Intl.message(
+      'We got your request!',
+      name: 'TrueScreen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The request is being reviewed and will be responded to as soon as possible.`
+  String get TrueScreen1 {
+    return Intl.message(
+      'The request is being reviewed and will be responded to as soon as possible.',
+      name: 'TrueScreen1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get TrueScreen2 {
+    return Intl.message(
+      'Edit',
+      name: 'TrueScreen2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home page`
+  String get TrueScreen3 {
+    return Intl.message(
+      'Home page',
+      name: 'TrueScreen3',
       desc: '',
       args: [],
     );

@@ -764,7 +764,7 @@ class _CustomSelectionState extends State<CustomSelection> {
 }
 
 class CustomGoogleMapp extends StatefulWidget {
-  const CustomGoogleMapp({super.key});
+  const CustomGoogleMapp({Key? key}) : super(key: key);
 
   @override
   _CustomGoogleMappState createState() => _CustomGoogleMappState();
@@ -772,8 +772,7 @@ class CustomGoogleMapp extends StatefulWidget {
 
 class _CustomGoogleMappState extends State<CustomGoogleMapp> {
   final Completer<GoogleMapController> _controller = Completer();
-  final LatLng _initialPosition = const LatLng(37.33500926, -122.03272188);
-  Location _location = Location();
+  final Location _location = Location();
   LocationData? _currentLocation;
 
   @override
@@ -782,7 +781,7 @@ class _CustomGoogleMappState extends State<CustomGoogleMapp> {
     _getCurrentLocation();
   }
 
-  _getCurrentLocation() async {
+  void _getCurrentLocation() async {
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
 
@@ -803,21 +802,23 @@ class _CustomGoogleMappState extends State<CustomGoogleMapp> {
         _currentLocation = currentLocation;
       });
 
-      if (_controller.isCompleted) {
-        _controller.future.then((controller) {
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                bearing: 0,
-                target: LatLng(
-                    _currentLocation!.latitude!, _currentLocation!.longitude!),
-                zoom: 17.0,
-              ),
-            ),
-          );
-        });
-      }
+      _updateCameraPosition();
     });
+  }
+
+  void _updateCameraPosition() {
+    if (_controller.isCompleted && _currentLocation != null) {
+      _controller.future.then((controller) {
+        controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+              zoom: 17.0,
+            ),
+          ),
+        );
+      });
+    }
   }
 
   @override
@@ -829,13 +830,14 @@ class _CustomGoogleMappState extends State<CustomGoogleMapp> {
     return GoogleMap(
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
+        _updateCameraPosition();
       },
       initialCameraPosition: CameraPosition(
-        target: _initialPosition,
-        zoom: 18.0,
+        target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+        zoom: 17.0,
       ),
       myLocationEnabled: true,
-      myLocationButtonEnabled: false,
+      myLocationButtonEnabled: true,
       zoomControlsEnabled: false,
     );
   }
