@@ -14,12 +14,11 @@ import '../vendor/Bottom_nav.dart';
 
 class OrderRepo extends StatefulWidget {
   int orderId;
-   final VoidCallback onSubmissionSuccess;
 
   OrderRepo({
     Key? key,
     required this.orderId,
-    required this.onSubmissionSuccess,
+
   }) : super(key: key);
 
   @override
@@ -43,15 +42,18 @@ class _ReportState extends State<OrderRepo> {
       final response = await http.post(apiEndpoint, headers: {
         'Accept': 'application/json',
         'Authorization':
-            'Bearer $authToken', // Assuming you're using token-based authentication
+            'Bearer $authToken',
       }, body: {
         'return_reason': returnReason,
       });
 
       if (response.statusCode == 200) {
-     widget.onSubmissionSuccess();
+    print("Submission successful");
+        setState(() {
+        });
       } else {
-        // Handle error
+          print("Submission failed");
+
       }
     } catch (e) {}
   }
@@ -96,13 +98,16 @@ class _ReportState extends State<OrderRepo> {
                   const SizedBox(height: 10),
                   Container(
                     width: 310,
-                    child: Text(
-                      S.of(context).AreCancel45,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: greyColor,
-                          fontFamily: 'Roboto'),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        S.of(context).AreCancel45,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: greyColor,
+                            fontFamily: 'Roboto'),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -130,6 +135,7 @@ class _ReportState extends State<OrderRepo> {
                           // Handle or show error
                         });
                       }
+                      
                     },
                   ),
                   const SizedBox(height: 15),

@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -22,8 +23,9 @@ import 'offer_client.dart';
 import 'order_repo.dart';
 
 class OrdersClient extends StatefulWidget {
-  const OrdersClient({
+  OrdersClient({
     Key? key,
+     
   }) : super(key: key);
 
   @override
@@ -36,7 +38,17 @@ class _OrdersClientState extends State<OrdersClient> {
   int selectedContainerIndex = -1;
   final StreamController<List<Order>> _ordersStreamController =
       StreamController();
-      bool _orderSubmitted = false;
+  bool _orderSubmitted = false;
+
+  // void markOrderAsSubmitted(int orderId) {
+  //   setState(() {
+  //     var orderIndex = orders.indexWhere((order) => order.id == orderId);
+  //     if (orderIndex != -1) {
+  //       var updatedOrder = orders[orderIndex].copyWith(isSubmitted: true);
+  //       orders[orderIndex] = updatedOrder;
+  //     }
+  //   });
+  // }
 
   Future<List<Order>> fetchOrders() async {
     final Uri apiEndpoint =
@@ -97,7 +109,8 @@ class _OrdersClientState extends State<OrdersClient> {
         if (responseData['status'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${S.of(context).Orders} $orderId ${S.of(context).AreCancel6}'),
+              content: Text(
+                  '${S.of(context).Orders} $orderId ${S.of(context).AreCancel6}'),
             ),
           );
           setState(() {
@@ -165,6 +178,11 @@ class _OrdersClientState extends State<OrdersClient> {
         }
       }
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _refresh();
+      }
+    });
   }
 
   final OrdersController orderController = Get.put(OrdersController());
@@ -191,7 +209,7 @@ class _OrdersClientState extends State<OrdersClient> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20),
-                   Center(
+                  Center(
                     child: Text(
                       S.of(context).Orders,
                       style: TextStyle(
@@ -211,7 +229,8 @@ class _OrdersClientState extends State<OrdersClient> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MobileLayoutScreen()));
+                                    builder: (context) =>
+                                        MobileLayoutScreen()));
                           },
                           icon: Stack(
                             children: <Widget>[
@@ -232,7 +251,8 @@ class _OrdersClientState extends State<OrdersClient> {
                                         padding: EdgeInsets.all(1),
                                         decoration: BoxDecoration(
                                           color: Colors.red,
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
                                         ),
                                         constraints: BoxConstraints(
                                           minWidth: 16,
@@ -269,22 +289,22 @@ class _OrdersClientState extends State<OrdersClient> {
                           //List<int> orderIds = getOrderIds();
                           regesterController.navigateBasedClint2(context);
                         },
-                        svgIconPath:
-                            'assets/images/+.svg',
+                        svgIconPath: 'assets/images/+.svg',
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-        
                   FutureBuilder<List<Order>>(
                     future: fetchOrders(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
-                        return Center(child: Text(S.of(context).NoOrdersAvailable));
+                        return Center(
+                            child: Text(S.of(context).NoOrdersAvailable));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text(S.of(context).NoOrdersAvailable));
+                        return Center(
+                            child: Text(S.of(context).NoOrdersAvailable));
                       } else {
                         return ListView.builder(
                           itemCount: snapshot.data!.length,
@@ -305,7 +325,6 @@ class _OrdersClientState extends State<OrdersClient> {
       ),
     );
   }
-
 
   Widget orderDetails(Order order) {
     return Column(
@@ -378,29 +397,25 @@ class _OrdersClientState extends State<OrdersClient> {
             ),
           ),
         ),
-        if (order.status == 'Delivered')
-         CustomButton(
-      text: _orderSubmitted ? S.of(context).Done : S.of(context).AreCancel7,
-      onPressed: () {
-        if (!_orderSubmitted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrderRepo(
-                orderId: order.id,
-                onSubmissionSuccess: () {
-                  setState(() {
-                    _orderSubmitted = true; 
-                  });
-                },
-              ),
-            ),
-          );
-        } else {
-          
-        }
-      },
-    )
+        if (order.status == 'Delivered' )
+          CustomButton(
+            text: S.of(context).AreCancel7,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderRepo(
+                    orderId: order.id,
+                  ),
+                ),
+              );
+            },
+          )
+        // else if (order.isSubmitted)
+        //   CustomButton2(
+        //     text: S.of(context).Done,
+        //     onPressed: () {},
+        //   )
         else if (order.status != 'Canceled')
           CustomButton2(
             text: S.of(context).CancelOrder,
@@ -432,7 +447,6 @@ class _OrdersClientState extends State<OrdersClient> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  
                                   OfferClient(orderIds: [order.id])));
                     },
                     // Replace with the actual path to your SVG file
@@ -466,14 +480,14 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.9, 
+      height: MediaQuery.of(context).size.height * 0.9,
       child: Container(
         padding: const EdgeInsets.all(6.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 15),
-               Text(
+              Text(
                 S.of(context).CancelOrder,
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -481,7 +495,7 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
                   fontSize: 25,
                 ),
               ),
-               Text(
+              Text(
                 S.of(context).AreCancel2,
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -507,9 +521,8 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
                     Navigator.pop(context);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(
-                        content:
-                            Text(S.of(context).AreCancel3),
+                      SnackBar(
+                        content: Text(S.of(context).AreCancel3),
                       ),
                     );
                   }
@@ -548,7 +561,7 @@ class OrderDetailLine extends StatelessWidget {
     bool isAcceptedOrDelivered =
         placeholder == 'Accepted' || placeholder == 'Delivered';
     Color textColor = _getTextColorBasedOnStatus(placeholder);
-   bool isLocationLine =
+    bool isLocationLine =
         title == S.of(context).nearPlaces && placeholder == 'Show Location';
 
     bool isImageLine =
@@ -770,6 +783,7 @@ class Order {
   final List<File> files;
   bool bottomSheetShown = false;
   bool rated;
+
   Order({
     required this.id,
     required this.carPiece,
@@ -789,6 +803,7 @@ class Order {
     required this.files,
     this.bottomSheetShown = false,
     this.rated = false,
+  
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -815,7 +830,10 @@ class Order {
       rated: json['rated'] ?? false,
     );
   }
-  Order copyWith({bool? rated}) {
+  Order copyWith({
+    bool? rated,
+ 
+  }) {
     return Order(
       id: this.id,
       carPiece: this.carPiece,
@@ -834,6 +852,7 @@ class Order {
       address: this.address,
       files: this.files,
       rated: rated ?? this.rated, // Update the rated field
+      
     );
   }
 }
@@ -863,10 +882,7 @@ class ImageViewScreen extends StatelessWidget {
     return Directionality(
       textDirection: ui.TextDirection.ltr,
       child: Scaffold(
-        appBar: AppBar(
-          title:
-            Text(S.of(context).ImageView)
-        ),
+        appBar: AppBar(title: Text(S.of(context).ImageView)),
         body: Center(
           child: imageUrl != null
               ? Image.network(imageUrl)

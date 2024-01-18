@@ -21,6 +21,8 @@ import '../vendor/Bottom_nav.dart';
 import '../vendor/profile.dart';
 import 'package:http/http.dart' as http;
 
+import 'bottom_nav.dart';
+
 class ProfileClient extends StatefulWidget {
   const ProfileClient({Key? key}) : super(key: key);
 
@@ -201,7 +203,6 @@ class _MyProfileState extends State<ProfileClient> {
   @override
   Widget build(BuildContext context) {
         final LocaleController localeController = Get.put(LocaleController());
-
     return Scaffold(
       body: SafeArea(
         child: Form(

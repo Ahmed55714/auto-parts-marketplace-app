@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:work2/constants/colors.dart';
+import '../client/account_client.dart';
 import 'map_vendor.dart';
 import 'orders.dart';
 import 'vendorMyAccount.dart';
@@ -27,19 +28,17 @@ class _VendorMapState extends State<VendorMap> {
     switch (index) {
       case 0:
         return Directionality(
-          textDirection: TextDirection.ltr,
-          child: MyOrders());
+            textDirection: TextDirection.ltr, child: MyOrders());
 
       case 1:
         return MyMap();
       case 2:
         return Directionality(
             textDirection: TextDirection.ltr, child: AccountVendor());
-          
+
       default:
         return Directionality(
-          textDirection: TextDirection.ltr,
-          child: MyOrders());
+            textDirection: TextDirection.ltr, child: MyOrders());
       // Default case
     }
   }
@@ -92,7 +91,7 @@ class _VendorMapState extends State<VendorMap> {
             _currentIndex = isRTL ? 2 - index : index;
           });
         },
-    currentIndex: isRTL ? 2 - _currentIndex : _currentIndex,
+        currentIndex: isRTL ? 2 - _currentIndex : _currentIndex,
       ),
       tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
@@ -184,3 +183,5 @@ class BackButtonDeep1 extends StatelessWidget {
     );
   }
 }
+
+

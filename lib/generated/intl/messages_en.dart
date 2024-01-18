@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Failed to cancel order"),
         "AreCancel50": MessageLookupByLibrary.simpleMessage("Suspended"),
         "AreCancel51": MessageLookupByLibrary.simpleMessage("Withdrawable"),
+        "AreCancel52": MessageLookupByLibrary.simpleMessage("Submitted"),
         "AreCancel6": MessageLookupByLibrary.simpleMessage(
             "has been cancelled successfully"),
         "AreCancel7": MessageLookupByLibrary.simpleMessage("Return Order"),

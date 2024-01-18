@@ -2219,6 +2219,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Submitted`
+  String get AreCancel52 {
+    return Intl.message(
+      'Submitted',
+      name: 'AreCancel52',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

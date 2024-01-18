@@ -97,6 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("فشل في إلغاء الطلب"),
         "AreCancel50": MessageLookupByLibrary.simpleMessage("المبلغ معلق"),
         "AreCancel51": MessageLookupByLibrary.simpleMessage("قابل للسحب"),
+        "AreCancel52": MessageLookupByLibrary.simpleMessage("تم الارسال"),
         "AreCancel6": MessageLookupByLibrary.simpleMessage("تم الإلغاء بنجاح"),
         "AreCancel7": MessageLookupByLibrary.simpleMessage("أمر الإرجاع"),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(

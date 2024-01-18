@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:work2/screens/vendor/Bottom_nav.dart';
 import 'package:work2/screens/vendor/orders.dart';
 import 'package:work2/widgets/custom_button.dart';
@@ -32,7 +34,7 @@ class _TrueScreenState extends State<TrueScreen> {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-               Text(
+              Text(
                 S.of(context).TrueScreen,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -42,7 +44,7 @@ class _TrueScreenState extends State<TrueScreen> {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child:  Text(
+                child: Text(
                   S.of(context).TrueScreen1,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
@@ -67,7 +69,6 @@ class _TrueScreenState extends State<TrueScreen> {
                         // const CarForm(),
                       ),
                     );
-                   
                   }),
             ],
           ),
@@ -95,7 +96,7 @@ class TrueresgesterScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-               Text(
+              Text(
                 S.of(context).TrueScreen4,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -105,8 +106,8 @@ class TrueresgesterScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child:  Text(
-                   S.of(context).TrueScreen5,
+                child: Text(
+                  S.of(context).TrueScreen5,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
@@ -126,8 +127,8 @@ class TrueresgesterScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: const ClientMap()),
+                            textDirection: TextDirection.ltr,
+                            child: const ClientMap()),
                         // const CarForm(),
                       ),
                     );
@@ -217,7 +218,7 @@ class TrueOrderClinetScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-               Text(
+              Text(
                 S.of(context).TrueScreen6,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -227,8 +228,8 @@ class TrueOrderClinetScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child:  Text(
-                 S.of(context).TrueScreen7,
+                child: Text(
+                  S.of(context).TrueScreen7,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
@@ -261,7 +262,6 @@ class TrueOrderClinetScreen extends StatelessWidget {
   }
 }
 
-
 class TrueOrderClinetScreen2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -280,7 +280,7 @@ class TrueOrderClinetScreen2 extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-               Text(
+              Text(
                 S.of(context).TrueScreen6,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -290,7 +290,7 @@ class TrueOrderClinetScreen2 extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child:  Text(
+                child: Text(
                   S.of(context).TrueScreen1,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
@@ -342,7 +342,7 @@ class TrueOfferScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-               Text(
+              Text(
                 S.of(context).Offers13,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -352,7 +352,7 @@ class TrueOfferScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child:  Text(
+                child: Text(
                   S.of(context).Offers14,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
@@ -361,14 +361,13 @@ class TrueOfferScreen extends StatelessWidget {
               const SizedBox(height: 32.0),
 
               CustomButton(
-                text:  S.of(context).Offers15,
+                text: S.of(context).Offers15,
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: MyOrders()),
+                          textDirection: TextDirection.ltr, child: MyOrders()),
                       // const CarForm(),
                     ),
                   );
@@ -400,8 +399,8 @@ class TrueComplinPage extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'We got your request!',
+               Text(
+                S.of(context).TrueScreen,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -410,22 +409,22 @@ class TrueComplinPage extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child: const Text(
-                  'The request is being reviewed and will be responded to as soon as possible.',
+                child:  Text(
+                  S.of(context).TrueScreen1,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
               ),
               const SizedBox(height: 32.0),
               CustomButton2(
-                text: 'Edit',
+                text: S.of(context).TrueScreen2,
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               const SizedBox(height: 12.0),
               CustomButton(
-                  text: 'Profile',
+                  text: S.of(context).Profile,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -462,8 +461,9 @@ class TruePayment extends StatelessWidget {
                   width: 100,
                 ),
                 const SizedBox(
-                    height: 24.0), // Provides space between the icon and the text
-                 Text(
+                    height:
+                        24.0), // Provides space between the icon and the text
+                Text(
                   S.of(context).AreCancel30,
                   style: TextStyle(
                     fontSize: 24.0,
@@ -473,21 +473,21 @@ class TruePayment extends StatelessWidget {
                 const SizedBox(height: 8.0), // Provides space between the texts
                 Container(
                   width: 300,
-                  child:  Text(
-                     S.of(context).AreCancel31,
+                  child: Text(
+                    S.of(context).AreCancel31,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                   ),
                 ),
                 const SizedBox(height: 32.0),
-    
+
                 CustomButton(
                     text: S.of(context).AreCancel32,
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const OrdersClient(),
+                          builder: (context) => OrdersClient(),
                           // const CarForm(),
                         ),
                       );
@@ -502,6 +502,7 @@ class TruePayment extends StatelessWidget {
 }
 
 class TrueReturnScreen extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -519,7 +520,7 @@ class TrueReturnScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-               Text(
+              Text(
                 S.of(context).Offers13,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -529,7 +530,7 @@ class TrueReturnScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child:  Text(
+                child: Text(
                   S.of(context).Offers14,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
@@ -543,7 +544,9 @@ class TrueReturnScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OrdersClient(),
+                      builder: (context) => OrdersClient(
+                      
+                      ),
                       // const CarForm(),
                     ),
                   );
