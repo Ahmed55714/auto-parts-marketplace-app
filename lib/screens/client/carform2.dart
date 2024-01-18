@@ -145,9 +145,7 @@ class _CarForm2State extends State<CarForm2> {
                       padding: errorPadding,
                       
                       child: Row(
-                        mainAxisAlignment: textDirection == ui.TextDirection.ltr
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(validateField1()!,
                               style: TextStyle(color: Colors.red)),

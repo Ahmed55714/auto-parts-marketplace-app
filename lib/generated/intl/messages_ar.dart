@@ -81,8 +81,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "AreCancel40": MessageLookupByLibrary.simpleMessage("تواصل"),
         "AreCancel41":
             MessageLookupByLibrary.simpleMessage("لا توجد تعليقات متاحة"),
+        "AreCancel42": MessageLookupByLibrary.simpleMessage(
+            "يرجى تحميل صورة للشهادة الضريبية"),
+        "AreCancel43": MessageLookupByLibrary.simpleMessage(
+            "يرجى تحميل صورة للسجل التجاري"),
+        "AreCancel44": MessageLookupByLibrary.simpleMessage(
+            "يرجى تحميل صورة لشهادة البلدية"),
+        "AreCancel45": MessageLookupByLibrary.simpleMessage(
+            "الرجاء إدخال سبب إعادة الطلب"),
+        "AreCancel46": MessageLookupByLibrary.simpleMessage("سبب عودة"),
+        "AreCancel47": MessageLookupByLibrary.simpleMessage("ملحوظة"),
+        "AreCancel48": MessageLookupByLibrary.simpleMessage("محفظة"),
+        "AreCancel49": MessageLookupByLibrary.simpleMessage("المبلغ الإجمالي"),
         "AreCancel5":
             MessageLookupByLibrary.simpleMessage("فشل في إلغاء الطلب"),
+        "AreCancel50": MessageLookupByLibrary.simpleMessage("المبلغ معلق"),
+        "AreCancel51": MessageLookupByLibrary.simpleMessage("قابل للسحب"),
         "AreCancel6": MessageLookupByLibrary.simpleMessage("تم الإلغاء بنجاح"),
         "AreCancel7": MessageLookupByLibrary.simpleMessage("أمر الإرجاع"),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(

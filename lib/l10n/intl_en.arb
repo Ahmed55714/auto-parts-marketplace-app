@@ -228,7 +228,18 @@
     "AreCancel38": "No summary available",
     "AreCancel39": "Reviews",
     "AreCancel40": "contact",
-    "AreCancel41": "No reviews available"
+    "AreCancel41": "No reviews available",
+    "AreCancel42": "Please upload an image for Tax Certificate",
+    "AreCancel43": "Please upload an image for Commercial Register",
+    "AreCancel44": "Please upload an image for Municipality Certificate",
+    "AreCancel45": "Please enter the reason for returning the order ",
+    "AreCancel46": "Return reason",
+    "AreCancel47": "Note",
+    "AreCancel48": "Wallet",
+    "AreCancel49": "Total Amount",
+    "AreCancel50": "Suspended",
+    "AreCancel51": "Withdrawable"
+
 
 
 

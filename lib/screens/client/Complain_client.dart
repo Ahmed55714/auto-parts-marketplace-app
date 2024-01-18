@@ -33,9 +33,8 @@ class _ReportState extends State<ReportClient> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: ui.TextDirection.ltr,
-      child: Scaffold(
+    return 
+      Scaffold(
         body: SafeArea(
           child: Form(
             key: _formKey,
@@ -46,11 +45,14 @@ class _ReportState extends State<ReportClient> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          BackButtonDeep(),
-                        ],
+                      child: Directionality(
+                        textDirection: ui.TextDirection.ltr,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            BackButtonDeep(),
+                          ],
+                        ),
                       ),
                     ),
                     Text(
@@ -100,7 +102,7 @@ class _ReportState extends State<ReportClient> {
                     ),
                     const SizedBox(height: 15),
                   ],
-                ),
+                
               ),
             ),
           ),

@@ -69,6 +69,12 @@ class _OfferFormState extends State<OfferForm> {
 
   @override
   Widget build(BuildContext context) {
+    var textDirection = Directionality.of(context);
+
+  // Adjust padding based on text direction
+  var errorPadding = textDirection == TextDirection.ltr
+      ? const EdgeInsets.only(left: 16)
+      : const EdgeInsets.only(right: 16);
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -78,11 +84,14 @@ class _OfferFormState extends State<OfferForm> {
               padding: const EdgeInsets.all(5.0),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      BackButtonDeep(),
-                    ],
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        BackButtonDeep(),
+                      ],
+                    ),
                   ),
                    Text(
                     S.of(context).Offer1,
@@ -113,7 +122,7 @@ class _OfferFormState extends State<OfferForm> {
                   buildImagePicker(S.of(context).Offer7, 0),
                   if (validateField1() != null)
                     Padding(
-                      padding: const EdgeInsets.only(left: 16),
+                      padding: errorPadding,
                       child: Row(
                         children: [
                           Text(validateField1()!,

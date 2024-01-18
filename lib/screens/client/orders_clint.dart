@@ -36,6 +36,7 @@ class _OrdersClientState extends State<OrdersClient> {
   int selectedContainerIndex = -1;
   final StreamController<List<Order>> _ordersStreamController =
       StreamController();
+      bool _orderSubmitted = false;
 
   Future<List<Order>> fetchOrders() async {
     final Uri apiEndpoint =
@@ -378,17 +379,28 @@ class _OrdersClientState extends State<OrdersClient> {
           ),
         ),
         if (order.status == 'Delivered')
-          CustomButton(
-            text: S.of(context).AreCancel7,
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => OrderRepo(orderId: order.id)));
-           
-              
-            },
-          )
+         CustomButton(
+      text: _orderSubmitted ? S.of(context).Done : S.of(context).AreCancel7,
+      onPressed: () {
+        if (!_orderSubmitted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OrderRepo(
+                orderId: order.id,
+                onSubmissionSuccess: () {
+                  setState(() {
+                    _orderSubmitted = true; 
+                  });
+                },
+              ),
+            ),
+          );
+        } else {
+          
+        }
+      },
+    )
         else if (order.status != 'Canceled')
           CustomButton2(
             text: S.of(context).CancelOrder,
@@ -420,10 +432,8 @@ class _OrdersClientState extends State<OrdersClient> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  Directionality(
-                                      textDirection: ui.TextDirection.ltr,
-                                    
-                                    child: OfferClient(orderIds: [order.id]))));
+                                  
+                                  OfferClient(orderIds: [order.id])));
                     },
                     // Replace with the actual path to your SVG file
                   ),

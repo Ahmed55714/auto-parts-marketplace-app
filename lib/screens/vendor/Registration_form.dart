@@ -71,21 +71,21 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   String? validateField1() {
     if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
-      return 'Please upload an image for Tax Certificate';
+      return S.of(context).AreCancel42;
     }
     return null;
   }
 
   String? validateField2() {
     if (_images[1].isEmpty || _images[1].any((xFile) => xFile == null)) {
-      return 'Please upload an image for Commercial Register';
+      return S.of(context).AreCancel43;
     }
     return null;
   }
 
   String? validateField3() {
     if (_images[2].isEmpty || _images[2].any((xFile) => xFile == null)) {
-      return 'Please upload an image for Municipality Certificate';
+      return S.of(context).AreCancel44;
     }
     return null;
   }
@@ -104,6 +104,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   @override
   Widget build(BuildContext context) {
+    var textDirection = Directionality.of(context);
+
+    // Adjust padding based on text direction
+    var errorPadding = textDirection == TextDirection.ltr
+        ? const EdgeInsets.only(left: 16)
+        : const EdgeInsets.only(right: 16);
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -115,11 +121,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BackButtonDeep(),
-                      ],
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BackButtonDeep(),
+                        ],
+                      ),
                     ),
                   ),
                   Text(
@@ -151,8 +160,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
                   if (validateField1() != null)
                     Padding(
-                      padding: const EdgeInsets.only(left: 16),
+                      padding: errorPadding,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(validateField1()!,
                               style: TextStyle(color: Colors.red)),
@@ -164,8 +174,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
                   if (validateField2() != null)
                     Padding(
-                      padding: const EdgeInsets.only(left: 16),
+                      padding: errorPadding,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(validateField2()!,
                               style: TextStyle(color: Colors.red)),
@@ -177,8 +188,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
                   if (validateField3() != null)
                     Padding(
-                      padding: const EdgeInsets.only(left: 16),
+                      padding: errorPadding,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(validateField3()!,
                               style: TextStyle(color: Colors.red)),
@@ -329,8 +341,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle this case
-        return Future.error(
-            S.of(context).registerLocation2);
+        return Future.error(S.of(context).registerLocation2);
       }
 
       // When permissions are granted, get the current location
@@ -373,7 +384,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
   Widget buildImagePicker(String label, int fieldIndex) {
-    bool hasImage = _images.isNotEmpty; 
+    bool hasImage = _images.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,7 +477,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
   Widget buildAgreementSwitch() {
+    var textDirection = Directionality.of(context);
+
+    // Adjust padding based on text direction
+    var errorPadding = textDirection == TextDirection.ltr
+        ? const EdgeInsets.only(left: 16)
+        : const EdgeInsets.only(right: 16);
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         InkWell(
           onTap: () {
@@ -475,7 +493,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             });
           },
           child: Padding(
-            padding: const EdgeInsets.only(left: 16),
+            padding: errorPadding,
             child: SvgPicture.asset(
               isAgreed
                   ? 'assets/images/Object.svg'
@@ -504,13 +522,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
     return Column(
       children: [
         const SizedBox(height: 10),
-         Padding(
+        Padding(
           padding: EdgeInsets.only(
             left: 16.0,
             right: 16,
           ),
-          child: Text(
-              S.of(context).Agreee),
+          child: Text(S.of(context).Agreee),
         ),
         const SizedBox(height: 27),
         CustomButton(
@@ -550,9 +567,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => Directionality(
-                        textDirection: TextDirection.ltr,
-                        
-                      child: TrueScreen()),
+                        textDirection: TextDirection.ltr, child: TrueScreen()),
                   ),
                 );
               } catch (e) {

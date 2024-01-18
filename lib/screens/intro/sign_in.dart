@@ -226,8 +226,52 @@ class _SignInState extends State<SignIn> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            final code = await countryPicker.showPicker(
-                                context: context);
+                            final code = await FlCountryCodePicker(
+                                      localize: true,
+                                      title: Padding(
+                                        padding: paddingForTextFields,
+                                        child: Text(
+                                          S.of(context).Picker,
+                                          style: TextStyle(
+                                            fontSize: 36,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      searchBarDecoration: InputDecoration(
+                                        hintText: S.of(context).Search,
+                                        contentPadding: EdgeInsets.all(12.0),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey,
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          // Added this line
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .grey, // You can change this color as needed
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          // And this line
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .grey, // And the color here
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ).showPicker(context: context);
 
                             setState(() {
                               countryCode = code;

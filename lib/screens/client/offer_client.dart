@@ -259,9 +259,9 @@ class _OfferClientState extends State<OfferClient> {
                 ),
                 SizedBox(width: 10.0),
                 Expanded(
-                  child: Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: Column(
+                  child: 
+                    
+                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
@@ -306,7 +306,7 @@ class _OfferClientState extends State<OfferClient> {
                       ],
                     ),
                   ),
-                ),
+                
               ],
             ),
           ),
@@ -351,6 +351,12 @@ class _OfferClientState extends State<OfferClient> {
 
   @override
   Widget build(BuildContext context) {
+     var textDirection = Directionality.of(context);
+
+  // Adjust padding based on text direction
+  var errorPadding = textDirection == TextDirection.ltr
+      ? const EdgeInsets.only(left: 16)
+      : const EdgeInsets.only(right: 16);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -358,9 +364,12 @@ class _OfferClientState extends State<OfferClient> {
             children: [
               Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [BackButton()],
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [BackButton()],
+                  ),
                 ),
               ),
               Row(
@@ -375,9 +384,9 @@ class _OfferClientState extends State<OfferClient> {
               ),
               SizedBox(height: 16),
               Padding(
-                padding: EdgeInsets.only(left: 16),
+                padding: errorPadding,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(S.of(context).AreCancel22,
                         style: TextStyle(

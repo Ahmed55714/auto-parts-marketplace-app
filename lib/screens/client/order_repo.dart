@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:work2/constants/colors.dart';
 
+import '../../generated/l10n.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
@@ -13,10 +14,12 @@ import '../vendor/Bottom_nav.dart';
 
 class OrderRepo extends StatefulWidget {
   int orderId;
+   final VoidCallback onSubmissionSuccess;
 
   OrderRepo({
     Key? key,
     required this.orderId,
+    required this.onSubmissionSuccess,
   }) : super(key: key);
 
   @override
@@ -27,6 +30,8 @@ class _ReportState extends State<OrderRepo> {
   final _formKey = GlobalKey<FormState>();
 
   final reportController = TextEditingController();
+     
+
 
   Future<void> submitReturnReason(int orderId, String returnReason) async {
     final Uri apiEndpoint = Uri.parse(
@@ -44,15 +49,11 @@ class _ReportState extends State<OrderRepo> {
       });
 
       if (response.statusCode == 200) {
-      
-   
+     widget.onSubmissionSuccess();
       } else {
         // Handle error
- 
       }
-    } catch (e) {
-    
-    }
+    } catch (e) {}
   }
 
   @override
@@ -74,15 +75,18 @@ class _ReportState extends State<OrderRepo> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BackButtonDeep(),
-                      ],
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BackButtonDeep(),
+                        ],
+                      ),
                     ),
                   ),
-                  const Text(
-                    'Orders',
+                  Text(
+                    S.of(context).Orders,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -92,8 +96,8 @@ class _ReportState extends State<OrderRepo> {
                   const SizedBox(height: 10),
                   Container(
                     width: 310,
-                    child: const Text(
-                      'Please enter the reason for returning the order ',
+                    child: Text(
+                      S.of(context).AreCancel45,
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -103,30 +107,31 @@ class _ReportState extends State<OrderRepo> {
                   ),
                   const SizedBox(height: 10),
                   CustomMultiLineFormFieldWidget(
-                    label: 'Return reason',
+                    label: S.of(context).AreCancel46,
                     controller: reportController,
                     type: TextInputType.multiline,
-                    text: 'Placeholder',
+                    text: S.of(context).AreCancel47,
                   ),
                   const SizedBox(height: 20),
-                 CustomButton(
-  text: 'Submit',
-  onPressed: () {
-    if (_formKey.currentState!.validate()) {
-      String returnReason = reportController.text;
-      submitReturnReason(widget.orderId, returnReason).then((_) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TrueReturnScreen(),
-          ),
-        );
-      }).catchError((error) {
-        // Handle or show error
-      });
-    }
-  },
-),
+                  CustomButton(
+                    text: S.of(context).Com5,
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        String returnReason = reportController.text;
+                        submitReturnReason(widget.orderId, returnReason)
+                            .then((_) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TrueReturnScreen(),
+                            ),
+                          );
+                        }).catchError((error) {
+                          // Handle or show error
+                        });
+                      }
+                    },
+                  ),
                   const SizedBox(height: 15),
                 ],
               ),
@@ -169,7 +174,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -211,7 +216,7 @@ class CustomMultiLineFormFieldWidget extends StatelessWidget {
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },

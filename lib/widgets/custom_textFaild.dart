@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:work2/constants/colors.dart';
 
+import '../generated/l10n.dart';
+
 class CustomTextField extends StatelessWidget {
   final String labelText;
   final TextEditingController? controller;
@@ -108,7 +110,7 @@ class CustomMultiLineFormField extends StatelessWidget {
           
           validator: validator ?? (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $labelText';
+              return '${S.of(context).Name3} $labelText';
             }
             return null;
           },

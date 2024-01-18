@@ -84,8 +84,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "AreCancel40": MessageLookupByLibrary.simpleMessage("contact"),
         "AreCancel41":
             MessageLookupByLibrary.simpleMessage("No reviews available"),
+        "AreCancel42": MessageLookupByLibrary.simpleMessage(
+            "Please upload an image for Tax Certificate"),
+        "AreCancel43": MessageLookupByLibrary.simpleMessage(
+            "Please upload an image for Commercial Register"),
+        "AreCancel44": MessageLookupByLibrary.simpleMessage(
+            "Please upload an image for Municipality Certificate"),
+        "AreCancel45": MessageLookupByLibrary.simpleMessage(
+            "Please enter the reason for returning the order "),
+        "AreCancel46": MessageLookupByLibrary.simpleMessage("Return reason"),
+        "AreCancel47": MessageLookupByLibrary.simpleMessage("Note"),
+        "AreCancel48": MessageLookupByLibrary.simpleMessage("Wallet"),
+        "AreCancel49": MessageLookupByLibrary.simpleMessage("Total Amount"),
         "AreCancel5":
             MessageLookupByLibrary.simpleMessage("Failed to cancel order"),
+        "AreCancel50": MessageLookupByLibrary.simpleMessage("Suspended"),
+        "AreCancel51": MessageLookupByLibrary.simpleMessage("Withdrawable"),
         "AreCancel6": MessageLookupByLibrary.simpleMessage(
             "has been cancelled successfully"),
         "AreCancel7": MessageLookupByLibrary.simpleMessage("Return Order"),

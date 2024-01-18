@@ -96,11 +96,14 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BackButtonDeep(),
-                      ],
+                    child: Directionality(
+                      textDirection: ui.TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BackButtonDeep(),
+                        ],
+                      ),
                     ),
                   ),
                   Text(

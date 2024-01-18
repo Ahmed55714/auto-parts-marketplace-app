@@ -2119,6 +2119,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Please upload an image for Tax Certificate`
+  String get AreCancel42 {
+    return Intl.message(
+      'Please upload an image for Tax Certificate',
+      name: 'AreCancel42',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please upload an image for Commercial Register`
+  String get AreCancel43 {
+    return Intl.message(
+      'Please upload an image for Commercial Register',
+      name: 'AreCancel43',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please upload an image for Municipality Certificate`
+  String get AreCancel44 {
+    return Intl.message(
+      'Please upload an image for Municipality Certificate',
+      name: 'AreCancel44',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the reason for returning the order `
+  String get AreCancel45 {
+    return Intl.message(
+      'Please enter the reason for returning the order ',
+      name: 'AreCancel45',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Return reason`
+  String get AreCancel46 {
+    return Intl.message(
+      'Return reason',
+      name: 'AreCancel46',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get AreCancel47 {
+    return Intl.message(
+      'Note',
+      name: 'AreCancel47',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet`
+  String get AreCancel48 {
+    return Intl.message(
+      'Wallet',
+      name: 'AreCancel48',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Amount`
+  String get AreCancel49 {
+    return Intl.message(
+      'Total Amount',
+      name: 'AreCancel49',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Suspended`
+  String get AreCancel50 {
+    return Intl.message(
+      'Suspended',
+      name: 'AreCancel50',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Withdrawable`
+  String get AreCancel51 {
+    return Intl.message(
+      'Withdrawable',
+      name: 'AreCancel51',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

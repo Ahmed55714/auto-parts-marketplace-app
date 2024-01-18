@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:work2/constants/colors.dart';
-import '../client/account_client.dart';
 import 'map_vendor.dart';
 import 'orders.dart';
+import 'vendorMyAccount.dart';
 
 class VendorMap extends StatefulWidget {
   const VendorMap({super.key});
@@ -34,7 +34,7 @@ class _VendorMapState extends State<VendorMap> {
         return MyMap();
       case 2:
         return Directionality(
-            textDirection: TextDirection.ltr, child: AccountClient());
+            textDirection: TextDirection.ltr, child: AccountVendor());
           
       default:
         return Directionality(

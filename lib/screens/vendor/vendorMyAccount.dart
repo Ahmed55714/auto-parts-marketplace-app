@@ -10,22 +10,24 @@ import 'package:work2/screens/client/Terms_and_conditions.dart';
 
 import '../../constants/colors.dart';
 import '../../generated/l10n.dart';
+import '../client/Complain_client.dart';
+import '../client/profile_clint.dart';
 import '../intro/onboarding_screen.dart';
-import 'Complain_client.dart';
-import 'Profile_clint.dart';
+import 'walet.dart';
 
-class AccountClient extends StatefulWidget {
+
+class AccountVendor extends StatefulWidget {
   final String? name;
-  const AccountClient({
+  const AccountVendor({
     Key? key,
     this.name,
   }) : super(key: key);
 
   @override
-  State<AccountClient> createState() => _AccountClientState();
+  State<AccountVendor> createState() => _AccountVendorState();
 }
 
-class _AccountClientState extends State<AccountClient> {
+class _AccountVendorState extends State<AccountVendor> {
   String? _imageURL;
   String? _name;
   Future<void> fetchProfilePic() async {
@@ -162,7 +164,17 @@ class _AccountClientState extends State<AccountClient> {
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),
-           
+ GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Wallet()),
+              ),
+              child: _buildOptionRow(
+                  'assets/images/wallet.png', S.of(context).AreCancel48),
+            ),
+            const SizedBox(height: 12),
+            const _CustomDivider(),
+            const SizedBox(height: 12),
             GestureDetector(
                 onTap: () => signOut(),
                 child: _buildOptionRow(

@@ -231,6 +231,7 @@ class _MyOrdersState extends State<MyOrders> {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder<RegistrationVerificationStatus>(
       future: fetchCompleteRegistrationStatus(),
       builder: (context, snapshot) {
@@ -308,9 +309,8 @@ class _MyOrdersState extends State<MyOrders> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Directionality(
-                              textDirection: ui.TextDirection.ltr,
-                              child: RegistrationForm()),
+                            builder: (context) => 
+                             RegistrationForm(),
                           ),
                         );
                       },
@@ -327,6 +327,12 @@ class _MyOrdersState extends State<MyOrders> {
   }
 
   Widget buildOrdersLayout() {
+    var textDirection = Directionality.of(context);
+
+  // Adjust padding based on text direction
+  var errorPadding = textDirection == ui.TextDirection.ltr
+      ? const EdgeInsets.only(left: 16)
+      : const EdgeInsets.only(right: 16);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -549,9 +555,8 @@ class _MyOrdersState extends State<MyOrders> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          Directionality(
-textDirection: ui.TextDirection.ltr,
-                            child: OfferForm(orderId: order.id.toString())),
+                        
+                             OfferForm(orderId: order.id.toString()),
                     ),
                   );
                 },

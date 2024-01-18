@@ -60,9 +60,8 @@ class _VenforProfileState extends State<VenforProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Scaffold(
+    return
+       Scaffold(
         body: SafeArea(
           child: FutureBuilder<VendorProfile>(
             future: vendorProfileFuture,
@@ -79,7 +78,7 @@ class _VenforProfileState extends State<VenforProfile> {
             },
           ),
         ),
-      ),
+      
     );
   }
 
@@ -94,11 +93,14 @@ class _VenforProfileState extends State<VenforProfile> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BackButtonDeep(),
-                      ],
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BackButtonDeep(),
+                        ],
+                      ),
                     ),
                   ),
                   Text(
