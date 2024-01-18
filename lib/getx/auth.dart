@@ -22,7 +22,7 @@ class AuthController extends GetxController {
       },
       verificationFailed: (FirebaseAuthException e) {
         isLoading(false);
-        Get.snackbar('Error', 'Verification Failed please check your internet');
+        //Get.snackbar('Error', 'Verification Failed please check your internet');
       },
       codeSent: (String verificationId, int? resendToken) {
         isLoading(false);
@@ -44,7 +44,7 @@ class AuthController extends GetxController {
       await postUserData(_auth.currentUser!);
     } catch (e) {
       isLoading(false);
-      Get.snackbar('Error', 'Invalid OTP');
+     // Get.snackbar('Error', 'Invalid OTP');
     }
   }
 
@@ -76,26 +76,26 @@ class AuthController extends GetxController {
           var token = data['token'];
           await saveToken(token);
          
-          Get.snackbar(
-            'Success',
-            'Verify successfully',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
+          // Get.snackbar(
+          //   'Success',
+          //   'Verify successfully',
+          //   snackPosition: SnackPosition.BOTTOM,
+          //   backgroundColor: Colors.green,
+          //   colorText: Colors.white,
+          // );
           // Navigate to the sign-up page
           Get.offAll(() => SignUp());
         } else {
-          Get.snackbar('Error', 'Failed to Verify');
+          //Get.snackbar('Error', 'Failed to Verify');
         }
       } catch (e) {
-        Get.snackbar(
-          'Network Error',
-          'Could not connect to the server. Please check your internet connection.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   'Network Error',
+        //   'Could not connect to the server. Please check your internet connection.',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
       
       } finally {
         isLoading(false);

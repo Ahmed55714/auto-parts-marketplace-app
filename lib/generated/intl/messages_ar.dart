@@ -22,16 +22,91 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "Address": MessageLookupByLibrary.simpleMessage("عنوان"),
         "Agreee": MessageLookupByLibrary.simpleMessage(
             "بالضغط على زر التسجيل فإنك توافق على شروط وأحكام التطبيق"),
         "Are": MessageLookupByLibrary.simpleMessage(
             "هل أنت متأكد أنك تريد إلغاء طلبك؟"),
         "Are2":
             MessageLookupByLibrary.simpleMessage("هل يمكنك إخبارنا بالسبب؟"),
+        "AreCancel": MessageLookupByLibrary.simpleMessage(
+            "هل أنت متأكد أنك تريد إلغاء طلبك؟"),
+        "AreCancel10":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ أثناء رفض العرض"),
+        "AreCancel11": MessageLookupByLibrary.simpleMessage("الإذن مطلوب"),
+        "AreCancel12": MessageLookupByLibrary.simpleMessage(
+            "يرجى تمكين إذن التخزين في إعدادات التطبيق"),
+        "AreCancel13": MessageLookupByLibrary.simpleMessage("أفتح الإعدادات"),
+        "AreCancel14": MessageLookupByLibrary.simpleMessage("يلغي"),
+        "AreCancel15": MessageLookupByLibrary.simpleMessage("الخطأ في تحميل"),
+        "AreCancel16":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ أثناء تنزيل الملف"),
+        "AreCancel17": MessageLookupByLibrary.simpleMessage("تم رفض الإذن"),
+        "AreCancel18": MessageLookupByLibrary.simpleMessage(
+            "مطلوب إذن لإدارة وحدة التخزين الخارجية لتنزيل ملف PDF"),
+        "AreCancel19": MessageLookupByLibrary.simpleMessage("قبول"),
+        "AreCancel2":
+            MessageLookupByLibrary.simpleMessage("هل يمكنك إخبارنا بالسبب؟"),
+        "AreCancel20": MessageLookupByLibrary.simpleMessage("تم قبول العرض"),
+        "AreCancel21": MessageLookupByLibrary.simpleMessage("طلبات العروض"),
+        "AreCancel22": MessageLookupByLibrary.simpleMessage("العروض"),
+        "AreCancel23": MessageLookupByLibrary.simpleMessage("حفظ PDF"),
+        "AreCancel24": MessageLookupByLibrary.simpleMessage("خطأ في الحفظ"),
+        "AreCancel25": MessageLookupByLibrary.simpleMessage(
+            "فشل في حفظ ملف PDF. خطأ: لم يتم العثور على طلبات"),
+        "AreCancel26": MessageLookupByLibrary.simpleMessage("عروض للطلب"),
+        "AreCancel27":
+            MessageLookupByLibrary.simpleMessage("لا توجد عروض في هذه اللحظة"),
+        "AreCancel28":
+            MessageLookupByLibrary.simpleMessage("تم قبول العرض بنجاح"),
+        "AreCancel29":
+            MessageLookupByLibrary.simpleMessage("الدفع عند الاستلام"),
+        "AreCancel3":
+            MessageLookupByLibrary.simpleMessage("يرجى تقديم سبب الإلغاء"),
+        "AreCancel30": MessageLookupByLibrary.simpleMessage(
+            "سيتم شحن طلبك وتسليمه قريبًا"),
+        "AreCancel31": MessageLookupByLibrary.simpleMessage(
+            "جاري مراجعة الطلب وسيتم الرد عليه في أقرب وقت ممكن"),
+        "AreCancel32": MessageLookupByLibrary.simpleMessage("طلباتي"),
+        "AreCancel33":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ أثناء إلغاء الطلب"),
+        "AreCancel34": MessageLookupByLibrary.simpleMessage("نجاح"),
+        "AreCancel35": MessageLookupByLibrary.simpleMessage("تم التحقق بنجاح"),
+        "AreCancel36": MessageLookupByLibrary.simpleMessage("خطأ"),
+        "AreCancel37": MessageLookupByLibrary.simpleMessage("نبذه"),
+        "AreCancel38":
+            MessageLookupByLibrary.simpleMessage("لا يوجد ملخص متاح"),
+        "AreCancel39": MessageLookupByLibrary.simpleMessage("التعليقات"),
+        "AreCancel4": MessageLookupByLibrary.simpleMessage("تم إلغاء طلبك"),
+        "AreCancel40": MessageLookupByLibrary.simpleMessage("تواصل"),
+        "AreCancel41":
+            MessageLookupByLibrary.simpleMessage("لا توجد تعليقات متاحة"),
+        "AreCancel5":
+            MessageLookupByLibrary.simpleMessage("فشل في إلغاء الطلب"),
+        "AreCancel6": MessageLookupByLibrary.simpleMessage("تم الإلغاء بنجاح"),
+        "AreCancel7": MessageLookupByLibrary.simpleMessage("أمر الإرجاع"),
+        "AreCancel8": MessageLookupByLibrary.simpleMessage(
+            "يرجى تحميل صورة للحصول على الترخيص"),
+        "AreCancel9": MessageLookupByLibrary.simpleMessage("فشل في رفض العرض"),
+        "CancelOrder": MessageLookupByLibrary.simpleMessage("الغاء الطلب"),
+        "CarForm": MessageLookupByLibrary.simpleMessage("نموذج السيارة"),
+        "CarForm2": MessageLookupByLibrary.simpleMessage("أدخل قطعة سيارتك"),
+        "CarForm3": MessageLookupByLibrary.simpleMessage("أدخل طراز سيارتك"),
+        "CarForm4":
+            MessageLookupByLibrary.simpleMessage("أدخل رقم الهيكل الخاص بك"),
+        "CarForm5":
+            MessageLookupByLibrary.simpleMessage("أدخل نوع القطعة الخاصة بك"),
+        "CarForm6": MessageLookupByLibrary.simpleMessage(
+            "أدخل تفاصيل القطعة الخاصة بك"),
+        "CarForm7":
+            MessageLookupByLibrary.simpleMessage("يرجى تحديث صورة للترخيص"),
+        "CarForm8": MessageLookupByLibrary.simpleMessage("نوع القطعة"),
+        "CarForm9": MessageLookupByLibrary.simpleMessage("تفاصيل القطعة"),
         "CarModel": MessageLookupByLibrary.simpleMessage("طراز السيارة"),
         "CarType": MessageLookupByLibrary.simpleMessage("نوع السيارة"),
         "Chassis": MessageLookupByLibrary.simpleMessage("رقم الهيكل"),
         "Chat": MessageLookupByLibrary.simpleMessage("محادثة"),
+        "CheckOffers": MessageLookupByLibrary.simpleMessage("تحقق من العروض"),
         "Com": MessageLookupByLibrary.simpleMessage("الشكوى"),
         "Com2": MessageLookupByLibrary.simpleMessage("تاريخ الشكوى"),
         "Com3": MessageLookupByLibrary.simpleMessage("تقرير"),
@@ -73,6 +148,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "Name2": MessageLookupByLibrary.simpleMessage(" دخل"),
         "Name3": MessageLookupByLibrary.simpleMessage(" أدخل"),
         "Needed": MessageLookupByLibrary.simpleMessage("قطعة السيارة المطلوبة"),
+        "NewRequest": MessageLookupByLibrary.simpleMessage("طلب جديد"),
+        "NoOrdersAvailable":
+            MessageLookupByLibrary.simpleMessage("لا توجد طلبات متاحة"),
         "Offer1": MessageLookupByLibrary.simpleMessage("نموذج العرض"),
         "Offer10": MessageLookupByLibrary.simpleMessage("تقديم عرض"),
         "Offer2": MessageLookupByLibrary.simpleMessage("قطعة"),
@@ -94,6 +172,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "Offers15": MessageLookupByLibrary.simpleMessage("طلبات"),
         "Orders": MessageLookupByLibrary.simpleMessage("طلبات"),
         "Outfordelivery": MessageLookupByLibrary.simpleMessage("خارج للتوصيل"),
+        "Payment": MessageLookupByLibrary.simpleMessage("الدفع"),
+        "Payment1": MessageLookupByLibrary.simpleMessage("عنوان التسليم"),
+        "Payment10":
+            MessageLookupByLibrary.simpleMessage("فشل الدفع أو تم إلغاؤه"),
+        "Payment11": MessageLookupByLibrary.simpleMessage("خطأ الدفع"),
+        "Payment2": MessageLookupByLibrary.simpleMessage("سعر"),
+        "Payment3": MessageLookupByLibrary.simpleMessage(
+            "يرجى إضافة عنوان في ملفك الشخصي أولاً"),
+        "Payment5": MessageLookupByLibrary.simpleMessage(
+            "بعد الضغط على الدفع الآن، سيتم إعادة توجيهك إلى نظام الدفع الموثوق لاكمال عملية الشراء بشكل آمن وسلس"),
+        "Payment6": MessageLookupByLibrary.simpleMessage("دفع"),
+        "Payment7": MessageLookupByLibrary.simpleMessage("شارع - مبنى - الدور"),
+        "Payment8":
+            MessageLookupByLibrary.simpleMessage("الرجاء اختيار طريقة الدفع"),
+        "Payment9":
+            MessageLookupByLibrary.simpleMessage("لم يتم تحديد عنوان التسليم"),
         "Picker": MessageLookupByLibrary.simpleMessage("حدد الدولة"),
         "Placeholder": MessageLookupByLibrary.simpleMessage(
             "يرجى تحميل المستندات الخاصة بك"),
@@ -145,6 +239,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "جاري مراجعة الطلب وسيتم الرد عليه في أقرب وقت ممكن"),
         "TrueScreen2": MessageLookupByLibrary.simpleMessage("تعديل الطلب"),
         "TrueScreen3": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
+        "TrueScreen4": MessageLookupByLibrary.simpleMessage("تم التسجيل بنجاح"),
+        "TrueScreen5":
+            MessageLookupByLibrary.simpleMessage("يمكنك تنفيذ طلبك الأول"),
+        "TrueScreen6":
+            MessageLookupByLibrary.simpleMessage("لقد حصلنا على طلبك"),
+        "TrueScreen7": MessageLookupByLibrary.simpleMessage(
+            "تحقق من طلباتك لمعرفة حالة طلبك من الصفحة الرئيسية"),
         "Try":
             MessageLookupByLibrary.simpleMessage("حاول مرة أخرى في وقت لاحق"),
         "Verification3": MessageLookupByLibrary.simpleMessage("يؤكد"),
@@ -153,9 +254,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "button2": MessageLookupByLibrary.simpleMessage("انتظر من فضلك"),
         "carLicence": MessageLookupByLibrary.simpleMessage("رخصة السيارة"),
         "comment": MessageLookupByLibrary.simpleMessage("تعليق"),
+        "condition": MessageLookupByLibrary.simpleMessage("حالة القطعة"),
         "error":
             MessageLookupByLibrary.simpleMessage("حدث خطأ أثناء تحميل الطلبات"),
         "error2": MessageLookupByLibrary.simpleMessage("لا تتوافر بيانات"),
+        "governmental":
+            MessageLookupByLibrary.simpleMessage("عرض الأسعار لجهة حكومية"),
         "makeoffer": MessageLookupByLibrary.simpleMessage("تقديم عرض"),
         "nearPlaces": MessageLookupByLibrary.simpleMessage("الأماكن القريبة"),
         "orderStatus": MessageLookupByLibrary.simpleMessage("حالة الطلب"),
@@ -189,6 +293,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتف صالح"),
         "valid3": MessageLookupByLibrary.simpleMessage(
             "الرجاء تحديد رمز البلد الخاص بك"),
+        "valid4": MessageLookupByLibrary.simpleMessage("الرجاء التحديد"),
         "verification": MessageLookupByLibrary.simpleMessage("رمز التحقق"),
         "verification2": MessageLookupByLibrary.simpleMessage(
             "لقد أرسلنا لك الرمز المكون من 6 أرقام لإدخال الرمز أدناه لتأكيد رقم هاتفك")

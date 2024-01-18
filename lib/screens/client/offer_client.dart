@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/payment.dart';
+import '../../generated/l10n.dart';
 import '../../widgets/custom_button.dart';
 import 'vedor_profile.dart';
 import 'package:http/http.dart' as http;
@@ -30,7 +31,6 @@ class _OfferClientState extends State<OfferClient> {
   @override
   void initState() {
     super.initState();
-  
   }
 
   Future<bool> checkCanDownloadOffers() async {
@@ -78,12 +78,9 @@ class _OfferClientState extends State<OfferClient> {
         }
       } else {
         // Handle error
-        print('Failed to fetch offers');
         print(response.body);
       }
-    } catch (e) {
-      print('Error occurred while fetching offers: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> declineOffer(int offerId) async {
@@ -108,7 +105,8 @@ class _OfferClientState extends State<OfferClient> {
           // Offer has been declined successfully
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Offer $offerId has been declined successfully'),
+              content: Text(
+                  '${S.of(context).Offer} $offerId ${S.of(context).AreCancel6}'),
             ),
           );
           await Future.delayed(Duration(seconds: 1));
@@ -124,64 +122,58 @@ class _OfferClientState extends State<OfferClient> {
         // Handle error
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to decline offer')),
+          SnackBar(content: Text(S.of(context).AreCancel9)),
         );
       }
     } catch (e) {
       // Handle any exceptions here
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error occurred while declining offer')),
+        SnackBar(content: Text(S.of(context).AreCancel10)),
       );
     }
   }
 
-Future<void> requestStoragePermission() async {
-  PermissionStatus status = await Permission.manageExternalStorage.request();
+  Future<void> requestStoragePermission() async {
+    PermissionStatus status = await Permission.manageExternalStorage.request();
 
-  if (status.isGranted) {
-    print("Permission granted");
-    // Proceed with file operations
-    savePdf(widget.orderIds);
-  } else if (status.isDenied) {
-    print("Permission denied");
-    // Handle permission denied (show a message to the user)
-   
-  } else if (status.isPermanentlyDenied) {
-    print("Permission permanently denied");
-    // Handle permanent denial (show a dialog to guide the user)
-    showPermissionPermanentlyDeniedDialog();
+    if (status.isGranted) {
+      // Proceed with file operations
+      savePdf(widget.orderIds);
+    } else if (status.isDenied) {
+      // Handle permission denied (show a message to the user)
+    } else if (status.isPermanentlyDenied) {
+      // Handle permanent denial (show a dialog to guide the user)
+      showPermissionPermanentlyDeniedDialog();
+    }
   }
-}
-void showPermissionPermanentlyDeniedDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Permission Required"),
-        content: Text("Please enable storage permission in the app settings."),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Open Settings"),
-            onPressed: () {
-              openAppSettings();
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text("Cancel"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
-
-
+  void showPermissionPermanentlyDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(S.of(context).AreCancel11),
+          content: Text(S.of(context).AreCancel12),
+          actions: <Widget>[
+            TextButton(
+              child: Text(S.of(context).AreCancel13),
+              onPressed: () {
+                openAppSettings();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(S.of(context).AreCancel14),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> savePdf(List<int> orderIds) async {
     final prefs = await SharedPreferences.getInstance();
@@ -219,33 +211,28 @@ void showPermissionPermanentlyDeniedDialog() {
           }
         } else {
           Get.snackbar(
-            "Download Error",
-            "Failed to Save the PDF. Status code: ${response.statusCode}",
+            S.of(context).AreCancel15,
+            S.of(context).AreCancel16,
             snackPosition: SnackPosition.BOTTOM,
           );
-          print('Failed to Save PDF. Status code: ${response.statusCode}');
-          print('Response body: ${response.body}');
         }
       } else {
         Get.snackbar(
-          "Permission Denied",
-          "Permission to manage external storage is required to download PDF.",
+          S.of(context).AreCancel17,
+          S.of(context).AreCancel18,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     } catch (e) {
       Get.snackbar(
-        "Download Error",
-        "Failed to download the PDF. Error: $e",
+        S.of(context).AreCancel15,
+            S.of(context).AreCancel16,
         snackPosition: SnackPosition.BOTTOM,
       );
-      print('Error during PDF download: $e');
     } finally {
       isLoading(false);
     }
   }
-
-
 
   int current = 0;
   final PageController pageController = PageController();
@@ -272,49 +259,52 @@ void showPermissionPermanentlyDeniedDialog() {
                 ),
                 SizedBox(width: 10.0),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Needed car piece: ${offer.piece}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                      Text(
-                        'Car type: ${offer.yearModel}',
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        'Piece condition: ${offer.condition}',
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        'Near places: ${offer.country}',
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        'Price: ${offer.price}',
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        'Address: ${offer.notes}', // Assuming 'notes' contains address information
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      Row(
-                        children: List.generate(
-                          5,
-                          (index) => Icon(
-                            index < (offer.user.avgRating ?? 0)
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: Colors.orange,
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '${S.of(context).Needed}: ${offer.piece}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Colors.deepPurple,
                           ),
                         ),
-                      ),
-                    ],
+                        Text(
+                          '${S.of(context).CarModel}: ${offer.yearModel}',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          '${S.of(context).condition}: ${offer.condition}',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          '${S.of(context).nearPlaces}: ${offer.country}',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          '${S.of(context).Offer6}: ${offer.price}',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          '${S.of(context).Address}: ${offer.notes}', // Assuming 'notes' contains address information
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        Row(
+                          children: List.generate(
+                            5,
+                            (index) => Icon(
+                              index < (offer.user.avgRating ?? 0)
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.orange,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -327,7 +317,7 @@ void showPermissionPermanentlyDeniedDialog() {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomButton3(
-                text: 'Accept',
+                text: S.of(context).AreCancel19,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -342,7 +332,7 @@ void showPermissionPermanentlyDeniedDialog() {
               ),
               SizedBox(width: 20),
               CustomButton4(
-                text: 'Decline',
+                text: S.of(context).Decline,
                 onPressed: () {
                   declineOffer(offer.id);
                 },
@@ -351,7 +341,7 @@ void showPermissionPermanentlyDeniedDialog() {
           ),
         ] else if (offer.isAccepted == '1') ...[
           CustomButton5(
-            text: 'Accepted Order',
+            text: S.of(context).AreCancel20,
             onPressed: () {},
           ),
         ],
@@ -376,7 +366,7 @@ void showPermissionPermanentlyDeniedDialog() {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Offer Requests',
+                  Text(S.of(context).AreCancel21,
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -389,11 +379,12 @@ void showPermissionPermanentlyDeniedDialog() {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text('Offers',
+                    Text(S.of(context).AreCancel22,
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             color: Colors.deepPurple)),
+                            
                   ],
                 ),
               ),
@@ -413,14 +404,14 @@ void showPermissionPermanentlyDeniedDialog() {
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 20),
                         child: CustomButton(
-                          text: 'Save PDF',
+                          text: S.of(context).AreCancel23,
                           onPressed: () {
                             if (widget.orderIds.isNotEmpty) {
                               savePdf(widget.orderIds);
                             } else {
                               Get.snackbar(
-                                "Save Error",
-                                "Failed to Save the PDF. Error: No orders found",
+                                S.of(context).AreCancel24,
+                                S.of(context).AreCancel25,
                                 snackPosition: SnackPosition.BOTTOM,
                               );
                             }
@@ -445,7 +436,7 @@ void showPermissionPermanentlyDeniedDialog() {
 
     offers.forEach((orderId, offersList) {
       if (offersList.isNotEmpty) {
-        offerWidgets.add(Text("Offers for Order : $orderId",
+        offerWidgets.add(Text("${S.of(context).AreCancel26} : $orderId",
             style: TextStyle(fontWeight: FontWeight.w500)));
         offerWidgets.addAll(offersList
             .map((offer) => GestureDetector(
@@ -466,7 +457,7 @@ void showPermissionPermanentlyDeniedDialog() {
       offerWidgets.add(Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Text('No offers at this moment',
+          child: Text(S.of(context).AreCancel27,
               style: TextStyle(fontSize: 18, color: Colors.grey)),
         ),
       ));
@@ -539,3 +530,4 @@ class User {
     );
   }
 }
+

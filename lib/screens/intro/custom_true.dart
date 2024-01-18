@@ -95,8 +95,8 @@ class TrueresgesterScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'Registration Successfully',
+               Text(
+                S.of(context).TrueScreen4,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -105,27 +105,29 @@ class TrueresgesterScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child: const Text(
-                  'You Can Do Your First Order',
+                child:  Text(
+                   S.of(context).TrueScreen5,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
               ),
               const SizedBox(height: 32.0),
               CustomButton2(
-                text: 'Edit',
+                text: S.of(context).TrueScreen2,
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               const SizedBox(height: 12.0),
               CustomButton(
-                  text: 'Homepage',
+                  text: S.of(context).TrueScreen3,
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ClientMap(),
+                        builder: (context) => Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: const ClientMap()),
                         // const CarForm(),
                       ),
                     );
@@ -215,8 +217,8 @@ class TrueOrderClinetScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'We got your Order!',
+               Text(
+                S.of(context).TrueScreen6,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -225,22 +227,22 @@ class TrueOrderClinetScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child: const Text(
-                  'Check your orders to see the status of your order from home page.',
+                child:  Text(
+                 S.of(context).TrueScreen7,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
               ),
               const SizedBox(height: 32.0),
               CustomButton2(
-                text: 'Edit',
+                text: S.of(context).TrueScreen2,
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               const SizedBox(height: 12.0),
               CustomButton(
-                text: 'Homepage',
+                text: S.of(context).TrueScreen3,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -278,8 +280,8 @@ class TrueOrderClinetScreen2 extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'We got your Order!',
+               Text(
+                S.of(context).TrueScreen6,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -288,22 +290,22 @@ class TrueOrderClinetScreen2 extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child: const Text(
-                  'Check your orders to see the status of your order from home page.',
+                child:  Text(
+                  S.of(context).TrueScreen1,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
               ),
               const SizedBox(height: 32.0),
               CustomButton2(
-                text: 'Edit',
+                text: S.of(context).TrueScreen2,
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               const SizedBox(height: 12.0),
               CustomButton(
-                text: 'Homepage',
+                text: S.of(context).TrueScreen3,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -444,51 +446,54 @@ class TrueComplinPage extends StatelessWidget {
 class TruePayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SvgPicture.asset(
-                'assets/images/true.svg',
-                height: 100,
-                width: 100,
-              ),
-              const SizedBox(
-                  height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'Your order will be shipped and delivered soon!',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.w500,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SvgPicture.asset(
+                  'assets/images/true.svg',
+                  height: 100,
+                  width: 100,
                 ),
-              ),
-              const SizedBox(height: 8.0), // Provides space between the texts
-              Container(
-                width: 300,
-                child: const Text(
-                  'The request is being reviewed and will be responded to as soon as possible.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
+                const SizedBox(
+                    height: 24.0), // Provides space between the icon and the text
+                 Text(
+                  S.of(context).AreCancel30,
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 32.0),
-
-              CustomButton(
-                  text: 'My Orders',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OrdersClient(),
-                        // const CarForm(),
-                      ),
-                    );
-                  }),
-            ],
+                const SizedBox(height: 8.0), // Provides space between the texts
+                Container(
+                  width: 300,
+                  child:  Text(
+                     S.of(context).AreCancel31,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
+                  ),
+                ),
+                const SizedBox(height: 32.0),
+    
+                CustomButton(
+                    text: S.of(context).AreCancel32,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const OrdersClient(),
+                          // const CarForm(),
+                        ),
+                      );
+                    }),
+              ],
+            ),
           ),
         ),
       ),
@@ -514,8 +519,8 @@ class TrueReturnScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'You made an Offer!',
+               Text(
+                S.of(context).Offers13,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -524,8 +529,8 @@ class TrueReturnScreen extends StatelessWidget {
               const SizedBox(height: 8.0), // Provides space between the texts
               Container(
                 width: 300,
-                child: const Text(
-                  'Check your orders to see the status of your order from Order page.',
+                child:  Text(
+                  S.of(context).Offers14,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16.0, fontFamily: 'Roboto'),
                 ),
@@ -533,7 +538,7 @@ class TrueReturnScreen extends StatelessWidget {
               const SizedBox(height: 32.0),
 
               CustomButton(
-                text: 'Orders',
+                text: S.of(context).Orders,
                 onPressed: () {
                   Navigator.push(
                     context,

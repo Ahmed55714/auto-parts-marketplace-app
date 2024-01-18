@@ -135,10 +135,10 @@ class _SignInState extends State<SignIn> {
                           child: GestureDetector(
                             key: countryPickerKey,
                             onTap: () async {
-                              final code = await FlCountryCodePicker(
-                                localize: true, // Ensure this is set
-                              ).showPicker(context: context);
+                             bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+  final picker = FlCountryCodePicker(localize: isArabic);
 
+  final code = await picker.showPicker(context: context);
                               setState(() {
                                 countryCode = code;
                               });

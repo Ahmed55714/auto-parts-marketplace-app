@@ -16,6 +16,7 @@ import '../../widgets/custom_button.dart';
 
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
+import '../intro/onboarding_screen.dart';
 import '../vendor/Bottom_nav.dart';
 import '../vendor/profile.dart';
 import 'package:http/http.dart' as http;
@@ -199,6 +200,8 @@ class _MyProfileState extends State<ProfileClient> {
 
   @override
   Widget build(BuildContext context) {
+        final LocaleController localeController = Get.put(LocaleController());
+
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -225,6 +228,29 @@ class _MyProfileState extends State<ProfileClient> {
                       color: deepPurple,
                     ),
                   ),
+                   Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: Get.locale?.languageCode == 'en'
+                      ? Image.asset(
+                          'assets/images/unitedstates.png',
+                          width: 35,
+                          height: 35,
+                        )
+                      : Image.asset(
+                          'assets/images/saudiarabia.png',
+                          width: 35,
+                          height: 35,
+                        ),
+                  onPressed: () {
+                    if (Get.locale?.languageCode == 'en') {
+                      localeController.changeLanguage('ar');
+                    } else {
+                      localeController.changeLanguage('en');
+                    }
+                  },
+                ),
+              ),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: getImage,

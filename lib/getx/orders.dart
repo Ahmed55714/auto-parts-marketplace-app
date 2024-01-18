@@ -121,9 +121,10 @@ class OrdersController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Handle success
         var jsonResponse = json.decode(response.body);
-        
+        print('Response body: ${response.body}');
       } else {
         // Handle error
+        print('Response body: ${response.body}');
       }
     } catch (e) {
       Get.snackbar(

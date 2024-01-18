@@ -96,7 +96,7 @@ class _OrdersClientState extends State<OrdersClient> {
         if (responseData['status'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Order $orderId has been cancelled successfully'),
+              content: Text('${S.of(context).Orders} $orderId ${S.of(context).AreCancel6}'),
             ),
           );
           setState(() {
@@ -107,14 +107,14 @@ class _OrdersClientState extends State<OrdersClient> {
         // Handle error
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to cancel order')),
+          SnackBar(content: Text(S.of(context).AreCancel5)),
         );
       }
     } catch (e) {
       // Handle any exceptions here
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error occurred while cancelling order')),
+        SnackBar(content: Text('')),
       );
     }
   }
@@ -179,124 +179,125 @@ class _OrdersClientState extends State<OrdersClient> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _refresh,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20),
-                const Center(
-                  child: Text(
-                    'Orders',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: deepPurple,
+    return Directionality(
+      textDirection: ui.TextDirection.ltr,
+      child: Scaffold(
+        body: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: _refresh,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20),
+                   Center(
+                    child: Text(
+                      S.of(context).Orders,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: deepPurple,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MobileLayoutScreen()));
-                        },
-                        icon: Stack(
-                          children: <Widget>[
-                            Icon(
-                              Icons.notifications,
-                              color: deepPurple,
-                              size: 35,
-                            ),
-                            FutureBuilder<int>(
-                              future:
-                                  fetchUnreadMessageCount(), // your fetch function here
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<int> snapshot) {
-                                if (snapshot.hasData && snapshot.data! > 0) {
-                                  return Positioned(
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.all(1),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      constraints: BoxConstraints(
-                                        minWidth: 16,
-                                        minHeight: 16,
-                                      ),
-                                      child: Text(
-                                        '${snapshot.data}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 8,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MobileLayoutScreen()));
+                          },
+                          icon: Stack(
+                            children: <Widget>[
+                              Icon(
+                                Icons.notifications,
+                                color: deepPurple,
+                                size: 35,
+                              ),
+                              FutureBuilder<int>(
+                                future:
+                                    fetchUnreadMessageCount(), // your fetch function here
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<int> snapshot) {
+                                  if (snapshot.hasData && snapshot.data! > 0) {
+                                    return Positioned(
+                                      right: 0,
+                                      child: Container(
+                                        padding: EdgeInsets.all(1),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius: BorderRadius.circular(6),
                                         ),
-                                        textAlign: TextAlign.center,
+                                        constraints: BoxConstraints(
+                                          minWidth: 16,
+                                          minHeight: 16,
+                                        ),
+                                        child: Text(
+                                          '${snapshot.data}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 8,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              },
-                            )
-                          ],
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              )
+                            ],
+                          ),
                         ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomContainerButton(
+                        text: S.of(context).NewRequest,
+                        onPressed: () {
+                          //List<int> orderIds = getOrderIds();
+                          regesterController.navigateBasedClint2(context);
+                        },
+                        svgIconPath:
+                            'assets/images/+.svg',
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CustomContainerButton(
-                      text: "New Request",
-                      onPressed: () {
-                        //List<int> orderIds = getOrderIds();
-                        regesterController.navigateBasedClint2(context);
-                      },
-                      svgIconPath:
-                          'assets/images/+.svg', // Replace with the actual path to your SVG file
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                //...orders.map((order) => orderDetails(order)).toList(),
-
-                FutureBuilder<List<Order>>(
-                  future: fetchOrders(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('No orders available'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('No orders available'));
-                    } else {
-                      return ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return orderDetails(snapshot.data![index]);
-                        },
-                      );
-                    }
-                  },
-                ),
-              ],
+                  const SizedBox(height: 16),
+        
+                  FutureBuilder<List<Order>>(
+                    future: fetchOrders(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text(S.of(context).NoOrdersAvailable));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text(S.of(context).NoOrdersAvailable));
+                      } else {
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return orderDetails(snapshot.data![index]);
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -304,10 +305,6 @@ class _OrdersClientState extends State<OrdersClient> {
     );
   }
 
-  //  showModalBottomSheet(
-  //         context: context,
-  //         builder: (context) => BottomSheetWidget(orderId: widget.offerId),
-  //       );
 
   Widget orderDetails(Order order) {
     return Column(
@@ -334,31 +331,31 @@ class _OrdersClientState extends State<OrdersClient> {
                 ),
                 SizedBox(height: 8),
                 OrderDetailLine(
-                  title: 'Needed car piece',
+                  title: S.of(context).Needed,
                   placeholder: order.carPiece,
                 ),
                 OrderDetailLine(
-                  title: 'Car model',
+                  title: S.of(context).CarModel,
                   placeholder: order.carModel,
                 ),
                 OrderDetailLine(
-                  title: 'Chassis number',
+                  title: S.of(context).Chassis,
                   placeholder: order.chassisNumber,
                 ),
                 OrderDetailLine(
-                  title: 'Piece type',
+                  title: S.of(context).pieceType,
                   placeholder: order.pieceType,
                 ),
                 OrderDetailLine(
-                  title: 'Piece details',
+                  title: S.of(context).pieceDetails,
                   placeholder: order.pieceDetail,
                 ),
                 OrderDetailLine(
-                  title: 'Date',
+                  title: S.of(context).Date,
                   placeholder: DateFormat('yyyy-MM-dd').format(order.date),
                 ),
                 OrderDetailLine(
-                  title: 'Car Licence',
+                  title: S.of(context).carLicence,
                   placeholder: 'Show Image',
                   imageUrl:
                       order.files.isNotEmpty ? order.files[0].fileUrl : null,
@@ -366,12 +363,12 @@ class _OrdersClientState extends State<OrdersClient> {
                       order.files.length > 1 ? order.files[1].fileUrl : null,
                 ),
                 OrderDetailLine(
-                  title: 'Near places',
+                  title: S.of(context).nearPlaces,
                   placeholder: 'Show Location',
                   location: LatLng(order.latitude, order.longitude),
                 ),
                 OrderDetailLine(
-                  title: 'Order Status',
+                  title: S.of(context).orderStatus,
                   placeholder: order.status,
                   placeholderColor:
                       order.status == 'Pending' ? Colors.red : Colors.green,
@@ -382,7 +379,7 @@ class _OrdersClientState extends State<OrdersClient> {
         ),
         if (order.status == 'Delivered')
           CustomButton(
-            text: 'Return Order',
+            text: S.of(context).AreCancel7,
             onPressed: () {
               Navigator.push(
                   context,
@@ -394,7 +391,7 @@ class _OrdersClientState extends State<OrdersClient> {
           )
         else if (order.status != 'Canceled')
           CustomButton2(
-            text: 'Cancel order',
+            text: S.of(context).CancelOrder,
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -416,14 +413,17 @@ class _OrdersClientState extends State<OrdersClient> {
                 children: [
                   CustomContainerButton(
                     svgIconPath: 'assets/images/offerr.svg',
-                    text: "Check Offers",
+                    text: S.of(context).CheckOffers,
                     onPressed: () {
                       //List<int> orderIds = getOrderIds();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  OfferClient(orderIds: [order.id])));
+                                  Directionality(
+                                      textDirection: ui.TextDirection.ltr,
+                                    
+                                    child: OfferClient(orderIds: [order.id]))));
                     },
                     // Replace with the actual path to your SVG file
                   ),
@@ -456,24 +456,23 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.9, // 60% of screen height
-
+      height: MediaQuery.of(context).size.height * 0.9, 
       child: Container(
         padding: const EdgeInsets.all(6.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 15),
-              const Text(
-                'Are you sure you want to cancel Your Order?',
+               Text(
+                S.of(context).CancelOrder,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 25,
                 ),
               ),
-              const Text(
-                'Can you tell us the reason?',
+               Text(
+                S.of(context).AreCancel2,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -485,12 +484,12 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
               SizedBox(
                 height: 70,
                 child: CustomMultiLineFormField(
-                  labelText: 'comment',
+                  labelText: S.of(context).comment,
                   controller: cancelReasonController,
                 ),
               ),
               CustomButton(
-                text: 'Done',
+                text: S.of(context).Done,
                 onPressed: () {
                   String cancelReason = cancelReasonController.text;
                   if (cancelReason.isNotEmpty) {
@@ -498,9 +497,9 @@ class _BottomcancelSheetWidgetState extends State<BottomcancelSheetWidget> {
                     Navigator.pop(context);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                       SnackBar(
                         content:
-                            Text('Please provide a reason for cancellation'),
+                            Text(S.of(context).AreCancel3),
                       ),
                     );
                   }
@@ -539,9 +538,11 @@ class OrderDetailLine extends StatelessWidget {
     bool isAcceptedOrDelivered =
         placeholder == 'Accepted' || placeholder == 'Delivered';
     Color textColor = _getTextColorBasedOnStatus(placeholder);
-    bool isLocationLine =
-        title == 'Near places' && placeholder == 'Show Location';
-    bool isImageLine = title == 'Car Licence' && placeholder == 'Show Image';
+   bool isLocationLine =
+        title == S.of(context).nearPlaces && placeholder == 'Show Location';
+
+    bool isImageLine =
+        title == S.of(context).carLicence && placeholder == 'Show Image';
     bool isCanceledStatus =
         title == 'Order Status' && placeholder == 'Canceled';
     return Row(
@@ -575,7 +576,7 @@ class OrderDetailLine extends StatelessWidget {
                       }
                     },
                     child: Text(
-                      placeholder,
+                      S.of(context).ShowLocation,
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         fontSize: 14,
@@ -600,7 +601,7 @@ class OrderDetailLine extends StatelessWidget {
                               }
                             },
                             child: Text(
-                              'Image 1',
+                              S.of(context).Image1,
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 fontSize: 14,
@@ -622,7 +623,7 @@ class OrderDetailLine extends StatelessWidget {
                               }
                             },
                             child: Text(
-                              'Image 2', // Display the second image text
+                              S.of(context).Image2,
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 fontSize: 14,
@@ -672,13 +673,13 @@ class CancelOrderSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomButton5(text: 'Cancel Order', onPressed: () {}),
+            CustomButton5(text: S.of(context).CancelOrder, onPressed: () {}),
           ],
         ),
         const Padding(
           padding: EdgeInsets.only(left: 16, right: 16, top: 1),
         ),
-        Text('Your order has been canceled.',
+        Text(S.of(context).AreCancel4,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w300,

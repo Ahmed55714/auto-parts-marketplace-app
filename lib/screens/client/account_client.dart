@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/Terms_and_conditions.dart';
@@ -75,22 +76,31 @@ class _AccountClientState extends State<AccountClient> {
 
   @override
   Widget build(BuildContext context) {
+        final LocaleController localeController = Get.put(LocaleController());
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Padding(
               padding: EdgeInsets.only(top: 20),
-              child: Center(
-                child: Text(
-                  S.of(context).MyAccount,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: deepPurple,
-                  ),
-                ),
-              ),
+              child: 
+                
+                 
+                        Text(
+                          S.of(context).MyAccount,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: deepPurple,
+                          ),
+                        ),
+                      
+                    
+                   
+                  
+                
+              
             ),
             const SizedBox(height: 28),
             Padding(

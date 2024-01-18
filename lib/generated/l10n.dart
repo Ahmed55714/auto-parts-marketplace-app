@@ -160,6 +160,16 @@ class S {
     );
   }
 
+  /// `Please Select`
+  String get valid4 {
+    return Intl.message(
+      'Please Select',
+      name: 'valid4',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Next`
   String get button {
     return Intl.message(
@@ -470,6 +480,16 @@ class S {
     );
   }
 
+  /// `Address`
+  String get Address {
+    return Intl.message(
+      'Address',
+      name: 'Address',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Delete`
   String get Profile7 {
     return Intl.message(
@@ -575,6 +595,16 @@ class S {
     return Intl.message(
       'Needed car piece',
       name: 'Needed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece condition`
+  String get condition {
+    return Intl.message(
+      'Piece condition',
+      name: 'condition',
       desc: '',
       args: [],
     );
@@ -895,6 +925,16 @@ class S {
     return Intl.message(
       'Write your message',
       name: 'Write',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offer`
+  String get Offer {
+    return Intl.message(
+      'Offer',
+      name: 'Offer',
       desc: '',
       args: [],
     );
@@ -1375,6 +1415,706 @@ class S {
     return Intl.message(
       'Home page',
       name: 'TrueScreen3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Registration Successfully`
+  String get TrueScreen4 {
+    return Intl.message(
+      'Registration Successfully',
+      name: 'TrueScreen4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Can Do Your First Order`
+  String get TrueScreen5 {
+    return Intl.message(
+      'You Can Do Your First Order',
+      name: 'TrueScreen5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Car Form`
+  String get CarForm {
+    return Intl.message(
+      'Car Form',
+      name: 'CarForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your car piece`
+  String get CarForm2 {
+    return Intl.message(
+      'Enter your car piece',
+      name: 'CarForm2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your car Model`
+  String get CarForm3 {
+    return Intl.message(
+      'Enter your car Model',
+      name: 'CarForm3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your Chassis number`
+  String get CarForm4 {
+    return Intl.message(
+      'Enter your Chassis number',
+      name: 'CarForm4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your Piece type`
+  String get CarForm5 {
+    return Intl.message(
+      'Enter your Piece type',
+      name: 'CarForm5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your Piece details`
+  String get CarForm6 {
+    return Intl.message(
+      'Enter your Piece details',
+      name: 'CarForm6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please updated an image for licence`
+  String get CarForm7 {
+    return Intl.message(
+      'Please updated an image for licence',
+      name: 'CarForm7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece type`
+  String get CarForm8 {
+    return Intl.message(
+      'Piece type',
+      name: 'CarForm8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece details`
+  String get CarForm9 {
+    return Intl.message(
+      'Piece details',
+      name: 'CarForm9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price offer for governmental entity `
+  String get governmental {
+    return Intl.message(
+      'Price offer for governmental entity ',
+      name: 'governmental',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We got your Order!`
+  String get TrueScreen6 {
+    return Intl.message(
+      'We got your Order!',
+      name: 'TrueScreen6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check your orders to see the status of your order from home page.`
+  String get TrueScreen7 {
+    return Intl.message(
+      'Check your orders to see the status of your order from home page.',
+      name: 'TrueScreen7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment`
+  String get Payment {
+    return Intl.message(
+      'Payment',
+      name: 'Payment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delivery Address`
+  String get Payment1 {
+    return Intl.message(
+      'Delivery Address',
+      name: 'Payment1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get Payment2 {
+    return Intl.message(
+      'Price',
+      name: 'Payment2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please add an address in your profile first.`
+  String get Payment3 {
+    return Intl.message(
+      'Please add an address in your profile first.',
+      name: 'Payment3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `After clicking pay now you will be redirected to Myfatoorah to complete your purchase securely`
+  String get Payment5 {
+    return Intl.message(
+      'After clicking pay now you will be redirected to Myfatoorah to complete your purchase securely',
+      name: 'Payment5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pay`
+  String get Payment6 {
+    return Intl.message(
+      'Pay',
+      name: 'Payment6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ST - Building - Floor`
+  String get Payment7 {
+    return Intl.message(
+      'ST - Building - Floor',
+      name: 'Payment7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a payment method`
+  String get Payment8 {
+    return Intl.message(
+      'Please select a payment method',
+      name: 'Payment8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No delivery address selected`
+  String get Payment9 {
+    return Intl.message(
+      'No delivery address selected',
+      name: 'Payment9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment failed or was cancelled`
+  String get Payment10 {
+    return Intl.message(
+      'Payment failed or was cancelled',
+      name: 'Payment10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment Error`
+  String get Payment11 {
+    return Intl.message(
+      'Payment Error',
+      name: 'Payment11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Request`
+  String get NewRequest {
+    return Intl.message(
+      'New Request',
+      name: 'NewRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No orders available`
+  String get NoOrdersAvailable {
+    return Intl.message(
+      'No orders available',
+      name: 'NoOrdersAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel order`
+  String get CancelOrder {
+    return Intl.message(
+      'Cancel order',
+      name: 'CancelOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check Offers`
+  String get CheckOffers {
+    return Intl.message(
+      'Check Offers',
+      name: 'CheckOffers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to cancel Your Order?`
+  String get AreCancel {
+    return Intl.message(
+      'Are you sure you want to cancel Your Order?',
+      name: 'AreCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can you tell us the reason?`
+  String get AreCancel2 {
+    return Intl.message(
+      'Can you tell us the reason?',
+      name: 'AreCancel2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please provide a reason for cancellation`
+  String get AreCancel3 {
+    return Intl.message(
+      'Please provide a reason for cancellation',
+      name: 'AreCancel3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your order has been canceled.`
+  String get AreCancel4 {
+    return Intl.message(
+      'Your order has been canceled.',
+      name: 'AreCancel4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to cancel order`
+  String get AreCancel5 {
+    return Intl.message(
+      'Failed to cancel order',
+      name: 'AreCancel5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `has been cancelled successfully`
+  String get AreCancel6 {
+    return Intl.message(
+      'has been cancelled successfully',
+      name: 'AreCancel6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Return Order`
+  String get AreCancel7 {
+    return Intl.message(
+      'Return Order',
+      name: 'AreCancel7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please upload an image for license`
+  String get AreCancel8 {
+    return Intl.message(
+      'Please upload an image for license',
+      name: 'AreCancel8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to decline offer`
+  String get AreCancel9 {
+    return Intl.message(
+      'Failed to decline offer',
+      name: 'AreCancel9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error occurred while declining offer`
+  String get AreCancel10 {
+    return Intl.message(
+      'Error occurred while declining offer',
+      name: 'AreCancel10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission Required`
+  String get AreCancel11 {
+    return Intl.message(
+      'Permission Required',
+      name: 'AreCancel11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enable storage permission in the app settings.`
+  String get AreCancel12 {
+    return Intl.message(
+      'Please enable storage permission in the app settings.',
+      name: 'AreCancel12',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Settings`
+  String get AreCancel13 {
+    return Intl.message(
+      'Open Settings',
+      name: 'AreCancel13',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get AreCancel14 {
+    return Intl.message(
+      'Cancel',
+      name: 'AreCancel14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Error`
+  String get AreCancel15 {
+    return Intl.message(
+      'Download Error',
+      name: 'AreCancel15',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error occurred while downloading file`
+  String get AreCancel16 {
+    return Intl.message(
+      'Error occurred while downloading file',
+      name: 'AreCancel16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission Denied`
+  String get AreCancel17 {
+    return Intl.message(
+      'Permission Denied',
+      name: 'AreCancel17',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission to manage external storage is required to download PDF.`
+  String get AreCancel18 {
+    return Intl.message(
+      'Permission to manage external storage is required to download PDF.',
+      name: 'AreCancel18',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get AreCancel19 {
+    return Intl.message(
+      'Accept',
+      name: 'AreCancel19',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accepted Order`
+  String get AreCancel20 {
+    return Intl.message(
+      'Accepted Order',
+      name: 'AreCancel20',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offer Requests`
+  String get AreCancel21 {
+    return Intl.message(
+      'Offer Requests',
+      name: 'AreCancel21',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offers`
+  String get AreCancel22 {
+    return Intl.message(
+      'Offers',
+      name: 'AreCancel22',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save PDF`
+  String get AreCancel23 {
+    return Intl.message(
+      'Save PDF',
+      name: 'AreCancel23',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Error`
+  String get AreCancel24 {
+    return Intl.message(
+      'Save Error',
+      name: 'AreCancel24',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to Save the PDF. Error: No orders found`
+  String get AreCancel25 {
+    return Intl.message(
+      'Failed to Save the PDF. Error: No orders found',
+      name: 'AreCancel25',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offers for Order`
+  String get AreCancel26 {
+    return Intl.message(
+      'Offers for Order',
+      name: 'AreCancel26',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No offers at this moment`
+  String get AreCancel27 {
+    return Intl.message(
+      'No offers at this moment',
+      name: 'AreCancel27',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offer accepted successfully`
+  String get AreCancel28 {
+    return Intl.message(
+      'Offer accepted successfully',
+      name: 'AreCancel28',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cash on delivery`
+  String get AreCancel29 {
+    return Intl.message(
+      'Cash on delivery',
+      name: 'AreCancel29',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your order will be shipped and delivered soon!`
+  String get AreCancel30 {
+    return Intl.message(
+      'Your order will be shipped and delivered soon!',
+      name: 'AreCancel30',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The request is being reviewed and will be responded to as soon as possible.`
+  String get AreCancel31 {
+    return Intl.message(
+      'The request is being reviewed and will be responded to as soon as possible.',
+      name: 'AreCancel31',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Orders`
+  String get AreCancel32 {
+    return Intl.message(
+      'My Orders',
+      name: 'AreCancel32',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error occurred while cancelling order`
+  String get AreCancel33 {
+    return Intl.message(
+      'Error occurred while cancelling order',
+      name: 'AreCancel33',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get AreCancel34 {
+    return Intl.message(
+      'Success',
+      name: 'AreCancel34',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify successfully`
+  String get AreCancel35 {
+    return Intl.message(
+      'Verify successfully',
+      name: 'AreCancel35',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error`
+  String get AreCancel36 {
+    return Intl.message(
+      'Error',
+      name: 'AreCancel36',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Summery`
+  String get AreCancel37 {
+    return Intl.message(
+      'Summery',
+      name: 'AreCancel37',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No summary available`
+  String get AreCancel38 {
+    return Intl.message(
+      'No summary available',
+      name: 'AreCancel38',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reviews`
+  String get AreCancel39 {
+    return Intl.message(
+      'Reviews',
+      name: 'AreCancel39',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `contact`
+  String get AreCancel40 {
+    return Intl.message(
+      'contact',
+      name: 'AreCancel40',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No reviews available`
+  String get AreCancel41 {
+    return Intl.message(
+      'No reviews available',
+      name: 'AreCancel41',
       desc: '',
       args: [],
     );

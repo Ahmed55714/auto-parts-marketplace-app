@@ -142,9 +142,9 @@ class RegesterController extends GetxController {
           // If number is 1, navigate to FirstScreen
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Directionality(
-              textDirection: TextDirection.ltr,
-              child: const CarForm())),
+            MaterialPageRoute(
+                builder: (context) => Directionality(
+                    textDirection: TextDirection.ltr, child: const CarForm())),
           );
           print('Response body: ${response.body}');
           print(authToken);
@@ -154,7 +154,7 @@ class RegesterController extends GetxController {
             MaterialPageRoute(
                 builder: (context) => Directionality(
                     textDirection: TextDirection.ltr,
-                  child: const RegistrationFormClinet())),
+                    child: const RegistrationFormClinet())),
           );
         }
       } else {
@@ -192,14 +192,18 @@ class RegesterController extends GetxController {
           // If number is 1, navigate to FirstScreen
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CarForm2()),
+            MaterialPageRoute(
+                builder: (context) => Directionality(
+                    textDirection: TextDirection.ltr, child: const CarForm2())),
           );
           print('Response body: ${response.body}');
         } else if (completeRegistration == 0) {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const RegistrationFormClinet()),
+                builder: (context) => Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: const RegistrationFormClinet())),
           );
         }
       } else {

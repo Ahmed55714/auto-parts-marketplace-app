@@ -8,6 +8,7 @@ import 'package:work2/widgets/custom_button.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../vendor/Bottom_nav.dart';
 import '../vendor/chat/screens/mobile_chat_screen.dart';
 
@@ -46,41 +47,37 @@ class _VenforProfileState extends State<VenforProfile> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-     
-    
 
         return VendorProfile.fromJson(data);
-        
       } else {
-    
-
         throw Exception(
             'Failed to load vendor profile. Status code: ${response.statusCode}');
-            
       }
     } catch (e) {
-      
       throw Exception('Failed to load vendor profile: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: FutureBuilder<VendorProfile>(
-          future: vendorProfileFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
-            } else if (snapshot.hasData) {
-              return buildProfile(snapshot.data!);
-            } else {
-              return Center(child: Text("No data available"));
-            }
-          },
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        body: SafeArea(
+          child: FutureBuilder<VendorProfile>(
+            future: vendorProfileFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("${S.of(context).AreCancel36}"));
+              } else if (snapshot.hasData) {
+                return buildProfile(snapshot.data!);
+              } else {
+                return Center(child: Text(S.of(context).error2));
+              }
+            },
+          ),
         ),
       ),
     );
@@ -104,8 +101,8 @@ class _VenforProfileState extends State<VenforProfile> {
                       ],
                     ),
                   ),
-                  const Text(
-                    'Profile',
+                  Text(
+                    S.of(context).Profile,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -143,12 +140,12 @@ class _VenforProfileState extends State<VenforProfile> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Row(
                       children: [
                         Text(
-                          'Summery',
+                          S.of(context).AreCancel37,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
@@ -160,7 +157,7 @@ class _VenforProfileState extends State<VenforProfile> {
                   Container(
                     width: 350,
                     child: Text(
-                      profile.summary ?? 'No summary available',
+                      profile.summary ?? S.of(context).AreCancel38,
                       style: TextStyle(
                         color: greyColor,
                         fontFamily: 'Roboto',
@@ -169,12 +166,12 @@ class _VenforProfileState extends State<VenforProfile> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Row(
                       children: [
                         Text(
-                          'Location',
+                          S.of(context).Location,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
@@ -216,12 +213,12 @@ class _VenforProfileState extends State<VenforProfile> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Row(
                       children: [
                         Text(
-                          'Reviews',
+                          S.of(context).AreCancel39,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
@@ -235,156 +232,22 @@ class _VenforProfileState extends State<VenforProfile> {
                   ),
                   const SizedBox(height: 20),
                   CustomButton(
-                      text: 'contact',
+                      text: S.of(context).AreCancel40,
                       onPressed: () {
-                             Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute(builder: (context) => MobileChatScreen( 
-       userId: widget.userId,
-       name : profile.name,
-       pic: profile.imageUrl,
-      )),
-    );
-
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(
+                              builder: (context) => MobileChatScreen(
+                                    userId: widget.userId,
+                                    name: profile.name,
+                                    pic: profile.imageUrl,
+                                  )),
+                        );
                       }),
                 ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void showChatBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext bc) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          minChildSize: 0.3,
-          maxChildSize: 1.0,
-          builder: (_, controller) => ChatBottomSheet(),
-        );
-      },
-    );
-  }
-}
-
-class ChatBottomSheet extends StatefulWidget {
-  @override
-  _ChatBottomSheetState createState() => _ChatBottomSheetState();
-}
-
-class _ChatBottomSheetState extends State<ChatBottomSheet> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 12),
-      decoration: const BoxDecoration(
-        color: deepPurple,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-            decoration: const BoxDecoration(
-              color:
-                  deepPurple, 
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(25),
-              ),
-            ),
-          ),
-          // Vendor profile area
-          Container(
-            color: deepPurple,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                const SizedBox(width: 10),
-                const Expanded(
-                  child: Text(
-                    'Ahmed Khaled',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Summary area
-
-          // Chat messages list
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: ListView.builder(
-                itemCount: 5, // Placeholder for message count
-                itemBuilder: (BuildContext context, int index) {
-                  // Alternating chat bubble alignment
-                  bool isMe =
-                      index % 2 == 0; // Placeholder for user message check
-                  return Align(
-                    alignment:
-                        isMe ? Alignment.centerRight : Alignment.centerLeft,
-                    child: ChatBubble(
-                      message:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
-                      timestamp: '08:00 PM',
-                      isMe: isMe,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-
-          // Message input row
-          SafeArea(
-            child: Container(
-              color: Colors.white,
-              child: Row(
-                children: <Widget>[
-                  const Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Write your message...',
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.deepPurple, // Deep purple color
-                        shape: BoxShape.circle, // Circular shape
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.send, color: Colors.white),
-                        onPressed: () {},
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -477,7 +340,7 @@ class HorizontalReviewList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left:18),
+            padding: const EdgeInsets.only(left: 18),
             child: Text(
               'No reviews available',
               style: TextStyle(
@@ -519,7 +382,7 @@ class ReviewCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Text(
-          'No reviews available',
+          S.of(context).AreCancel41,
           style: TextStyle(
             fontSize: 16.0,
             color: greyColor,
@@ -604,7 +467,6 @@ class VendorProfile {
   });
 
   factory VendorProfile.fromJson(Map<String, dynamic> json) {
-    // Check if 'ratings' is not null and is a List, then map to List<Ratings>
     var ratingsList = json['ratings'] != null && json['ratings'] is List
         ? List<Ratings>.from((json['ratings'] as List).map((ratingJson) =>
             Ratings.fromJson(ratingJson as Map<String, dynamic>)))
@@ -612,14 +474,18 @@ class VendorProfile {
 
     return VendorProfile(
       id: json['id'] as int,
-     name: json['name'] as String? ?? 'Default Name',
+      name: json['name'] as String? ?? 'Default Name',
       summary: json['summary'] as String?,
-      lat: json['lat'] != null ? double.parse(json['lat'].toString()) : 0.0,
-      long: json['long'] != null ? double.parse(json['long'].toString()) : 0.0,
+      lat: json['lat'] != null
+          ? double.tryParse(json['lat'].toString()) ?? 0.0
+          : 0.0,
+      long: json['long'] != null
+          ? double.tryParse(json['long'].toString()) ?? 0.0
+          : 0.0,
       imageUrl: json['image_url'] as String? ??
           'https://example.com/default_image.png',
       avgRating: json['avg_rating'] != null
-          ? double.parse(json['avg_rating'].toString())
+          ? double.tryParse(json['avg_rating'].toString()) ?? 0.0
           : 0.0,
       ratings: ratingsList,
     );
@@ -633,8 +499,16 @@ class Ratings {
   Ratings({required this.stars, required this.comment});
 
   factory Ratings.fromJson(Map<String, dynamic> json) {
+    // Handle 'stars' as int or String
+    String starsString;
+    if (json['stars'] is int) {
+      starsString = (json['stars'] as int).toString();
+    } else {
+      starsString = json['stars'] as String? ?? '0';
+    }
+
     return Ratings(
-      stars: json['stars'] as String? ?? '0',
+      stars: starsString,
       comment: json['comment'] as String? ?? 'No comment',
     );
   }

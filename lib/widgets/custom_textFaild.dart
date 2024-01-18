@@ -84,8 +84,9 @@ class CustomMultiLineFormField extends StatelessWidget {
         minHeight: 104.0, // Minimum height
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 8),
+        padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 3),
         child: TextFormField(
+          
           controller: controller,
           keyboardType: keyboardType,
           maxLines: 4, // Maximum number of lines

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import 'package:work2/widgets/custom_button.dart';
 import 'package:http/http.dart' as http;
+import '../../generated/l10n.dart';
 import '../../widgets/custom_continer.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
@@ -64,7 +65,7 @@ class _PaymentState extends State<Payment> {
       if (response.isSuccess) {
         onPaymentSuccess();
       } else {
-        SnackBar(content: Text('Payment failed or was cancelled'));
+        SnackBar(content: Text(S.of(context).Payment10));
       }
     } catch (e) {
     } catch (e) {
@@ -109,7 +110,7 @@ class _PaymentState extends State<Payment> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Offer accepted successfully')),
+          SnackBar(content: Text(S.of(context).AreCancel28)),
         );
 
         Navigator.pushReplacement(
@@ -119,13 +120,13 @@ class _PaymentState extends State<Payment> {
       } else {
         // Handle error
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to accept offer')),
+          SnackBar(content: Text(S.of(context).Payment10)),
         );
       }
     } catch (e) {
       // Handle any exceptions here
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error occurred while accepting offer: $e')),
+        SnackBar(content: Text(S.of(context).Payment11)),
       );
     }
   }
@@ -138,139 +139,142 @@ class _PaymentState extends State<Payment> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await fetchSelectedAddress();
-        },
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    BackButtonDeep(),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Payment',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: deepPurple,
-                    ),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await fetchSelectedAddress();
+          },
+          child: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      BackButtonDeep(),
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Delivery Address',
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      S.of(context).Payment,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color: deepPurple,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 16),
-                child: Row(
+                  ],
+                ),
+                SizedBox(height: 16),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Column(
-                      children: [
-                        Text(
-                          _selectedAddress.isNotEmpty
-                              ? _selectedAddress
-                              : 'Please add an address in your profile first.',
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        S.of(context).Payment1,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            _selectedAddress.isNotEmpty
+                                ? _selectedAddress
+                                : S.of(context).Payment3,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: deepPurple,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
+                CustomSelection1(
+                  index: 1,
+                  isSelected: selectedContainerIndex == 1,
+                  title: "MyFatoorah",
+                  description: S.of(context).Payment7,
+                  onTap: () {
+                    selectContainer(1);
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: 310,
+                        child: Text(
+                          S.of(context).Payment5,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: deepPurple,
                             fontFamily: 'Roboto',
                           ),
-                        ),
-                      ],
-                    ),
+                        )),
                   ],
                 ),
-              ),
-              SizedBox(height: 16),
-              CustomSelection1(
-                index: 1,
-                isSelected: selectedContainerIndex == 1,
-                title: "MyFatoorah",
-                description: "ST - Building - Floor",
-                onTap: () {
-                  selectContainer(1);
-                },
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      width: 310,
-                      child: Text(
-                        'After clicking " pay now " you will be redirected to Myfatoorah to complete your purchase securely',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: deepPurple,
-                          fontFamily: 'Roboto',
-                        ),
-                      )),
-                ],
-              ),
-              SizedBox(height: 10),
-              CustomSelection1(
-                index: 2,
-                isSelected: selectedContainerIndex == 2,
-                title: "Cash on delivery",
-                description: "ST - Building - Floor",
-                onTap: () {
-                  selectContainer(2);
-                },
-              ),
-              CustomButton(
-                text: 'Pay',
-                onPressed: () {
-                  if (selectedContainerIndex == -1) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please select a payment method')),
-                    );
-                    return;
-                  }
-                  if (_selectedAddressId.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('No delivery address selected')),
-                    );
-                    return;
-                  }
-
-                  if (selectedContainerIndex == 1) {
-                    // MyFatoorah payment
-                    startMyFatoorahPayment();
-                  } else {
-                    // Handle other payment methods
-                    acceptOffer(widget.offerId, _selectedAddressId,
-                        selectedContainerIndex);
-                  }
-                },
-              ),
-            ],
+                SizedBox(height: 10),
+                CustomSelection1(
+                  index: 2,
+                  isSelected: selectedContainerIndex == 2,
+                  title: S.of(context).AreCancel29,
+                  description: S.of(context).Payment7,
+                  onTap: () {
+                    selectContainer(2);
+                  },
+                ),
+                CustomButton(
+                  text: S.of(context).Payment6,
+                  onPressed: () {
+                    if (selectedContainerIndex == -1) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(S.of(context).Payment8)),
+                      );
+                      return;
+                    }
+                    if (_selectedAddressId.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(S.of(context).Payment9)),
+                      );
+                      return;
+                    }
+    
+                    if (selectedContainerIndex == 1) {
+                      // MyFatoorah payment
+                      startMyFatoorahPayment();
+                    } else {
+                      // Handle other payment methods
+                      acceptOffer(widget.offerId, _selectedAddressId,
+                          selectedContainerIndex);
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -6,12 +6,14 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:work2/constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../getx/orders.dart';
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
+import 'dart:ui' as ui;
 
 import 'paymet_check2.dart';
 
@@ -67,7 +69,7 @@ class _CarForm2State extends State<CarForm2> {
 
   String? validateField1() {
     if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
-      return 'Please upload an image for license';
+      return S.of(context).AreCancel8;
     }
     return null;
   }
@@ -98,8 +100,8 @@ class _CarForm2State extends State<CarForm2> {
                       ],
                     ),
                   ),
-                  const Text(
-                    'Car Form',
+                   Text(
+                    S.of(context).CarForm,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -107,29 +109,28 @@ class _CarForm2State extends State<CarForm2> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  buildTextField('needed car piece', pieceCarController,
-                      TextInputType.text, 'Enter your car piece'),
-                  buildTextField('Car model', carModelController,
-                      TextInputType.number, 'Enter your car piece'),
-                  buildCarTypeField1('Car type', 'Enter your car type'),
-                  buildTextField('Chassis number', chassisNumberController,
-                      TextInputType.emailAddress, 'Enter your Chassis number'),
+                  buildTextField(S.of(context).Needed, pieceCarController,
+                      TextInputType.text, S.of(context).CarForm2),
+                  buildTextField(S.of(context).CarModel, carModelController,
+                      TextInputType.number, S.of(context).CarForm3),
+                  buildCarTypeField1( S.of(context).CarType, S.of(context).CarForm5),
+                  buildTextField(S.of(context).Chassis, chassisNumberController,
+                      TextInputType.emailAddress, S.of(context).CarForm4),
                   buildPieceTypeField1(
-                    'Piece type',
-                    'Enter your Piece type',
+                     S.of(context).CarForm8,
+                    S.of(context).CarForm5,
                   ),
                   const SizedBox(height: 10),
                   buildPieceDetails(
-                    'Piece Details',
-                    'Enter your Piece Details',
+                   S.of(context).CarForm9,
+                    S.of(context).CarForm6,
                   ),
                   SizedBox(height: 10),
                   buildDateFieldDate(
-                    'Date',
+                    S.of(context).Date,
                     dateController,
-                    initialText: '2021-01-01',
                   ),
-                  buildImagePicker('Car License', 0),
+                  buildImagePicker(S.of(context).carLicence, 0),
                   if (validateField1() != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
@@ -148,11 +149,11 @@ class _CarForm2State extends State<CarForm2> {
                     ],
                   ),
                   buildTextFieldLocation(
-                      'Location',
+                      S.of(context).Location,
                       locationdoneController,
                       locationController,
                       TextInputType.text,
-                      'Enter your location',
+                      S.of(context).EnterYourLocation,
                       context),
                   buildAgreementSwitch(),
                   buildSubmitButton(context),
@@ -178,12 +179,12 @@ class _CarForm2State extends State<CarForm2> {
         ),
         const SizedBox(height: 8),
         CustomTextField(
-          labelText: text ?? 'Placeholder',
+          labelText: text ?? S.of(context).Placeholder,
           controller: controller,
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -245,62 +246,7 @@ class _CarForm2State extends State<CarForm2> {
         detailsController.isLoading, detailsController.PieceDeltals);
   }
 
-  // Widget buildDropdownField(String text, String hint,
-  //     TextEditingController controller, RxBool isLoading, List<dynamic> items) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       CustomText(
-  //         text: text,
-  //         fontSize: 16,
-  //         fontWeight: FontWeight.w500,
-  //       ),
-  //       const SizedBox(height: 8),
-  //       Obx(() {
-  //         if (isLoading.isTrue) {
-  //           return CircularProgressIndicator();
-  //         } else {
-  //           return Padding(
-  //             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-  //             child: Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 10),
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(10),
-  //                 border: Border.all(color: Colors.grey.shade300),
-  //               ),
-  //               child: DropdownButtonHideUnderline(
-  //                 child: DropdownButtonFormField<String>(
-  //                   decoration: InputDecoration(
-  //                     labelText: hint,
-  //                     border: InputBorder.none,
-  //                     contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-  //                   ),
-  //                   value: controller.text,
-  //                   onChanged: (String? newValue) {
-  //                     controller.text = newValue ?? '';
-  //                   },
-  //                   items: items.map((item) {
-  //                     return DropdownMenuItem<String>(
-  //                       value: item['id'].toString(),
-  //                       child: Text(item['name']),
-  //                     );
-  //                   }).toList(),
-  //                   validator: (value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please enter $text';
-  //                     }
-  //                     return null;
-  //                   },
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         }
-  //       }),
-  //       const SizedBox(height: 8),
-  //     ],
-  //   );
-  // }
+
   Widget buildDropdownField(String text, String hint, TextEditingController controller, RxBool isLoading, List<dynamic> items) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,7 +292,7 @@ class _CarForm2State extends State<CarForm2> {
                   }).toList(),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please select $text';
+                      return '${S.of(context).valid4} $text';
                     }
                     return null;
                   },
@@ -393,12 +339,12 @@ class _CarForm2State extends State<CarForm2> {
             // Prevents keyboard from showing
             child: CustomTextField(
               labelText:
-                  controller.text.isEmpty ? 'YYYY-MM-DD' : controller.text,
+                  controller.text.isEmpty ? S.of(context).sucess3 : controller.text,
               controller: controller,
               keyboardType: TextInputType.datetime,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter $label';
+                  return '${S.of(context).Name3} $label';
                 }
                 return null;
               },
@@ -426,7 +372,7 @@ class _CarForm2State extends State<CarForm2> {
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         // Location services are not enabled, handle this case
-        return Future.error('Location services are disabled.');
+        return Future.error(S.of(context).registerLocation1);
       }
 
       permission = await Geolocator.checkPermission();
@@ -434,14 +380,14 @@ class _CarForm2State extends State<CarForm2> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           // Permissions are denied, handle this case
-          return Future.error('Location permissions are denied');
+          return Future.error(S.of(context).registerLocation1);
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle this case
         return Future.error(
-            'Location permissions are permanently denied, we cannot request permissions.');
+            S.of(context).registerLocation2);
       }
 
       // When permissions are granted, get the current location
@@ -451,7 +397,7 @@ class _CarForm2State extends State<CarForm2> {
         // Update the locationController with latitude and longitude
         locationController.text = '${position.latitude}, ${position.longitude}';
         // Update the display controller with "Done"
-        controller.text = 'Done';
+        controller.text = S.of(context).Done;
       });
     }
 
@@ -467,14 +413,14 @@ class _CarForm2State extends State<CarForm2> {
         CustomTextField(
           controller: controller,
           keyboardType: type,
-          labelText: text ?? 'Placeholder',
+          labelText: text ?? S.of(context).Placeholder,
           suffixIcon: IconButton(
             icon: Icon(Icons.location_on),
             onPressed: () => _getCurrentLocation(),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -600,7 +546,7 @@ class _CarForm2State extends State<CarForm2> {
         Column(
           children: [
             CustomText(
-              text: 'Price offer for governmental entity ',
+              text: S.of(context).governmental,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -618,7 +564,7 @@ class _CarForm2State extends State<CarForm2> {
         const SizedBox(height: 10),
         if (isAgreed == 0)
           CustomButton(
-            text: 'Order',
+            text: S.of(context).Orders,
             onPressed: () async {
               if (_formKey.currentState!.validate() &&
                   validateField1() == null) {
@@ -659,7 +605,10 @@ class _CarForm2State extends State<CarForm2> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TrueOrderClinetScreen2(),
+                      builder: (context) => Directionality(
+                          textDirection: ui.TextDirection.ltr,
+                          
+                        child: TrueOrderClinetScreen2()),
                     ),
                   );
                 } catch (e) {
@@ -675,7 +624,7 @@ class _CarForm2State extends State<CarForm2> {
                   if (isAgreed == 1)
 
           CustomButton(
-            text: 'Next',
+            text: S.of(context).button,
             onPressed: () {
               if (_formKey.currentState!.validate() &&
                   validateField1() == null) {

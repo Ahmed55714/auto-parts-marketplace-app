@@ -7,11 +7,13 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:work2/constants/colors.dart';
+import '../../generated/l10n.dart';
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
+import 'dart:ui' as ui;
 
 class RegistrationFormClinet extends StatefulWidget {
   const RegistrationFormClinet({Key? key}) : super(key: key);
@@ -101,8 +103,8 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                       ],
                     ),
                   ),
-                  const Text(
-                    'Registration Form',
+                  Text(
+                    S.of(context).Registration,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -110,24 +112,28 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  buildTextField('Name', nameController, TextInputType.text,
-                      'Enter your name'),
-                  buildTextField('Email', emailController,
-                      TextInputType.emailAddress, 'Enter your email'),
+                  buildTextField(
+                    S.of(context).Name,
+                    nameController,
+                    TextInputType.text,
+                    S.of(context).EnterYourName,
+                  ),
+                  buildTextField(S.of(context).Profile5, emailController,
+                      TextInputType.emailAddress, S.of(context).Enteryouremail),
                   buildDateFieldDate(
-                    'Birth date',
+                    S.of(context).Date,
                     dateController,
                   ),
                   buildTextFieldLocation(
-                      'Location',
+                      S.of(context).Location,
                       locationdoneController,
                       locationController,
                       TextInputType.text,
-                      'Enter your location',
+                      S.of(context).EnterYourLocation,
                       context),
                   buildCarTypeField1(
-                    'Car type',
-                    'Select Car Type',
+                    S.of(context).CarType,
+                    S.of(context).Offers12,
                   ),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
@@ -190,7 +196,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                     }).toList(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter $text';
+                        return '${S.of(context).Name3} $text';
                       }
                       return null;
                     },
@@ -205,70 +211,6 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
     );
   }
 
-  // Widget buildCarTypeField1() {
-  //   final RegesterController regesterController =
-  //       Get.find<RegesterController>();
-
-  //   regesterController.fetchCarTypes();
-
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       CustomText(
-  //         text: 'Car type',
-  //         fontSize: 16,
-  //         fontWeight: FontWeight.w500,
-  //       ),
-  //       const SizedBox(height: 8),
-  //       Obx(() {
-  //         if (regesterController.isLoading.isTrue) {
-  //           return CircularProgressIndicator();
-  //         } else {
-  //           return Padding(
-  //             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-  //             child: Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 10),
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(10),
-  //                 border: Border.all(color: Colors.grey.shade300),
-  //               ),
-  //               child: DropdownButtonHideUnderline(
-  //                 child: DropdownButtonFormField<String>(
-  //                   decoration: InputDecoration(
-  //                     labelText: 'Select Car Type',
-  //                     border: InputBorder.none, // No border
-  //                     // To align the label text and the dropdown arrow icon
-  //                     contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-  //                   ),
-  //                   value: carTypeController.text.isEmpty
-  //                       ? null
-  //                       : carTypeController.text,
-  //                   onChanged: (String? newValue) {
-  //                     carTypeController.text = newValue ?? '';
-  //                   },
-  //                   items: regesterController.carTypes.map((car) {
-  //                     return DropdownMenuItem<String>(
-  //                       value: car['id'].toString(),
-  //                       child: Text(car['name']),
-  //                     );
-  //                   }).toList(),
-  //                   validator: (value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please enter Car type';
-  //                     }
-  //                     return null;
-  //                   },
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         }
-  //       }),
-
-  //     ],
-  //   );
-  // }
-
   Widget buildTextField(String label, TextEditingController controller,
       TextInputType type, String? text) {
     return Column(
@@ -281,12 +223,12 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         ),
         const SizedBox(height: 8),
         CustomTextField(
-          labelText: text ?? 'Placeholder',
+          labelText: text ?? S.of(context).Placeholder,
           controller: controller,
           keyboardType: type,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -313,7 +255,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         // Location services are not enabled, handle this case
-        return Future.error('Location services are disabled.');
+        return Future.error(S.of(context).registerLocation);
       }
 
       permission = await Geolocator.checkPermission();
@@ -321,14 +263,13 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           // Permissions are denied, handle this case
-          return Future.error('Location permissions are denied');
+          return Future.error(S.of(context).registerLocation1);
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle this case
-        return Future.error(
-            'Location permissions are permanently denied, we cannot request permissions.');
+        return Future.error(S.of(context).registerLocation2);
       }
 
       // When permissions are granted, get the current location
@@ -337,7 +278,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         // Update the locationController with latitude and longitude
         locationController.text = '${position.latitude}, ${position.longitude}';
         // Update the display controller with "Done"
-        controller.text = 'Done';
+        controller.text = S.of(context).Done;
       });
     }
 
@@ -353,14 +294,14 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         CustomTextField(
           controller: controller,
           keyboardType: type,
-          labelText: text ?? 'Placeholder',
+          labelText: text ?? S.of(context).Placeholder,
           suffixIcon: IconButton(
             icon: Icon(Icons.location_on),
             onPressed: () => _getCurrentLocation(),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $label';
+              return '${S.of(context).Name3} $label';
             }
             return null;
           },
@@ -401,13 +342,14 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
           child: AbsorbPointer(
             // Prevents keyboard from showing
             child: CustomTextField(
-              labelText:
-                  controller.text.isEmpty ? 'YYYY-MM-DD' : controller.text,
+              labelText: controller.text.isEmpty
+                  ? S.of(context).sucess3
+                  : controller.text,
               controller: controller,
               keyboardType: TextInputType.datetime,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter $label';
+                  return '${S.of(context).Name3} $label';
                 }
                 return null;
               },
@@ -426,20 +368,20 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: 'Car type',
+            text: S.of(context).CarType,
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
           const SizedBox(height: 8),
           CustomTextField(
-            labelText: 'Placeholder',
+            labelText: S.of(context).Offers12,
             controller: carTypeController,
             keyboardType: TextInputType.text,
             suffixIcon: SvgPicture.asset('assets/images/arrow-down.svg',
                 height: 24, width: 24),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter Car type';
+                return '${S.of(context).Name3} ${S.of(context).CarType}';
               }
               return null;
             },
@@ -537,7 +479,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
         Column(
           children: [
             CustomText(
-              text: 'Agree to terms and conditions',
+              text: S.of(context).Agreee,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -565,7 +507,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
             return CircularProgressIndicator();
           } else {
             return CustomButton(
-              text: 'Register',
+              text: S.of(context).Register,
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   String selectedCarTypeId = carTypeController.text;
@@ -584,7 +526,9 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TrueresgesterScreen(),
+                        builder: (context) => Directionality(
+                            textDirection: ui.TextDirection.ltr,
+                            child: TrueresgesterScreen()),
                       ),
                     );
                   } else if (regesterController.message.value.isNotEmpty) {
