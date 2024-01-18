@@ -143,8 +143,7 @@ class RegesterController extends GetxController {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Directionality(
-                    textDirection: TextDirection.ltr, child: const CarForm())),
+                builder: (context) => const CarForm()),
           );
           print('Response body: ${response.body}');
           print(authToken);
@@ -152,9 +151,7 @@ class RegesterController extends GetxController {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: const RegistrationFormClinet())),
+                builder: (context) => const RegistrationFormClinet()),
           );
         }
       } else {
@@ -193,17 +190,14 @@ class RegesterController extends GetxController {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Directionality(
-                    textDirection: TextDirection.ltr, child: const CarForm2())),
+                builder: (context) =>  const CarForm2()),
           );
           print('Response body: ${response.body}');
         } else if (completeRegistration == 0) {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: const RegistrationFormClinet())),
+                builder: (context) => const RegistrationFormClinet()),
           );
         }
       } else {

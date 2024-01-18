@@ -81,6 +81,12 @@ class _CarFormState extends State<CarForm> {
 
   @override
   Widget build(BuildContext context) {
+     var textDirection = Directionality.of(context);
+
+  // Adjust padding based on text direction
+  var errorPadding = textDirection == ui.TextDirection.ltr
+      ? const EdgeInsets.only(left: 16)
+      : const EdgeInsets.only(right: 16);
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -92,11 +98,14 @@ class _CarFormState extends State<CarForm> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BackButtonDeep(),
-                      ],
+                    child: Directionality(
+                      textDirection: ui.TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BackButtonDeep(),
+                        ],
+                      ),
                     ),
                   ),
                   Text(
@@ -133,8 +142,11 @@ class _CarFormState extends State<CarForm> {
                   buildImagePicker(S.of(context).carLicence, 0),
                   if (validateField1() != null)
                     Padding(
-                      padding: const EdgeInsets.only(left: 16),
+                      padding: errorPadding,
                       child: Row(
+                         mainAxisAlignment: textDirection == ui.TextDirection.ltr
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
                         children: [
                           Text(validateField1()!,
                               style: TextStyle(color: Colors.red)),
@@ -527,6 +539,12 @@ class _CarFormState extends State<CarForm> {
   }
 
   Widget buildAgreementSwitch() {
+     var textDirection = Directionality.of(context);
+
+  // Adjust padding based on text direction
+  var errorPadding = textDirection == ui.TextDirection.ltr
+      ? const EdgeInsets.only(left: 16)
+      : const EdgeInsets.only(right: 16);
     return Row(
       children: [
         InkWell(
@@ -537,7 +555,7 @@ class _CarFormState extends State<CarForm> {
             });
           },
           child: Padding(
-            padding: const EdgeInsets.only(left: 16),
+            padding: errorPadding,
             child: SvgPicture.asset(
               isAgreed == 1
                   ? 'assets/images/Object.svg'
