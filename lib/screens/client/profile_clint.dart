@@ -32,6 +32,7 @@ class ProfileClient extends StatefulWidget {
 
 class _MyProfileState extends State<ProfileClient> {
   String? _imageURL;
+  String? _userType;
 
   LatLng? _selectedLocation;
   List<Address> addresses = [];
@@ -125,9 +126,12 @@ class _MyProfileState extends State<ProfileClient> {
         final userData = jsonDecode(response.body);
         final imageUrl = userData['image_url'];
         final _phoneNumber = userData['phone'];
+        final userType = userData['type'];
+
         setState(() {
           _imageURL = imageUrl;
           phoneNumberController.text = _phoneNumber ?? '';
+          _userType = userType;
         });
       } else {
         // Handle error
@@ -168,6 +172,7 @@ class _MyProfileState extends State<ProfileClient> {
   final floorController = TextEditingController();
   final aptController = TextEditingController();
   final namePlaceController = TextEditingController();
+  final summeryController = TextEditingController();
 
   @override
   void dispose() {
@@ -179,6 +184,7 @@ class _MyProfileState extends State<ProfileClient> {
     floorController.dispose();
     aptController.dispose();
     namePlaceController.dispose();
+    summeryController.dispose();
 
     super.dispose();
   }
@@ -202,7 +208,7 @@ class _MyProfileState extends State<ProfileClient> {
 
   @override
   Widget build(BuildContext context) {
-        final LocaleController localeController = Get.put(LocaleController());
+    final LocaleController localeController = Get.put(LocaleController());
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -221,7 +227,7 @@ class _MyProfileState extends State<ProfileClient> {
                       ],
                     ),
                   ),
-                   Text(
+                  Text(
                     S.of(context).Profile,
                     style: TextStyle(
                       fontSize: 20,
@@ -229,29 +235,29 @@ class _MyProfileState extends State<ProfileClient> {
                       color: deepPurple,
                     ),
                   ),
-                   Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: Get.locale?.languageCode == 'en'
-                      ? Image.asset(
-                          'assets/images/unitedstates.png',
-                          width: 35,
-                          height: 35,
-                        )
-                      : Image.asset(
-                          'assets/images/saudiarabia.png',
-                          width: 35,
-                          height: 35,
-                        ),
-                  onPressed: () {
-                    if (Get.locale?.languageCode == 'en') {
-                      localeController.changeLanguage('ar');
-                    } else {
-                      localeController.changeLanguage('en');
-                    }
-                  },
-                ),
-              ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: Get.locale?.languageCode == 'en'
+                          ? Image.asset(
+                              'assets/images/unitedstates.png',
+                              width: 35,
+                              height: 35,
+                            )
+                          : Image.asset(
+                              'assets/images/saudiarabia.png',
+                              width: 35,
+                              height: 35,
+                            ),
+                      onPressed: () {
+                        if (Get.locale?.languageCode == 'en') {
+                          localeController.changeLanguage('ar');
+                        } else {
+                          localeController.changeLanguage('en');
+                        }
+                      },
+                    ),
+                  ),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: getImage,
@@ -300,7 +306,7 @@ class _MyProfileState extends State<ProfileClient> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                   Row(
+                  Row(
                     children: [
                       Padding(
                         padding: EdgeInsets.only(left: 16),
@@ -316,11 +322,34 @@ class _MyProfileState extends State<ProfileClient> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  buildTextField(S.of(context).Profile3, nameController, TextInputType.text),
+                  buildTextField(S.of(context).Profile3, nameController,
+                      TextInputType.text),
                   buildTextField(S.of(context).Profile4, phoneNumberController,
                       TextInputType.number),
-                  buildTextField(
-                      S.of(context).Profile5, emailController, TextInputType.emailAddress),
+                  buildTextField(S.of(context).Profile5, emailController,
+                      TextInputType.emailAddress),
+                     if (_userType == 'vendor')
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: S.of(context).AreCancel37,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      CustomMultiLineFormField(
+                        labelText: S.of(context).AreCancel37,
+                        controller: summeryController,
+                        keyboardType: TextInputType.multiline,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '${S.of(context).Name3} ${S.of(context).AreCancel37}';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
                   Row(
                     children: [
                       Padding(
@@ -416,7 +445,7 @@ class _MyProfileState extends State<ProfileClient> {
                         icon: const Icon(Icons.close),
                         onPressed: () => Navigator.pop(context),
                       ),
-                       Text(
+                      Text(
                         S.of(context).Edit,
                         style: TextStyle(
                             fontSize: 18,
@@ -441,11 +470,11 @@ class _MyProfileState extends State<ProfileClient> {
                             ),
                           ),
                         ),
-                        buildTextField(
-                            S.of(context).Profile3, namePlaceController, TextInputType.text),
+                        buildTextField(S.of(context).Profile3,
+                            namePlaceController, TextInputType.text),
                         const SizedBox(height: 16),
-                        buildTextField(
-                            S.of(context).Edit2, streetController, TextInputType.text),
+                        buildTextField(S.of(context).Edit2, streetController,
+                            TextInputType.text),
                         const SizedBox(height: 16),
                         Row(
                           children: [
@@ -455,14 +484,14 @@ class _MyProfileState extends State<ProfileClient> {
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: buildTextField(S.of(context).Edit4, floorController,
-                                  TextInputType.number),
+                              child: buildTextField(S.of(context).Edit4,
+                                  floorController, TextInputType.number),
                             ),
                             const SizedBox(width: 16),
                           ],
                         ),
-                        buildTextField(
-                            S.of(context).Edit5, aptController, TextInputType.number),
+                        buildTextField(S.of(context).Edit5, aptController,
+                            TextInputType.number),
                         const SizedBox(height: 16),
                         CustomButton(
                             text: S.of(context).Profile9,
@@ -475,8 +504,11 @@ class _MyProfileState extends State<ProfileClient> {
                                   building: buildingController.text,
                                   floor: floorController.text,
                                   apartment: aptController.text,
-                                  lat: _selectedLocation!.latitude.toString()??'Latitude from map',
-                                  long: _selectedLocation!.longitude.toString()??'Longitude from map',
+                                  lat: _selectedLocation!.latitude.toString() ??
+                                      'Latitude from map',
+                                  long:
+                                      _selectedLocation!.longitude.toString() ??
+                                          'Longitude from map',
                                   //'Longitude from map',
                                 );
                                 Navigator.pop(context);

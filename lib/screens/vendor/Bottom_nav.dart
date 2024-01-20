@@ -5,7 +5,6 @@ import 'package:work2/constants/colors.dart';
 import '../client/account_client.dart';
 import 'map_vendor.dart';
 import 'orders.dart';
-import 'vendorMyAccount.dart';
 
 class VendorMap extends StatefulWidget {
   const VendorMap({super.key});
@@ -34,7 +33,7 @@ class _VendorMapState extends State<VendorMap> {
         return MyMap();
       case 2:
         return Directionality(
-            textDirection: TextDirection.ltr, child: AccountVendor());
+            textDirection: TextDirection.ltr, child: AccountClient());
 
       default:
         return Directionality(

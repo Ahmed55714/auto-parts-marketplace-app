@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/screens/client/Terms_and_conditions.dart';
+import 'package:work2/screens/vendor/walet.dart';
 
 import '../../constants/colors.dart';
 import '../../generated/l10n.dart';
@@ -28,6 +29,8 @@ class AccountClient extends StatefulWidget {
 class _AccountClientState extends State<AccountClient> {
   String? _imageURL;
   String? _name;
+  String? _userType;
+
   Future<void> fetchProfilePic() async {
     final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/user");
     final prefs = await SharedPreferences.getInstance();
@@ -46,9 +49,12 @@ class _AccountClientState extends State<AccountClient> {
         final userData = jsonDecode(response.body);
         final imageUrl = userData['image_url'];
         final name = userData['name'];
+        final userType = userData['type'];
+
         setState(() {
           _imageURL = imageUrl;
           _name = name;
+          _userType = userType;
         });
       } else {
         // Handle error
@@ -159,10 +165,24 @@ class _AccountClientState extends State<AccountClient> {
               child: _buildOptionRow(
                   'assets/images/info-circle.svg', S.of(context).MyAccount4),
             ),
+            if (_userType == 'vendor')
+              Column(
+                children: [
+                  const SizedBox(height: 12),
+                  const _CustomDivider(),
+                  const SizedBox(height: 12),
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Wallet()),
+                          ),
+                      child: _buildOptionRow('assets/images/wallet.png',
+                          S.of(context).AreCancel48)),
+                ],
+              ),
             const SizedBox(height: 12),
             const _CustomDivider(),
             const SizedBox(height: 12),
-           
             GestureDetector(
                 onTap: () => signOut(),
                 child: _buildOptionRow(
