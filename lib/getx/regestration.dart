@@ -250,6 +250,7 @@ class RegesterController extends GetxController {
   Future<void> postVendorRegistration({
     required String name,
     required String email,
+    required String bankAccount,
     required List<String> carTypeIds,
     required String latitude,
     required String longitude,
@@ -267,6 +268,7 @@ class RegesterController extends GetxController {
         ..headers['Authorization'] = 'Bearer $authToken'
         ..fields['name'] = name
         ..fields['email'] = email
+        ..fields['bank_account'] = bankAccount
         ..fields['lat'] = latitude
         ..fields['long'] = longitude;
 

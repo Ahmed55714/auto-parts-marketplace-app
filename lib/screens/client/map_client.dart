@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../generated/l10n.dart';
 import '../../getx/regestration.dart';
 import '../../widgets/custom_button.dart';
-import '../vendor/profile.dart';
+import '../vendor/map_vendor.dart';
 
 class ClientMap extends StatefulWidget {
   const ClientMap({super.key});

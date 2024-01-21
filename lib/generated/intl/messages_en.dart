@@ -101,9 +101,39 @@ class MessageLookup extends MessageLookupByLibrary {
         "AreCancel50": MessageLookupByLibrary.simpleMessage("Suspended"),
         "AreCancel51": MessageLookupByLibrary.simpleMessage("Withdrawable"),
         "AreCancel52": MessageLookupByLibrary.simpleMessage("Submitted"),
+        "AreCancel53": MessageLookupByLibrary.simpleMessage("Bank Account"),
+        "AreCancel54":
+            MessageLookupByLibrary.simpleMessage("Enter your bank account"),
+        "AreCancel55": MessageLookupByLibrary.simpleMessage(
+            "Profile Updated successfully"),
+        "AreCancel56":
+            MessageLookupByLibrary.simpleMessage("No Internet Connection"),
+        "AreCancel57": MessageLookupByLibrary.simpleMessage(
+            "Please check your internet connection and try again"),
+        "AreCancel58": MessageLookupByLibrary.simpleMessage("Server Error"),
+        "AreCancel59": MessageLookupByLibrary.simpleMessage(
+            "Could not complete your request. Please try again later."),
         "AreCancel6": MessageLookupByLibrary.simpleMessage(
             "has been cancelled successfully"),
+        "AreCancel60":
+            MessageLookupByLibrary.simpleMessage("Bad Response Format"),
+        "AreCancel61": MessageLookupByLibrary.simpleMessage(
+            "Invalid server response. Please try again later."),
+        "AreCancel62": MessageLookupByLibrary.simpleMessage("Request Timeout"),
+        "AreCancel63": MessageLookupByLibrary.simpleMessage("Error"),
+        "AreCancel64": MessageLookupByLibrary.simpleMessage(
+            "An unexpected error occurred"),
+        "AreCancel65": MessageLookupByLibrary.simpleMessage(
+            "Verification Failed please check your internet"),
+        "AreCancel66": MessageLookupByLibrary.simpleMessage("Invalid OTP"),
+        "AreCancel67": MessageLookupByLibrary.simpleMessage("Success"),
+        "AreCancel68":
+            MessageLookupByLibrary.simpleMessage("Verify successfully"),
+        "AreCancel69": MessageLookupByLibrary.simpleMessage(
+            "Could not connect to the server. Please check your internet connection."),
         "AreCancel7": MessageLookupByLibrary.simpleMessage("Return Order"),
+        "AreCancel70": MessageLookupByLibrary.simpleMessage(
+            "Failed to load vendor profile."),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(
             "Please upload an image for license"),
         "AreCancel9":
@@ -259,7 +289,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SignUP5": MessageLookupByLibrary.simpleMessage("Special Client"),
         "SignUp2": MessageLookupByLibrary.simpleMessage(
             "Welcome to SLF please choose your account type to continue"),
-        "SingIn": MessageLookupByLibrary.simpleMessage("Sing In"),
+        "SingIn": MessageLookupByLibrary.simpleMessage("Sign In"),
         "SingIn5": MessageLookupByLibrary.simpleMessage("Phone Number"),
         "TaxCertificate":
             MessageLookupByLibrary.simpleMessage("Tax Certificate"),

@@ -51,7 +51,7 @@ class _VenforProfileState extends State<VenforProfile> {
         return VendorProfile.fromJson(data);
       } else {
         throw Exception(
-            'Failed to load vendor profile. Status code: ${response.statusCode}');
+            'Failed to load vendor profile.');
       }
     } catch (e) {
       throw Exception('Failed to load vendor profile: $e');

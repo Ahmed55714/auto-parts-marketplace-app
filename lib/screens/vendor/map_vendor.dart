@@ -5,15 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../../getx/regestration.dart';
-import '../../widgets/custom_button.dart';
 import '../client/map_client.dart';
-import 'Registration_form.dart';
-import 'profile.dart';
 
 class MyMap extends StatefulWidget {
   const MyMap({super.key});
@@ -197,6 +195,86 @@ class CustomSearchBar extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+  
+}
+class CustomGoogleMapp extends StatefulWidget {
+  const CustomGoogleMapp({Key? key}) : super(key: key);
+
+  @override
+  _CustomGoogleMappState createState() => _CustomGoogleMappState();
+}
+
+class _CustomGoogleMappState extends State<CustomGoogleMapp> {
+  final Completer<GoogleMapController> _controller = Completer();
+  final Location _location = Location();
+  LocationData? _currentLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  void _getCurrentLocation() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await _location.requestService();
+      if (!_serviceEnabled) return;
+    }
+
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) return;
+    }
+
+    _location.onLocationChanged.listen((LocationData currentLocation) {
+      setState(() {
+        _currentLocation = currentLocation;
+      });
+
+      _updateCameraPosition();
+    });
+  }
+
+  void _updateCameraPosition() {
+    if (_controller.isCompleted && _currentLocation != null) {
+      _controller.future.then((controller) {
+        controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+              zoom: 17.0,
+            ),
+          ),
+        );
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_currentLocation == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return GoogleMap(
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+        _updateCameraPosition();
+      },
+      initialCameraPosition: CameraPosition(
+        target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+        zoom: 17.0,
+      ),
+      myLocationEnabled: true,
+      myLocationButtonEnabled: true,
+      zoomControlsEnabled: false,
     );
   }
 }

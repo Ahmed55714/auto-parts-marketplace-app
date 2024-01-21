@@ -37,6 +37,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final locationController = TextEditingController();
   final cartypeController = TextEditingController();
   final locationdoneController = TextEditingController();
+  final bankAccountController = TextEditingController();
 
   List<String> carTypes = []; // List to store car types
   final RegesterController regesterController = Get.find<RegesterController>();
@@ -57,6 +58,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
     carTypeController.dispose();
     locationController.dispose();
     cartypeController.dispose();
+    locationdoneController.dispose();
     super.dispose();
   }
 
@@ -146,6 +148,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   //     TextInputType.number, 'Enter your phone number'),
                   buildTextField(S.of(context).Profile5, emailController,
                       TextInputType.emailAddress, S.of(context).Enteryouremail),
+                       buildTextField(S.of(context).AreCancel53, bankAccountController,
+                      TextInputType.number, S.of(context).AreCancel54),
                   buildCarTypeField1(),
                   const SizedBox(height: 10),
 
@@ -557,6 +561,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 await regesterController.postVendorRegistration(
                   name: nameController.text,
                   email: emailController.text,
+                  bankAccount: bankAccountController.text,
                   carTypeIds: carTypes,
                   latitude: latLong[0].trim(),
                   longitude: latLong[1].trim(),

@@ -31,7 +31,6 @@ import 'screens/vendor/Report.dart';
 import 'screens/vendor/chat/screens/mobile_layout_screen.dart';
 import 'screens/vendor/offer_form.dart';
 import 'screens/vendor/orders_rate.dart';
-import 'screens/vendor/profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,7 +66,7 @@ void main() async {
 
 Future initialization(BuildContext? context) async {
   // Load resources
-  await Future.delayed(const Duration(seconds: 5));
+  await Future.delayed(const Duration(seconds: 3));
 }
 
 class MyApp extends StatefulWidget {
@@ -82,7 +81,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      locale: const Locale('ar'),
+      locale: const Locale('en'),
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -122,7 +121,7 @@ class _MyAppState extends State<MyApp> {
               ),
           '/ordersrate': (context) => const MyOrders_rate(),
           '/reprt': (context) => const Report(),
-          '/profile': (context) => const MyProfile(),
+          
           '/CarForm': (context) => const CarForm(),
           '/Report': (context) => const ReportClient(),
           '/TrueOfferScreen': (context) => TrueOfferScreen(),

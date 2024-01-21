@@ -9,6 +9,8 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../generated/l10n.dart';
+
 class UpdateProfileController extends GetxController {
   var isLoading = false.obs;
   var profileImageUrl = RxString(""); // Correctly declared as an observable
@@ -17,6 +19,7 @@ class UpdateProfileController extends GetxController {
     required String name,
     required String email,
     required String phone,
+    required String summary,
     File? image,
   }) async {
     final Uri apiEndpoint =
@@ -31,7 +34,8 @@ class UpdateProfileController extends GetxController {
         ..headers['Authorization'] = 'Bearer $authToken'
         ..fields['name'] = name
         ..fields['email'] = email
-        ..fields['phone'] = phone;
+        ..fields['phone'] = phone
+        ..fields['summary'] = summary;
 
       if (image != null) {
         final mimeTypeData =
@@ -55,32 +59,32 @@ class UpdateProfileController extends GetxController {
       }
     } on SocketException {
       Get.snackbar(
-        'No Internet Connection',
-        'Make sure you are connected to the internet and try again.',
+        S.of(Get.context!).AreCancel56,
+        S.of(Get.context!).AreCancel57,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     } on HttpException {
       Get.snackbar(
-        'Server Error',
-        'Could not complete your request. Please try again later.',
+         S.of(Get.context!).AreCancel58,
+        S.of(Get.context!).AreCancel59,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     } on FormatException {
       Get.snackbar(
-        'Bad Response Format',
-        'Invalid server response. Please try again later.',
+        S.of(Get.context!).AreCancel60,
+        S.of(Get.context!).AreCancel61,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'An unexpected error occurred: $e',
+        S.of(Get.context!).AreCancel62,
+        S.of(Get.context!).AreCancel63,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,

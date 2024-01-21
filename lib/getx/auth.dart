@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../generated/l10n.dart';
 import '../screens/intro/sign_up.dart';
 import '../screens/intro/verification.dart';
 
@@ -22,11 +23,12 @@ class AuthController extends GetxController {
       },
       verificationFailed: (FirebaseAuthException e) {
         isLoading(false);
-        //Get.snackbar('Error', 'Verification Failed please check your internet');
+        Get.snackbar(
+            S.of(Get.context!).AreCancel63, S.of(Get.context!).AreCancel65);
       },
       codeSent: (String verificationId, int? resendToken) {
         isLoading(false);
-        
+
         Get.to(() => VerificationScreen(
             verificationId: verificationId, phoneNumber: phoneNumber));
       },
@@ -44,7 +46,8 @@ class AuthController extends GetxController {
       await postUserData(_auth.currentUser!);
     } catch (e) {
       isLoading(false);
-     // Get.snackbar('Error', 'Invalid OTP');
+      Get.snackbar(
+          S.of(Get.context!).AreCancel63, S.of(Get.context!).AreCancel66);
     }
   }
 
@@ -65,38 +68,38 @@ class AuthController extends GetxController {
             'phone': user.phoneNumber,
           },
         );
-       
-      
-
-      
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           // Here we assume the token is returned in the response body
           var data = jsonDecode(response.body);
           var token = data['token'];
           await saveToken(token);
-         
-          // Get.snackbar(
-          //   'Success',
-          //   'Verify successfully',
-          //   snackPosition: SnackPosition.BOTTOM,
-          //   backgroundColor: Colors.green,
-          //   colorText: Colors.white,
-          // );
+
+          Get.snackbar(
+            S.of(Get.context!).AreCancel67,
+            S.of(Get.context!).AreCancel68,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
           // Navigate to the sign-up page
           Get.offAll(() => SignUp());
         } else {
-          //Get.snackbar('Error', 'Failed to Verify');
+          Get.snackbar(
+              S.of(Get.context!).AreCancel63, S.of(Get.context!).AreCancel65,
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              duration: Duration(seconds: 5));
         }
       } catch (e) {
-        // Get.snackbar(
-        //   'Network Error',
-        //   'Could not connect to the server. Please check your internet connection.',
-        //   snackPosition: SnackPosition.BOTTOM,
-        //   backgroundColor: Colors.red,
-        //   colorText: Colors.white,
-        // );
-      
+        Get.snackbar(
+          S.of(Get.context!).AreCancel65,
+          S.of(Get.context!).AreCancel69,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       } finally {
         isLoading(false);
       }
@@ -106,13 +109,11 @@ class AuthController extends GetxController {
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
-  
   }
 
   Future<String?> getToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
-    
   }
 
   Future<void> postType(String type) async {
@@ -134,14 +135,12 @@ class AuthController extends GetxController {
 
       if (response.statusCode == 200) {
         // Handle successful response
-   ;
+        ;
       } else {
         // Handle error
-  
       }
     } catch (e) {
       // Handle any exceptions
-    
     }
   }
 
@@ -157,12 +156,12 @@ class AuthController extends GetxController {
     return prefs.getString('user_type');
   }
 
-void switchLanguage() {
-  Locale currentLocale = Get.locale!;
-  if (currentLocale.languageCode == 'en') {
-    Get.updateLocale(Locale('ar', 'AR'));
-  } else {
-    Get.updateLocale(Locale('en', 'US'));
+  void switchLanguage() {
+    Locale currentLocale = Get.locale!;
+    if (currentLocale.languageCode == 'en') {
+      Get.updateLocale(Locale('ar', 'AR'));
+    } else {
+      Get.updateLocale(Locale('en', 'US'));
+    }
   }
-}
 }

@@ -163,8 +163,8 @@ class updateTrueScreen extends StatelessWidget {
               ),
               const SizedBox(
                   height: 24.0), // Provides space between the icon and the text
-              const Text(
-                'Profile Updated successfully',
+               Text(
+                S.of(context).AreCancel55,
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w500,
@@ -173,20 +173,23 @@ class updateTrueScreen extends StatelessWidget {
 
               const SizedBox(height: 32.0),
               CustomButton2(
-                text: 'Edit',
+                text: S.of(context).TrueScreen2,
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               const SizedBox(height: 12.0),
               CustomButton(
-                  text: 'Homepage',
+                  text: S.of(context).TrueScreen3,
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AccountClient(
-                          name: name,
+                        builder: (context) => Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: AccountClient(
+                            name: name,
+                          ),
                         ),
                         // const CarForm(),
                       ),

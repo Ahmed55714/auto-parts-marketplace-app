@@ -80,10 +80,10 @@ class S {
     );
   }
 
-  /// `Sing In`
+  /// `Sign In`
   String get SingIn {
     return Intl.message(
-      'Sing In',
+      'Sign In',
       name: 'SingIn',
       desc: '',
       args: [],
@@ -2225,6 +2225,186 @@ class S {
     return Intl.message(
       'Submitted',
       name: 'AreCancel52',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bank Account`
+  String get AreCancel53 {
+    return Intl.message(
+      'Bank Account',
+      name: 'AreCancel53',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your bank account`
+  String get AreCancel54 {
+    return Intl.message(
+      'Enter your bank account',
+      name: 'AreCancel54',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile Updated successfully`
+  String get AreCancel55 {
+    return Intl.message(
+      'Profile Updated successfully',
+      name: 'AreCancel55',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Internet Connection`
+  String get AreCancel56 {
+    return Intl.message(
+      'No Internet Connection',
+      name: 'AreCancel56',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please check your internet connection and try again`
+  String get AreCancel57 {
+    return Intl.message(
+      'Please check your internet connection and try again',
+      name: 'AreCancel57',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server Error`
+  String get AreCancel58 {
+    return Intl.message(
+      'Server Error',
+      name: 'AreCancel58',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not complete your request. Please try again later.`
+  String get AreCancel59 {
+    return Intl.message(
+      'Could not complete your request. Please try again later.',
+      name: 'AreCancel59',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bad Response Format`
+  String get AreCancel60 {
+    return Intl.message(
+      'Bad Response Format',
+      name: 'AreCancel60',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid server response. Please try again later.`
+  String get AreCancel61 {
+    return Intl.message(
+      'Invalid server response. Please try again later.',
+      name: 'AreCancel61',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Timeout`
+  String get AreCancel62 {
+    return Intl.message(
+      'Request Timeout',
+      name: 'AreCancel62',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error`
+  String get AreCancel63 {
+    return Intl.message(
+      'Error',
+      name: 'AreCancel63',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An unexpected error occurred`
+  String get AreCancel64 {
+    return Intl.message(
+      'An unexpected error occurred',
+      name: 'AreCancel64',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verification Failed please check your internet`
+  String get AreCancel65 {
+    return Intl.message(
+      'Verification Failed please check your internet',
+      name: 'AreCancel65',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid OTP`
+  String get AreCancel66 {
+    return Intl.message(
+      'Invalid OTP',
+      name: 'AreCancel66',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get AreCancel67 {
+    return Intl.message(
+      'Success',
+      name: 'AreCancel67',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify successfully`
+  String get AreCancel68 {
+    return Intl.message(
+      'Verify successfully',
+      name: 'AreCancel68',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not connect to the server. Please check your internet connection.`
+  String get AreCancel69 {
+    return Intl.message(
+      'Could not connect to the server. Please check your internet connection.',
+      name: 'AreCancel69',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load vendor profile.`
+  String get AreCancel70 {
+    return Intl.message(
+      'Failed to load vendor profile.',
+      name: 'AreCancel70',
       desc: '',
       args: [],
     );

@@ -112,7 +112,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                               padding: EdgeInsets.all(8.0),
                               child: SizedBox(
                                 width: 290,
-                                height: 75,
+                                height: 100,
                                 child: Center(
                                   child: Padding(
                                     padding: EdgeInsets.all(8.0),

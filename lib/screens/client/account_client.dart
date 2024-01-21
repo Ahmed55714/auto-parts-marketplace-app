@@ -134,9 +134,7 @@ class _AccountClientState extends State<AccountClient> {
                           onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Directionality(
-                                        textDirection: TextDirection.ltr,
-                                        child: ProfileClient())),
+                                    builder: (context) =>  ProfileClient()),
                               ))
                     ],
                   ),

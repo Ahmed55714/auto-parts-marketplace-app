@@ -18,7 +18,6 @@ import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../intro/onboarding_screen.dart';
 import '../vendor/Bottom_nav.dart';
-import '../vendor/profile.dart';
 import 'package:http/http.dart' as http;
 
 import 'bottom_nav.dart';
@@ -124,19 +123,30 @@ class _MyProfileState extends State<ProfileClient> {
 
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
+        final name = userData['name'];
         final imageUrl = userData['image_url'];
         final _phoneNumber = userData['phone'];
         final userType = userData['type'];
+        final _bankAccount = userData['bank_account'];
+        final _email = userData['email'];
+        final _summery = userData['summary'];
 
         setState(() {
           _imageURL = imageUrl;
           phoneNumberController.text = _phoneNumber ?? '';
           _userType = userType;
+          BankAccountController.text = _bankAccount ?? '';
+          nameController.text = name ?? '';
+          emailController.text = _email ?? '';
+          summeryController.text = _summery ?? '';
         });
+        print(response.body);
       } else {
-        // Handle error
+        print(response.body);
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 
   void _onLocationSelected(LatLng location) {
@@ -173,6 +183,7 @@ class _MyProfileState extends State<ProfileClient> {
   final aptController = TextEditingController();
   final namePlaceController = TextEditingController();
   final summeryController = TextEditingController();
+  final BankAccountController = TextEditingController();
 
   @override
   void dispose() {
@@ -220,11 +231,14 @@ class _MyProfileState extends State<ProfileClient> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BackButtonDeep(),
-                      ],
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BackButtonDeep(),
+                        ],
+                      ),
                     ),
                   ),
                   Text(
@@ -328,28 +342,30 @@ class _MyProfileState extends State<ProfileClient> {
                       TextInputType.number),
                   buildTextField(S.of(context).Profile5, emailController,
                       TextInputType.emailAddress),
-                     if (_userType == 'vendor')
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: S.of(context).AreCancel37,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      CustomMultiLineFormField(
-                        labelText: S.of(context).AreCancel37,
-                        controller: summeryController,
-                        keyboardType: TextInputType.multiline,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '${S.of(context).Name3} ${S.of(context).AreCancel37}';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
+                  if (_userType == 'vendor')
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildTextField(S.of(context).AreCancel53,
+                            BankAccountController, TextInputType.number),
+                        CustomText(
+                          text: S.of(context).AreCancel37,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        CustomMultiLineFormField(
+                          labelText: S.of(context).AreCancel37,
+                          controller: summeryController,
+                          keyboardType: TextInputType.multiline,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '${S.of(context).Name3} ${S.of(context).AreCancel37}';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
                   Row(
                     children: [
                       Padding(
@@ -630,6 +646,7 @@ class _MyProfileState extends State<ProfileClient> {
               await updateController.updateProfile(
                 name: nameController.text,
                 email: emailController.text,
+                summary: summeryController.text,
                 phone: phoneNumberController.text,
                 image: _image,
               );
@@ -669,12 +686,12 @@ class Address {
 
   factory Address.fromJson(Map<String, dynamic> json) {
     return Address(
-      id: json['id'], // Assuming 'id' is an integer in your JSON
+      id: json['id'],
       name: json['name'] as String,
       street: json['street'] as String,
-      building: json['building'].toString(), // Convert to String if it's not
-      floor: json['floor'].toString(), // Convert to String if it's not
-      apartment: json['apartment'].toString(), // Convert to String if it's not
+      building: json['building'].toString(),
+      floor: json['floor'].toString(),
+      apartment: json['apartment'].toString(),
     );
   }
 
@@ -726,135 +743,138 @@ class _CustomSelectionState extends State<CustomSelection> {
               width: 1.0,
             ),
           ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: AnimatedContainer(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          color: widget.isSelected ? deepPurple : greyColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(60),
-                            bottomLeft: Radius.circular(60),
-                            topRight: Radius.circular(60),
-                            bottomRight: Radius.circular(10),
-                          )),
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.fastOutSlowIn,
-                      child: Visibility(
-                        visible: widget.isSelected,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: AnimatedContainer(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(60),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: AnimatedContainer(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                            color: widget.isSelected ? deepPurple : greyColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(60),
+                              bottomLeft: Radius.circular(60),
+                              topRight: Radius.circular(60),
+                              bottomRight: Radius.circular(10),
+                            )),
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.fastOutSlowIn,
+                        child: Visibility(
+                          visible: widget.isSelected,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: AnimatedContainer(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(60),
+                              ),
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.fastOutSlowIn,
                             ),
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.fastOutSlowIn,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 19),
-                        child: Row(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(left: 23),
-                              child: Container(
-                                width: 150,
-                                child: Text(
-                                  widget.title,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: widget.isSelected
-                                        ? deepPurple
-                                        : greyColor,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 19),
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(left: 23),
+                                child: Container(
+                                  width: 150,
+                                  child: Text(
+                                    widget.title,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: widget.isSelected
+                                          ? deepPurple
+                                          : greyColor,
+                                    ),
                                   ),
                                 ),
                               ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 30, top: 9),
+                          child: Text(
+                            widget.description,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: widget.isSelected ? deepPurple : greyColor,
                             ),
-                          ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 80.0),
+                      child: AnimatedContainer(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: widget.isSelected ? deepPurple : greyColor,
+                          borderRadius: BorderRadius.circular(60),
+                        ),
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.fastOutSlowIn,
+                        child: Visibility(
+                          visible: widget.isSelected,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: AnimatedContainer(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(60),
+                              ),
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.fastOutSlowIn,
+                            ),
+                          ),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 30, top: 9),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 16, bottom: 10),
+                      child: GestureDetector(
+                        onTap: widget.onDelete,
                         child: Text(
-                          widget.description,
+                          S.of(context).Profile7,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: widget.isSelected ? deepPurple : greyColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 80.0),
-                    child: AnimatedContainer(
-                      width: 16,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: widget.isSelected ? deepPurple : greyColor,
-                        borderRadius: BorderRadius.circular(60),
-                      ),
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.fastOutSlowIn,
-                      child: Visibility(
-                        visible: widget.isSelected,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: AnimatedContainer(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(60),
-                            ),
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.fastOutSlowIn,
+                            color: deepPurple,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 16, bottom: 10),
-                    child: GestureDetector(
-                      onTap: widget.onDelete,
-                      child: Text(
-                        S.of(context).Profile7,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: deepPurple,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

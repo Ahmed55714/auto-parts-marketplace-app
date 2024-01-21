@@ -3,7 +3,7 @@
     "titleBording2": "Welcome to Your Journey",
     "titleBording3": "Get Started",
 
-    "SingIn": "Sing In",
+    "SingIn": "Sign In",
     "SignIn2": "Enter your phone number",
     "SignIn3": "by continuing you agree to our terms of service and privacy & legal policy",
     "SignIn4": "Country / Region",
@@ -239,7 +239,26 @@
     "AreCancel49": "Total Amount",
     "AreCancel50": "Suspended",
     "AreCancel51": "Withdrawable",
-    "AreCancel52": "Submitted"
+    "AreCancel52": "Submitted",
+    "AreCancel53": "Bank Account",
+    "AreCancel54": "Enter your bank account",
+    "AreCancel55": "Profile Updated successfully",
+    "AreCancel56": "No Internet Connection",
+    "AreCancel57": "Please check your internet connection and try again",
+    "AreCancel58": "Server Error",
+    "AreCancel59": "Could not complete your request. Please try again later.",
+    "AreCancel60": "Bad Response Format",
+    "AreCancel61": "Invalid server response. Please try again later.",
+    "AreCancel62": "Request Timeout",
+    "AreCancel63": "Error",
+    "AreCancel64": "An unexpected error occurred",
+    "AreCancel65": "Verification Failed please check your internet",
+    "AreCancel66": "Invalid OTP",
+    "AreCancel67": "Success",
+    "AreCancel68": "Verify successfully",
+    "AreCancel69": "Could not connect to the server. Please check your internet connection.",
+    "AreCancel70": "Failed to load vendor profile."
+
 
 
 

@@ -98,8 +98,38 @@ class MessageLookup extends MessageLookupByLibrary {
         "AreCancel50": MessageLookupByLibrary.simpleMessage("المبلغ معلق"),
         "AreCancel51": MessageLookupByLibrary.simpleMessage("قابل للسحب"),
         "AreCancel52": MessageLookupByLibrary.simpleMessage("تم الارسال"),
+        "AreCancel53": MessageLookupByLibrary.simpleMessage("حساب البنك"),
+        "AreCancel54":
+            MessageLookupByLibrary.simpleMessage("أدخل حسابك البنكي"),
+        "AreCancel55":
+            MessageLookupByLibrary.simpleMessage("تم تحديث الملف الشخصي بنجاح"),
+        "AreCancel56":
+            MessageLookupByLibrary.simpleMessage("لا يوجد اتصال بالإنترنت"),
+        "AreCancel57": MessageLookupByLibrary.simpleMessage(
+            "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى"),
+        "AreCancel58": MessageLookupByLibrary.simpleMessage("خطأ في الخادم"),
+        "AreCancel59": MessageLookupByLibrary.simpleMessage(
+            "لا يمكن إكمال طلبك. الرجاء معاودة المحاولة في وقت لاحق"),
         "AreCancel6": MessageLookupByLibrary.simpleMessage("تم الإلغاء بنجاح"),
+        "AreCancel60":
+            MessageLookupByLibrary.simpleMessage("تنسيق الاستجابة سيئ"),
+        "AreCancel61": MessageLookupByLibrary.simpleMessage(
+            "استجابة الخادم غير صالحة. الرجاء معاودة المحاولة في وقت لاحق"),
+        "AreCancel62": MessageLookupByLibrary.simpleMessage("مهلة الطلب"),
+        "AreCancel63": MessageLookupByLibrary.simpleMessage("خطأ"),
+        "AreCancel64":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ غير متوقع"),
+        "AreCancel65": MessageLookupByLibrary.simpleMessage(
+            "فشل التحقق، يرجى التحقق من الإنترنت الخاص بك"),
+        "AreCancel66":
+            MessageLookupByLibrary.simpleMessage("كلمة المرور غير صالحة"),
+        "AreCancel67": MessageLookupByLibrary.simpleMessage("نجاح"),
+        "AreCancel68": MessageLookupByLibrary.simpleMessage("تم التحقق بنجاح"),
+        "AreCancel69": MessageLookupByLibrary.simpleMessage(
+            "تعذر الاتصال بالخادم. الرجاء التحقق من اتصال الانترنت الخاص بك"),
         "AreCancel7": MessageLookupByLibrary.simpleMessage("أمر الإرجاع"),
+        "AreCancel70":
+            MessageLookupByLibrary.simpleMessage("فشل تحميل ملف تعريف البائع"),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(
             "يرجى تحميل صورة للحصول على الترخيص"),
         "AreCancel9": MessageLookupByLibrary.simpleMessage("فشل في رفض العرض"),
@@ -223,7 +253,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Profile9": MessageLookupByLibrary.simpleMessage("حفظ"),
         "Re": MessageLookupByLibrary.simpleMessage(
             "تابع التسجيل لتتمكن من رؤية الطلبات"),
-        "Re2": MessageLookupByLibrary.simpleMessage("اكمل التسجيل"),
+        "Re2": MessageLookupByLibrary.simpleMessage("أكمل التسجيل"),
         "Re3": MessageLookupByLibrary.simpleMessage(
             "طلبك قيد المراجعة، يرجى انتظار الموافقة"),
         "Register": MessageLookupByLibrary.simpleMessage("سجل"),
@@ -266,7 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Verification3": MessageLookupByLibrary.simpleMessage("يؤكد"),
         "Write": MessageLookupByLibrary.simpleMessage("أكتب رسالتك"),
         "button": MessageLookupByLibrary.simpleMessage("التالي"),
-        "button2": MessageLookupByLibrary.simpleMessage("انتظر من فضلك"),
+        "button2": MessageLookupByLibrary.simpleMessage("أنتظر من فضلك"),
         "carLicence": MessageLookupByLibrary.simpleMessage("رخصة السيارة"),
         "comment": MessageLookupByLibrary.simpleMessage("تعليق"),
         "condition": MessageLookupByLibrary.simpleMessage("حالة القطعة"),
