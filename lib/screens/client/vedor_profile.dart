@@ -50,8 +50,7 @@ class _VenforProfileState extends State<VenforProfile> {
 
         return VendorProfile.fromJson(data);
       } else {
-        throw Exception(
-            'Failed to load vendor profile.');
+        throw Exception('Failed to load vendor profile.');
       }
     } catch (e) {
       throw Exception('Failed to load vendor profile: $e');
@@ -60,25 +59,23 @@ class _VenforProfileState extends State<VenforProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return
-       Scaffold(
-        body: SafeArea(
-          child: FutureBuilder<VendorProfile>(
-            future: vendorProfileFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text("${S.of(context).AreCancel36}"));
-              } else if (snapshot.hasData) {
-                return buildProfile(snapshot.data!);
-              } else {
-                return Center(child: Text(S.of(context).error2));
-              }
-            },
-          ),
+    return Scaffold(
+      body: SafeArea(
+        child: FutureBuilder<VendorProfile>(
+          future: vendorProfileFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("${S.of(context).AreCancel36}"));
+            } else if (snapshot.hasData) {
+              return buildProfile(snapshot.data!);
+            } else {
+              return Center(child: Text(S.of(context).error2));
+            }
+          },
         ),
-      
+      ),
     );
   }
 
@@ -167,53 +164,53 @@ class _VenforProfileState extends State<VenforProfile> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          S.of(context).Location,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 350,
-                    height: 200, // Set a height for the map container
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(20), // Rounded corners
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(20), // Rounded corners
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(profile.lat, profile.long),
-                          zoom: 15,
-                        ),
-                        markers: {
-                          Marker(
-                            markerId: MarkerId('vendorLocation'),
-                            position: LatLng(profile.lat, profile.long),
-                          ),
-                        },
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(height: 10),
+                  // Padding(
+                  //   padding: EdgeInsets.all(8.0),
+                  //   child: Row(
+                  //     children: [
+                  //       Text(
+                  //         S.of(context).Location,
+                  //         style: TextStyle(
+                  //           fontSize: 18,
+                  //           fontWeight: FontWeight.w500,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // Container(
+                  //   width: 350,
+                  //   height: 200, // Set a height for the map container
+                  //   decoration: BoxDecoration(
+                  //     borderRadius:
+                  //         BorderRadius.circular(20), // Rounded corners
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.grey.withOpacity(0.5),
+                  //         spreadRadius: 5,
+                  //         blurRadius: 7,
+                  //         offset: Offset(0, 3), // changes position of shadow
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: ClipRRect(
+                  //     borderRadius:
+                  //         BorderRadius.circular(20), // Rounded corners
+                  //     child: GoogleMap(
+                  //       initialCameraPosition: CameraPosition(
+                  //         target: LatLng(profile.lat, profile.long),
+                  //         zoom: 15,
+                  //       ),
+                  //       markers: {
+                  //         Marker(
+                  //           markerId: MarkerId('vendorLocation'),
+                  //           position: LatLng(profile.lat, profile.long),
+                  //         ),
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 10),
                   Padding(
                     padding: EdgeInsets.all(8.0),

@@ -7,24 +7,22 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final TextEditingController? controller;
   final double fieldHeight;
-  final TextInputType keyboardType; 
-  final String? Function(String?)? validator; 
+  final TextInputType keyboardType;
+  final String? Function(String?)? validator;
   final Widget? suffixIcon;
-    final int? maxLines; // Add this line
-
-  
+  final int? maxLines;
+  final String? Function(String?)? onChange;
 
   CustomTextField({
     Key? key,
     required this.labelText,
-    this.fieldHeight = 81.0,
+    this.fieldHeight = 90.0,
     this.controller,
-    this.keyboardType = TextInputType.text, // Default keyboardType is text
-    this.validator, 
-     this.suffixIcon, 
-         this.maxLines, // Add this line
-
-     
+    this.keyboardType = TextInputType.text, 
+    this.validator,
+    this.suffixIcon,
+    this.maxLines,
+    this.onChange,
   }) : super(key: key);
 
   @override
@@ -34,14 +32,16 @@ class CustomTextField extends StatelessWidget {
       child: Container(
         height: fieldHeight,
         child: TextFormField(
-          
           controller: controller,
           keyboardType: keyboardType, // Use keyboardType
-                maxLines: maxLines, // Use it here
+          maxLines: maxLines, // Use it here
 
           decoration: InputDecoration(
             labelText: labelText,
-            labelStyle: TextStyle(fontFamily: 'Roboto', fontSize: 14,),
+            labelStyle: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 14,
+            ),
             floatingLabelBehavior: FloatingLabelBehavior.never,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -51,19 +51,18 @@ class CustomTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide(color: Colors.deepPurple),
             ),
-             suffixIcon: Padding(
-               padding: const EdgeInsets.all(8.0),
-               child: suffixIcon,
-             ),
+            suffixIcon: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: suffixIcon,
+            ),
           ),
-          validator: validator, // Use validator
+          onChanged: onChange,
+          validator: validator, 
         ),
       ),
     );
   }
 }
-
-
 
 class CustomMultiLineFormField extends StatelessWidget {
   final String? labelText;
@@ -71,7 +70,7 @@ class CustomMultiLineFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
 
-   CustomMultiLineFormField({
+  CustomMultiLineFormField({
     Key? key,
     required this.labelText,
     required this.controller,
@@ -88,39 +87,40 @@ class CustomMultiLineFormField extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 3),
         child: TextFormField(
-          
           controller: controller,
           keyboardType: keyboardType,
           maxLines: 4, // Maximum number of lines
           decoration: InputDecoration(
             labelText: labelText,
-            labelStyle: TextStyle(fontFamily: 'Roboto', fontSize: 14,),
+            labelStyle: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 14,
+            ),
             alignLabelWithHint: true,
             hintStyle: TextStyle(color: greyColor),
-              floatingLabelBehavior: FloatingLabelBehavior.never,
+            floatingLabelBehavior: FloatingLabelBehavior.never,
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide(color: Colors.grey),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide(color: Colors.deepPurple),
-              ),
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide(color: Colors.deepPurple),
+            ),
           ),
-          
-          validator: validator ?? (value) {
-            if (value == null || value.isEmpty) {
-              return '${S.of(context).Name3} $labelText';
-            }
-            return null;
-          },
+
+          validator: validator ??
+              (value) {
+                if (value == null || value.isEmpty) {
+                  return '${S.of(context).Name3} $labelText';
+                }
+                return null;
+              },
         ),
       ),
     );
   }
 }
-
-
 
 class CustomText extends StatelessWidget {
   final String text;
@@ -128,15 +128,14 @@ class CustomText extends StatelessWidget {
   final Color color;
   final FontWeight fontWeight;
   final String? fontFamily;
-  
+
   CustomText({
     Key? key,
     required this.text,
     this.fontSize = 14.0,
     this.color = Colors.black,
     this.fontWeight = FontWeight.normal,
-      this.fontFamily,
-   
+    this.fontFamily,
   }) : super(key: key);
 
   @override
@@ -157,5 +156,3 @@ class CustomText extends StatelessWidget {
     );
   }
 }
-
-

@@ -237,16 +237,16 @@ class _PaymentState extends State<Payment> {
                         )),
                   ],
                 ),
-                SizedBox(height: 10),
-                CustomSelection1(
-                  index: 2,
-                  isSelected: selectedContainerIndex == 2,
-                  title: S.of(context).AreCancel29,
-                  description: S.of(context).Payment7,
-                  onTap: () {
-                    selectContainer(2);
-                  },
-                ),
+                // SizedBox(height: 10),
+                // CustomSelection1(
+                //   index: 2,
+                //   isSelected: selectedContainerIndex == 2,
+                //   title: S.of(context).AreCancel29,
+                //   description: S.of(context).Payment7,
+                //   onTap: () {
+                //     selectContainer(2);
+                //   },
+                // ),
                 CustomButton(
                   text: S.of(context).Payment6,
                   onPressed: () {

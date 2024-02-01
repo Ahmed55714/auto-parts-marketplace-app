@@ -78,7 +78,8 @@ class _ClientMapState extends State<ClientMap> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return CustomGoogleMapp();
                   } else {
-                    return CustomGoogleMap(locations: snapshot.data!);
+                      return CustomGoogleMapp();
+                    // return CustomGoogleMap(locations: snapshot.data!);
                   }
                 },
               ),

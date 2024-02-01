@@ -34,6 +34,9 @@ class RegesterController extends GetxController {
     required String carTypeId,
     required String latitude,
     required String longitude,
+    String? chassis_number,
+     XFile? chassis_file,
+
   }) async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/client/register");
@@ -54,6 +57,8 @@ class RegesterController extends GetxController {
           'cars[]': carTypeId,
           'lat': latitude,
           'long': longitude,
+          'chassis_number': chassis_number,
+          'chassis_file': chassis_file.toString(),
         },
       );
       if (response.statusCode == 200 || response.statusCode == 201) {

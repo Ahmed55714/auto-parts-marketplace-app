@@ -134,6 +134,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "AreCancel7": MessageLookupByLibrary.simpleMessage("Return Order"),
         "AreCancel70": MessageLookupByLibrary.simpleMessage(
             "Failed to load vendor profile."),
+        "AreCancel71": MessageLookupByLibrary.simpleMessage(
+            "Please upload an image for Chassis number"),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(
             "Please upload an image for license"),
         "AreCancel9":
@@ -314,6 +316,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "button": MessageLookupByLibrary.simpleMessage("Next"),
         "button2": MessageLookupByLibrary.simpleMessage("Please Wait..."),
         "carLicence": MessageLookupByLibrary.simpleMessage("Car Licence"),
+        "chassisValidationErrorMessage": MessageLookupByLibrary.simpleMessage(
+            "Please upload an image for Chassis or Number"),
         "comment": MessageLookupByLibrary.simpleMessage("Comment"),
         "condition": MessageLookupByLibrary.simpleMessage("Piece condition"),
         "error": MessageLookupByLibrary.simpleMessage(

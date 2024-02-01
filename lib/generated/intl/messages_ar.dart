@@ -130,6 +130,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "AreCancel7": MessageLookupByLibrary.simpleMessage("أمر الإرجاع"),
         "AreCancel70":
             MessageLookupByLibrary.simpleMessage("فشل تحميل ملف تعريف البائع"),
+        "AreCancel71":
+            MessageLookupByLibrary.simpleMessage("يرجى تحميل صورة لرقم الهيكل"),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(
             "يرجى تحميل صورة للحصول على الترخيص"),
         "AreCancel9": MessageLookupByLibrary.simpleMessage("فشل في رفض العرض"),
@@ -298,6 +300,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "button": MessageLookupByLibrary.simpleMessage("التالي"),
         "button2": MessageLookupByLibrary.simpleMessage("أنتظر من فضلك"),
         "carLicence": MessageLookupByLibrary.simpleMessage("رخصة السيارة"),
+        "chassisValidationErrorMessage": MessageLookupByLibrary.simpleMessage(
+            "يرجى تحميل صورة للهيكل أو الرقم للهيكل"),
         "comment": MessageLookupByLibrary.simpleMessage("تعليق"),
         "condition": MessageLookupByLibrary.simpleMessage("حالة القطعة"),
         "error":

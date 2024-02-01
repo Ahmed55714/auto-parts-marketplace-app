@@ -72,6 +72,13 @@ class _CarFormState extends State<CarForm> {
     }
     return null;
   }
+    String? validateField2() {
+    if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
+      return S.of(context).AreCancel71;
+    }
+    return null;
+  }
+
 
   void _removeImage(int fieldIndex, XFile image) {
     setState(() {
@@ -125,6 +132,24 @@ class _CarFormState extends State<CarForm> {
                       S.of(context).CarType, S.of(context).CarForm5),
                   buildTextField(S.of(context).Chassis, chassisNumberController,
                       TextInputType.emailAddress, S.of(context).CarForm4),
+                                             buildImagePicker(S.of(context).Chassis, 0),
+                  if (validateField1() != null)
+                    Padding(
+                      padding: errorPadding,
+                      child: Row(
+                         mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(validateField1()!,
+                              style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      buildImagesDisplay(0),
+                    ],
+                  ),
                   buildPieceTypeField1(
                     S.of(context).CarForm8,
                     S.of(context).CarForm5,

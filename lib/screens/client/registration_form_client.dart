@@ -25,9 +25,9 @@ class RegistrationFormClinet extends StatefulWidget {
 class _RegistrationFormState extends State<RegistrationFormClinet> {
   bool isAgreed = false;
 
-  List<XFile> _images = [];
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
+  List<List<XFile?>> _images = [[], [], []];
 
   // Text editing controllers
   final nameController = TextEditingController();
@@ -38,6 +38,7 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
   final dateController = TextEditingController();
   final cartypeController = TextEditingController();
   final locationdoneController = TextEditingController();
+  final chassisNumberController = TextEditingController();
 
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode;
@@ -53,18 +54,43 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
     locationController.dispose();
     dateController.dispose();
     cartypeController.dispose();
+    locationdoneController.dispose();
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final List<XFile>? pickedImages = await _picker.pickMultiImage();
-    if (pickedImages != null) {
-      setState(() => _images.addAll(pickedImages));
+  bool _isChassisNumberSelected = false;
+  bool _isImageSelected = false;
+
+  Future<void> _pickImage(int fieldIndex) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _images[fieldIndex] = [image];
+        _isImageSelected = true; 
+        _isChassisNumberSelected = false; 
+      });
+    }
+    if (image == null) {
+      setState(() {
+        _isChassisNumberSelected = true; 
+        _isImageSelected = true;
+      });
     }
   }
 
-  void _removeImage(int index) {
-    setState(() => _images.removeAt(index));
+  String? validateField1() {
+    if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
+      return S.of(context).AreCancel71;
+    }
+    return null;
+  }
+
+  void _removeImage(int fieldIndex, XFile image) {
+    setState(() {
+      _images[fieldIndex].remove(image);
+       _isChassisNumberSelected = false;
+      _isImageSelected = false;
+    });
   }
 
   @override
@@ -85,6 +111,10 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
 
   @override
   Widget build(BuildContext context) {
+    var textDirection = Directionality.of(context);
+    var errorPadding = textDirection == ui.TextDirection.ltr
+        ? const EdgeInsets.only(left: 16)
+        : const EdgeInsets.only(right: 16);
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -137,6 +167,27 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                   buildCarTypeField1(
                     S.of(context).CarType,
                     S.of(context).Offers12,
+                  ),
+                  Column(
+                    children: [
+                      if (!_isImageSelected) // Show text field only if no image is selected
+                        buildTextFieldChassis(
+                            S.of(context).Chassis,
+                            chassisNumberController,
+                            TextInputType.text,
+                            S.of(context).CarForm4),
+                            
+                      if (!_isChassisNumberSelected) // Show image picker only if no text is entered
+                        buildImagePicker(S.of(context).Chassis, 0),
+                    
+                      SizedBox(height: 10),
+                      if (_isImageSelected) // Show selected images only if image is selected
+                        Row(
+                          children: [
+                            buildImagesDisplay(0),
+                          ],
+                        ),
+                    ],
                   ),
                   buildSubmitButton(context),
                   const SizedBox(height: 15),
@@ -229,6 +280,42 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
           labelText: text ?? S.of(context).Placeholder,
           controller: controller,
           keyboardType: type,
+         
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return '${S.of(context).Name3} $label';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+   Widget buildTextFieldChassis(String label, TextEditingController controller,
+      TextInputType type, String? text) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          text: label,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        const SizedBox(height: 8),
+        CustomTextField(
+          labelText: text ?? S.of(context).Placeholder,
+          controller: controller,
+          keyboardType: type,
+          onChange: (value) {
+            setState(() {
+              _isChassisNumberSelected = value!.isNotEmpty;
+              if (_isChassisNumberSelected) {
+                _isImageSelected = false;
+              }
+            });
+          },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return '${S.of(context).Name3} $label';
@@ -331,6 +418,100 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
       }
     }
 
+    Widget buildImagePicker(String label, int fieldIndex) {
+      bool hasImage = _images.isNotEmpty; // Check if images list is not empty
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () => _pickImage(fieldIndex),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 5),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: hasImage
+                        ? Colors.grey
+                        : Colors.red, // Red border if no image selected
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: hasImage
+                            ? Colors.grey
+                            : Colors.red, // Red text if no image selected
+                        fontFamily: 'BahijTheSansArabic',
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      'assets/images/gallery.svg',
+                      height: 24,
+                      width: 24,
+                      color: hasImage
+                          ? null
+                          : Colors.red, // Red icon if no image selected
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget buildImagesDisplay(int fieldIndex) {
+      return Wrap(
+        children: _images[fieldIndex].map((image) {
+          return image != null
+              ? Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.file(
+                          File(image.path),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () => _removeImage(fieldIndex, image),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : SizedBox();
+        }).toList(),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -395,67 +576,96 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
     );
   }
 
-  Widget buildImagePicker(String label, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label,
-                  style: const TextStyle(
+  Widget buildImagePicker(String label, int fieldIndex) {
+    bool hasImage = _images.isNotEmpty; // Check if images list is not empty
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () => _pickImage(fieldIndex),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 5),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: hasImage
+                      ? Colors.grey
+                      : Colors.red, // Red border if no image selected
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
                       fontSize: 16,
-                      color: greyColor,
-                      fontFamily: 'BahijTheSansArabic')),
-              SvgPicture.asset('assets/images/gallery.svg',
-                  height: 24, width: 24),
-            ],
+                      color: hasImage
+                          ? Colors.grey
+                          : Colors.red, // Red text if no image selected
+                      fontFamily: 'BahijTheSansArabic',
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/gallery.svg',
+                    height: 24,
+                    width: 24,
+                    color: hasImage
+                        ? null
+                        : Colors.red, // Red icon if no image selected
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
-  Widget buildImagesDisplay() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16.0, left: 16),
-      child: Wrap(
-        children: List.generate(_images.length, (index) {
-          return Stack(
-            alignment: Alignment.topRight,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.file(
-                    File(_images[index].path),
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
+  Widget buildImagesDisplay(int fieldIndex) {
+    return Wrap(
+      children: _images[fieldIndex].map((image) {
+        return image != null
+            ? Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.file(
+                        File(image.path),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap: () => _removeImage(index),
-                  child: SvgPicture.asset('assets/images/cancel.svg',
-                      width: 24, height: 24),
-                ),
-              ),
-            ],
-          );
-        }),
-      ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => _removeImage(fieldIndex, image),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : SizedBox();
+      }).toList(),
     );
   }
 
@@ -523,6 +733,8 @@ class _RegistrationFormState extends State<RegistrationFormClinet> {
                     carTypeId: selectedCarTypeId,
                     latitude: latLong[0].trim(),
                     longitude: latLong[1].trim(),
+                    chassis_number: chassisNumberController.text,
+                    chassis_file:  _images[0].firstOrNull,
                   );
 
                   if (regesterController.message.value == 'Success') {

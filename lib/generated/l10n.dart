@@ -2409,6 +2409,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Please upload an image for Chassis number`
+  String get AreCancel71 {
+    return Intl.message(
+      'Please upload an image for Chassis number',
+      name: 'AreCancel71',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please upload an image for Chassis or Number`
+  String get chassisValidationErrorMessage {
+    return Intl.message(
+      'Please upload an image for Chassis or Number',
+      name: 'chassisValidationErrorMessage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

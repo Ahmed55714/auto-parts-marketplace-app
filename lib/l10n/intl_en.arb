@@ -257,9 +257,9 @@
     "AreCancel67": "Success",
     "AreCancel68": "Verify successfully",
     "AreCancel69": "Could not connect to the server. Please check your internet connection.",
-    "AreCancel70": "Failed to load vendor profile."
-
-
+    "AreCancel70": "Failed to load vendor profile.",
+    "AreCancel71": "Please upload an image for Chassis number",
+    "chassisValidationErrorMessage": "Please upload an image for Chassis or Number"
 
 
 
