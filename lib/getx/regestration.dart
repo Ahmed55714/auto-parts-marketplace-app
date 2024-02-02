@@ -86,6 +86,8 @@ class RegesterController extends GetxController {
     }
   }
 
+  
+
 //vendor
   //var selectedCarTypes = <String>[].obs;
 //client

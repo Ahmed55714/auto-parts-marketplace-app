@@ -37,6 +37,38 @@ class CustomButton extends StatelessWidget {
   }
 }
 
+class CustomButton16 extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  const CustomButton16({Key? key, required this.text, required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: deepPurple,
+        minimumSize: const Size(10 * 17, 50),
+                shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Text(
+        text,
+        style: 
+           const TextStyle(
+            fontSize: 16,
+            height: 1.26,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+        
+        ),
+      ),
+    );
+  }
+}
+
 class CustomButtonCar extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;

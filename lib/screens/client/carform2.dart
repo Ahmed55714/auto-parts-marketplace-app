@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import '../../generated/l10n.dart';
 import '../../getx/orders.dart';
@@ -13,6 +15,8 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textFaild.dart';
 import '../intro/custom_true.dart';
 import '../vendor/Bottom_nav.dart';
+import 'package:http/http.dart' as http;
+
 import 'dart:ui' as ui;
 
 import 'paymet_check2.dart';
@@ -31,6 +35,8 @@ class _CarForm2State extends State<CarForm2> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   List<List<XFile?>> _images = [[], [], []];
+   String chassisType = '';
+  String chassis = '';
 
   // Text editing controllers
   final pieceCarController = TextEditingController();
@@ -87,14 +93,107 @@ class _CarForm2State extends State<CarForm2> {
     });
   }
 
-  @override
+  var isLoading = false.obs;
+
+  Future<void> fetchChassisData() async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/client/car");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+    isLoading.value = true; // Assuming isLoading is an RxBool
+    try {
+      final response = await http.get(
+        apiEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          chassisType = data['chassis_type'] ?? '';
+          chassis = data['chassis'] ?? '';
+
+          if (chassisType == "text") {
+            chassisNumberController.text = chassis;
+          }
+          // Debugging output
+          print("Chassis Type: $chassisType, Chassis: $chassis");
+        });
+      } else {
+        // Log the failure
+        print("Failed to load chassis data: ${response.body}");
+      }
+    } catch (e) {
+      // Log any errors
+      print("Error fetching chassis data: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> postChassisData() async {
+    final Uri apiEndpoint =
+        Uri.parse("https://slfsparepart.com/api/client/car/update");
+    final prefs = await SharedPreferences.getInstance();
+    final String? authToken = prefs.getString('auth_token');
+    isLoading.value = true;
+
+    // Prepare a multipart request
+    var request = http.MultipartRequest('POST', apiEndpoint)
+      ..headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      });
+
+    // Add car IDs to the request
+    // Note: Replace with actual car IDs from your application
+    request.fields.addAll({
+      'cars[]': '1',
+    });
+
+    // Add the chassis number or file based on the chassisType
+    if (chassisType == 'text') {
+      request.fields['chassis_number'] = chassisNumberController.text;
+    } else if (chassisType == 'file' && _images[0].isNotEmpty) {
+      var image = _images[0][0];
+      if (image != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'chassis_file',
+          image.path,
+          filename: 'chassis_file.jpg', // Set the file name as needed
+        ));
+      }
+    }
+    // Send the request to the server
+    try {
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Handle the response
+        var responseData = jsonDecode(response.body);
+        print('Chassis data updated successfully: $responseData');
+      } else {
+        // Handle errors
+        print('Failed to update chassis data: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred while updating chassis data: $e');
+    } finally {
+      isLoading.value = false; // Turn off the loading indicator
+    }
+  }
+
+
+    @override
   Widget build(BuildContext context) {
     var textDirection = Directionality.of(context);
 
-  // Adjust padding based on text direction
-  var errorPadding = textDirection == ui.TextDirection.ltr
-      ? const EdgeInsets.only(left: 16)
-      : const EdgeInsets.only(right: 16);
+    // Adjust padding based on text direction
+    var errorPadding = textDirection == ui.TextDirection.ltr
+        ? const EdgeInsets.only(left: 16)
+        : const EdgeInsets.only(right: 16);
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -116,7 +215,7 @@ class _CarForm2State extends State<CarForm2> {
                       ),
                     ),
                   ),
-                   Text(
+                  Text(
                     S.of(context).CarForm,
                     style: TextStyle(
                       fontSize: 20,
@@ -129,62 +228,135 @@ class _CarForm2State extends State<CarForm2> {
                       TextInputType.text, S.of(context).CarForm2),
                   buildTextField(S.of(context).CarModel, carModelController,
                       TextInputType.number, S.of(context).CarForm3),
-                  buildCarTypeField1( S.of(context).CarType, S.of(context).CarForm5),
-                  buildTextField(S.of(context).Chassis, chassisNumberController,
-                      TextInputType.emailAddress, S.of(context).CarForm4),
-                                             buildImagePicker(S.of(context).Chassis, 0),
-                  if (validateField1() != null)
-                    Padding(
-                      padding: errorPadding,
-                      child: Row(
-                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(validateField1()!,
-                              style: TextStyle(color: Colors.red)),
-                        ],
-                      ),
+                  buildCarTypeField1(
+                      S.of(context).CarType, S.of(context).CarForm5),
+                  // Other widgets
+                  if (chassisType == "text")
+                    buildTextField(
+                        S.of(context).Chassis,
+                        chassisNumberController,
+                        TextInputType.text,
+                        "Chassis Number"),
+                  if (chassisType == "file")
+                    // Display image from URL stored in 'chassis'
+                    Column(
+                      children: [
+                        SizedBox(height: 10),
+                        if (chassis.isNotEmpty)
+                          Image.network(chassis,
+                              width: 100, height: 100, fit: BoxFit.cover),
+                        // If you need to pick and display images, keep this
+                        buildImagePicker(S.of(context).Chassis, 0),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            buildImagesDisplay(0),
+                          ],
+                        ),
+                      ],
                     ),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      buildImagesDisplay(0),
-                    ],
-                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CustomButton16(
+                          text: 'Edit Chassis',
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  child: Container(
+                                    height: 300,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            'Edit Chassis',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w500,
+                                              color: deepPurple,
+                                            ),
+                                          ),
+                                        ),
+SizedBox(height: 10),
+                                       
+                                        
+                                        if (chassisType == "text")
+                                          buildTextField(
+                                              S.of(context).Chassis,
+                                              chassisNumberController,
+                                              TextInputType.text,
+                                              "Chassis Number"),
+                                        if (chassisType == "file")
+                                          // Display image from URL stored in 'chassis'
+                                          Column(
+                                            children: [
+                                              SizedBox(height: 10),
+                                              if (chassis.isNotEmpty)
+                                                Image.network(chassis,
+                                                    width: 100,
+                                                    height: 100,
+                                                    fit: BoxFit.cover),
+                                              // If you need to pick and display images, keep this
+                                              buildImagePicker(
+                                                  S.of(context).Chassis, 0),
+                                              SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  buildImagesDisplay(0),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
 
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              postChassisData();
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: Text('Save'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                   buildPieceTypeField1(
-                     S.of(context).CarForm8,
+                    S.of(context).CarForm8,
                     S.of(context).CarForm5,
                   ),
                   const SizedBox(height: 10),
                   buildPieceDetails(
-                   S.of(context).CarForm9,
+                    S.of(context).CarForm9,
                     S.of(context).CarForm6,
                   ),
-                  SizedBox(height: 10),
-                  buildDateFieldDate(
-                    S.of(context).Date,
-                    dateController,
-                  ),
-                  buildImagePicker(S.of(context).carLicence, 0),
-                  if (validateField1() != null)
-                    Padding(
-                      padding: errorPadding,
-                      
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(validateField1()!,
-                              style: TextStyle(color: Colors.red)),
-                        ],
-                      ),
-                    ),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      buildImagesDisplay(0),
-                      buildImagesDisplay(1),
-                    ],
-                  ),
+                  //SizedBox(height: 10),
+                  // buildDateFieldDate(
+                  //   S.of(context).Date,
+                  //   dateController,
+                  // ),
+                  // buildImagePicker(S.of(context).carLicence, 0),
+
+                  // SizedBox(height: 10),
+                  // Row(
+                  //   children: [
+                  //     buildImagesDisplay(0),
+                  //   ],
+                  // ),
                   buildTextFieldLocation(
                       S.of(context).Location,
                       locationdoneController,
@@ -259,6 +431,7 @@ class _CarForm2State extends State<CarForm2> {
             ordersController.PieceDeltals.first['id'].toString();
       }
     });
+    fetchChassisData();
   }
 
   Widget buildCarTypeField1(String text, String hint) {
@@ -635,11 +808,11 @@ class _CarForm2State extends State<CarForm2> {
                     pieceDetail: [
                       piecedetailsController.text
                     ], // Assuming single selection
-                    images: _images
-                        .expand((xFiles) => xFiles)
-                        .whereType<XFile>()
-                        .toList(),
-                    birthDate: dateController.text,
+                    // images: _images
+                    //     .expand((xFiles) => xFiles)
+                    //     .whereType<XFile>()
+                    //     .toList(),
+                    // birthDate: dateController.text,
                     latitude: latLong[0].trim(),
                     longitude: latLong[1].trim(),
                     for_government: "0",

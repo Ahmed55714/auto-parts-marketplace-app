@@ -69,6 +69,11 @@ class OrdersController extends GetxController {
     }
   }
 
+
+
+
+
+
   Future<void> carFormClient({
     required String carPiece,
     required List<String> carTypeIds,
@@ -76,8 +81,8 @@ class OrdersController extends GetxController {
     required String chassisNumber,
     required List<String> pieceType,
     required List<String> pieceDetail,
-    required List<XFile> images,
-    required String birthDate,
+    // required List<XFile> images,
+    // required String birthDate,
     required String latitude,
     required String longitude,
     required String for_government,
@@ -95,7 +100,7 @@ class OrdersController extends GetxController {
         ..fields['car_piece'] = carPiece
         ..fields['car_model'] = carModelIds
         ..fields['chassis_number'] = chassisNumber
-        ..fields['date'] = birthDate
+        //..fields['date'] = birthDate
         ..fields['lat'] = latitude
         ..fields['long'] = longitude
         ..fields['for_government'] = for_government
@@ -104,16 +109,16 @@ class OrdersController extends GetxController {
         ..fields['piece_detail_id'] = pieceDetail.join(',');
 
       // Add images to the request as multipart files
-      for (var image in images) {
-        final mimeTypeData =
-            lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
-        var multipartFile = await http.MultipartFile.fromPath(
-          'files[]',
-          image.path,
-          contentType: MediaType(mimeTypeData![0], mimeTypeData[1]),
-        );
-        request.files.add(multipartFile);
-      }
+      // for (var image in images) {
+      //   final mimeTypeData =
+      //       lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
+      //   var multipartFile = await http.MultipartFile.fromPath(
+      //     'files[]',
+      //     image.path,
+      //     contentType: MediaType(mimeTypeData![0], mimeTypeData[1]),
+      //   );
+      //   request.files.add(multipartFile);
+      // }
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
