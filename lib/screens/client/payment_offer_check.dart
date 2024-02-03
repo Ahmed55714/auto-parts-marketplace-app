@@ -19,7 +19,6 @@ class PaymentOfferCheck extends StatefulWidget {
   final String carPiece;
   final List<String> carTypeIds;
   final String carModelIds;
-  final String chassisNumber;
   final List<String> pieceType;
   final List<String> pieceDetail;
   final List<XFile> images;
@@ -33,7 +32,6 @@ class PaymentOfferCheck extends StatefulWidget {
     required this.carPiece,
     required this.carTypeIds,
     required this.carModelIds,
-    required this.chassisNumber,
     required this.pieceType,
     required this.pieceDetail,
     required this.images,
@@ -126,7 +124,6 @@ class _PaymentOfferCheckState extends State<PaymentOfferCheck> {
             carPiece: widget.carPiece,
             carTypeIds: widget.carTypeIds,
             carModelIds: widget.carModelIds,
-            chassisNumber: widget.chassisNumber,
             pieceType: widget.pieceType,
             pieceDetail: widget.pieceDetail,
             //images: widget.images,

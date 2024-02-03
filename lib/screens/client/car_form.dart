@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import '../../generated/l10n.dart';
@@ -47,7 +49,8 @@ class _CarFormState extends State<CarForm> {
   final piecedetailsController = TextEditingController();
   final dateController = TextEditingController();
   final locationdoneController = TextEditingController();
-
+  List<String> PieceTypes = []; // List to store car types
+ List<String> DetailTypes= []; 
   @override
   void dispose() {
     pieceCarController.dispose();
@@ -330,14 +333,15 @@ class _CarFormState extends State<CarForm> {
                       ],
                     ),
                   ),
-                  buildPieceTypeField1(
-                    S.of(context).CarForm8,
-                    S.of(context).CarForm5,
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: buildPieceTypeField1(),
                   ),
                   const SizedBox(height: 10),
-                  buildPieceDetails(
-                    S.of(context).CarForm9,
-                    S.of(context).CarForm6,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: buildPieceDetails(),
                   ),
                   //SizedBox(height: 10),
                   // buildDateFieldDate(
@@ -437,18 +441,94 @@ class _CarFormState extends State<CarForm> {
         regesterController.isLoading, regesterController.carTypes);
   }
 
-  Widget buildPieceTypeField1(String text, String hint) {
+  Widget buildPieceTypeField1() {
     final OrdersController ordersController = Get.find<OrdersController>();
-
-    return buildDropdownField(text, hint, piecetypeController,
-        ordersController.isLoading, ordersController.PieceTypes);
+    return Obx(() => MultiSelectDialogField(
+          items: ordersController.PieceTypes.map(
+              (type) => MultiSelectItem(type['id'], type['name'])).toList(),
+          title: Text("Select Piece Types"),
+          selectedColor: Colors.blue,
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.1),
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+            border: Border.all(
+              color: Colors.blue,
+              width: 2,
+            ),
+          ),
+          buttonIcon: Icon(
+            Icons.layers,
+            color: Colors.blue,
+          ),
+          buttonText: Text(
+            "Piece Types",
+            style: TextStyle(
+              color: Colors.blue[800],
+              fontSize: 16,
+            ),
+          ),
+          onConfirm: (List results) {
+           setState(() {
+                    PieceTypes = results.map((e) => e.toString()).toList();
+                  });
+          },
+          
+        ));
   }
 
-  Widget buildPieceDetails(String text, String hint) {
-    final OrdersController detailsController = Get.find<OrdersController>();
+  Widget buildPieceDetails() {
+    final OrdersController ordersController = Get.find<OrdersController>();
+    return Obx(() => MultiSelectDialogField(
+          items: ordersController.PieceDeltals.map(
+                  (detail) => MultiSelectItem(detail['id'], detail['name']))
+              .toList(),
+          title: Text("Select Piece Details"),
+          selectedColor: Colors.green,
+          decoration: BoxDecoration(
+            color: Colors.green.withOpacity(0.1),
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+            border: Border.all(
+              color: Colors.green,
+              width: 2,
+            ),
+          ),
+          buttonIcon: Icon(
+            Icons.details,
+            color: Colors.green,
+          ),
+          buttonText: Text(
+            "Piece Details",
+            style: TextStyle(
+              color: Colors.green[800],
+              fontSize: 16,
+            ),
+          ),
+          onConfirm: (List results) {
+            setState(() {
+                                  DetailTypes = results.map((e) => e.toString()).toList();
 
-    return buildDropdownField(text, hint, piecedetailsController,
-        detailsController.isLoading, detailsController.PieceDeltals);
+            });
+
+          },
+        ));
+  }
+
+  Widget buildSelectedChips(
+      RxList<String> selectedItems, List<Map<String, dynamic>> allItems) {
+    return Wrap(
+      spacing: 6.0,
+      runSpacing: 6.0,
+      children: selectedItems.map((itemId) {
+        final itemName = allItems
+            .firstWhere((item) => item['id'].toString() == itemId)['name'];
+        return Chip(
+          label: Text(itemName),
+          onDeleted: () {
+            selectedItems.remove(itemId);
+          },
+        );
+      }).toList(),
+    );
   }
 
   Widget buildDropdownField(String text, String hint,
@@ -781,8 +861,7 @@ class _CarFormState extends State<CarForm> {
           CustomButton(
             text: S.of(context).Orders,
             onPressed: () async {
-              if (_formKey.currentState!.validate() &&
-                  validateField1() == null) {
+              if (_formKey.currentState!.validate()) {
                 setState(() {
                   _isLoading = true; // Start loading
                 });
@@ -800,18 +879,9 @@ class _CarFormState extends State<CarForm> {
                       carTypeController.text
                     ], // Assuming single selection
                     carModelIds: carModelController.text,
-                    chassisNumber: chassisNumberController.text,
-                    pieceType: [
-                      piecetypeController.text
-                    ], // Assuming single selection
-                    pieceDetail: [
-                      piecedetailsController.text
-                    ], // Assuming single selection
-                    // images: _images
-                    //     .expand((xFiles) => xFiles)
-                    //     .whereType<XFile>()
-                    //     .toList(),
-                    //birthDate: dateController.text,
+                    pieceType: PieceTypes,
+ 
+                    pieceDetail:DetailTypes,
                     latitude: latLong[0].trim(),
                     longitude: latLong[1].trim(),
                     for_government: "0",
@@ -826,7 +896,7 @@ class _CarFormState extends State<CarForm> {
                     ),
                   );
                 } catch (e) {
-                  // Handle error
+                  print('Error submitting car form: $e');
                 } finally {
                   setState(() {
                     _isLoading = false; // Stop loading
@@ -839,17 +909,15 @@ class _CarFormState extends State<CarForm> {
           CustomButton(
             text: S.of(context).button,
             onPressed: () {
-              if (_formKey.currentState!.validate() &&
-                  validateField1() == null) {
+              if (_formKey.currentState!.validate()) {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => PaymentOfferCheck(
                       carPiece: pieceCarController.text,
                       carTypeIds: [carTypeController.text],
                       carModelIds: carModelController.text,
-                      chassisNumber: chassisNumberController.text,
-                      pieceType: [piecetypeController.text],
-                      pieceDetail: [piecedetailsController.text],
+                      pieceType: PieceTypes,
+                      pieceDetail: DetailTypes,
                       images: _images
                           .expand((xFiles) => xFiles)
                           .whereType<XFile>()

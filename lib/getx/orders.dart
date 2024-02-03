@@ -12,7 +12,6 @@ class OrdersController extends GetxController {
   var isLoading = false.obs;
 
   var PieceTypes = <Map<String, dynamic>>[].obs;
-
   Future<void> fetchPieceTypes() async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/lists/piece/types");
@@ -41,7 +40,7 @@ class OrdersController extends GetxController {
   }
 
   var PieceDeltals = <Map<String, dynamic>>[].obs;
-
+  var carTypes = <Map<String, dynamic>>[].obs;
   Future<void> fetchPieceDeltals() async {
     final Uri apiEndpoint =
         Uri.parse("https://slfsparepart.com/api/lists/piece/details");
@@ -69,20 +68,12 @@ class OrdersController extends GetxController {
     }
   }
 
-
-
-
-
-
   Future<void> carFormClient({
     required String carPiece,
     required List<String> carTypeIds,
     required String carModelIds,
-    required String chassisNumber,
     required List<String> pieceType,
     required List<String> pieceDetail,
-    // required List<XFile> images,
-    // required String birthDate,
     required String latitude,
     required String longitude,
     required String for_government,
@@ -94,31 +85,27 @@ class OrdersController extends GetxController {
     isLoading(true);
 
     try {
+     
       final request = http.MultipartRequest('POST', apiEndpoint)
         ..headers['Accept'] = 'application/json'
         ..headers['Authorization'] = 'Bearer $authToken'
         ..fields['car_piece'] = carPiece
         ..fields['car_model'] = carModelIds
-        ..fields['chassis_number'] = chassisNumber
         //..fields['date'] = birthDate
         ..fields['lat'] = latitude
         ..fields['long'] = longitude
         ..fields['for_government'] = for_government
-        ..fields['car_id'] = carTypeIds.join(',')
-        ..fields['piece_type_id'] = pieceType.join(',')
-        ..fields['piece_detail_id'] = pieceDetail.join(',');
+        ..fields['car_id'] = carTypeIds.join(',');
 
-      // Add images to the request as multipart files
-      // for (var image in images) {
-      //   final mimeTypeData =
-      //       lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
-      //   var multipartFile = await http.MultipartFile.fromPath(
-      //     'files[]',
-      //     image.path,
-      //     contentType: MediaType(mimeTypeData![0], mimeTypeData[1]),
-      //   );
-      //   request.files.add(multipartFile);
-      // }
+for (int i = 0; i < pieceType.length; i++) {
+  request.fields['piece_type_id[$i]'] = pieceType[i];
+}
+
+for (int i = 0; i < pieceDetail.length; i++) {
+  request.fields['piece_detail_id[$i]'] = pieceDetail[i];
+}
+
+  
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
@@ -192,8 +179,6 @@ class OrdersController extends GetxController {
         var jsonResponse = json.decode(response.body);
         print('Response body: ${response.body}');
       } else {
-        
-
         showDialog(
           context: Get.context!,
           builder: (BuildContext context) {

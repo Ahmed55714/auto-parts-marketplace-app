@@ -19,6 +19,12 @@ class RegesterController extends GetxController {
   var isLoading = false.obs;
   var message = ''.obs;
 
+   @override
+  void onInit() {
+    super.onInit();
+    fetchPiecetype();
+  }
+
   void setLoading(bool value) {
     isLoading.value = value;
   }
@@ -123,6 +129,40 @@ class RegesterController extends GetxController {
       isLoading(false);
     }
   }
+
+
+  var Piecetype = <Map<String, dynamic>>[].obs;
+
+Future<void> fetchPiecetype() async {
+  final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/client/orders");
+  final prefs = await SharedPreferences.getInstance();
+  final String? authToken = prefs.getString('auth_token');
+
+  isLoading(true);
+  try {
+    final response = await http.get(
+      apiEndpoint,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      Piecetype.value = List<Map<String, dynamic>>.from(data); // Corrected variable name
+    } else {
+      // Handle error
+      print('Failed to fetch piece types');
+      print(response.body);
+    }
+  } catch (e) {
+    // Handle any exceptions here
+    print('Error occurred while fetching piece types: $e');
+  } finally {
+    isLoading(false);
+  }
+}
+
 
   Future<void> navigateBasedClint(BuildContext context) async {
     var url = Uri.parse('https://slfsparepart.com/api/user');

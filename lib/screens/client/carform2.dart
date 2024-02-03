@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work2/constants/colors.dart';
 import '../../generated/l10n.dart';
@@ -48,6 +49,8 @@ class _CarForm2State extends State<CarForm2> {
   final piecedetailsController = TextEditingController();
   final dateController = TextEditingController();
   final locationdoneController = TextEditingController();
+   List<String> PieceTypes = []; // List to store car types
+ List<String> DetailTypes= []; 
 
   @override
   void dispose() {
@@ -335,14 +338,17 @@ SizedBox(height: 10),
                       ],
                     ),
                   ),
-                  buildPieceTypeField1(
-                    S.of(context).CarForm8,
-                    S.of(context).CarForm5,
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: buildPieceTypeField1(
+                                  
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  buildPieceDetails(
-                    S.of(context).CarForm9,
-                    S.of(context).CarForm6,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: buildPieceDetails(),
                   ),
                   //SizedBox(height: 10),
                   // buildDateFieldDate(
@@ -442,18 +448,76 @@ SizedBox(height: 10),
         regesterController.isLoading, regesterController.carTypes);
   }
 
-  Widget buildPieceTypeField1(String text, String hint) {
+   Widget buildPieceTypeField1() {
     final OrdersController ordersController = Get.find<OrdersController>();
-
-    return buildDropdownField(text, hint, piecetypeController,
-        ordersController.isLoading, ordersController.PieceTypes);
+    return Obx(() => MultiSelectDialogField(
+          items: ordersController.PieceTypes.map(
+              (type) => MultiSelectItem(type['id'], type['name'])).toList(),
+          title: Text("Select Piece Types"),
+          selectedColor: Colors.blue,
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.1),
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+            border: Border.all(
+              color: Colors.blue,
+              width: 2,
+            ),
+          ),
+          buttonIcon: Icon(
+            Icons.layers,
+            color: Colors.blue,
+          ),
+          buttonText: Text(
+            "Piece Types",
+            style: TextStyle(
+              color: Colors.blue[800],
+              fontSize: 16,
+            ),
+          ),
+          onConfirm: (List results) {
+           setState(() {
+                    PieceTypes = results.map((e) => e.toString()).toList();
+                  });
+          },
+          
+        ));
   }
 
-  Widget buildPieceDetails(String text, String hint) {
-    final OrdersController detailsController = Get.find<OrdersController>();
+  Widget buildPieceDetails() {
+    final OrdersController ordersController = Get.find<OrdersController>();
+    return Obx(() => MultiSelectDialogField(
+          items: ordersController.PieceDeltals.map(
+                  (detail) => MultiSelectItem(detail['id'], detail['name']))
+              .toList(),
+          title: Text("Select Piece Details"),
+          selectedColor: Colors.green,
+          decoration: BoxDecoration(
+            color: Colors.green.withOpacity(0.1),
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+            border: Border.all(
+              color: Colors.green,
+              width: 2,
+            ),
+          ),
+          buttonIcon: Icon(
+            Icons.details,
+            color: Colors.green,
+          ),
+          buttonText: Text(
+            "Piece Details",
+            style: TextStyle(
+              color: Colors.green[800],
+              fontSize: 16,
+            ),
+          ),
+          onConfirm: (List results) {
+            setState(() {
+                                  DetailTypes = results.map((e) => e.toString()).toList();
 
-    return buildDropdownField(text, hint, piecedetailsController,
-        detailsController.isLoading, detailsController.PieceDeltals);
+            });
+
+          },
+        ));
   }
 
 
@@ -801,13 +865,8 @@ SizedBox(height: 10),
                       carTypeController.text
                     ], // Assuming single selection
                     carModelIds: carModelController.text,
-                    chassisNumber: chassisNumberController.text,
-                    pieceType: [
-                      piecetypeController.text
-                    ], // Assuming single selection
-                    pieceDetail: [
-                      piecedetailsController.text
-                    ], // Assuming single selection
+                    pieceType: PieceTypes, // Assuming single selection
+                    pieceDetail:  DetailTypes, // Assuming single selection
                     // images: _images
                     //     .expand((xFiles) => xFiles)
                     //     .whereType<XFile>()
@@ -850,14 +909,9 @@ SizedBox(height: 10),
                       carPiece: pieceCarController.text,
                       carTypeIds: [carTypeController.text],
                       carModelIds: carModelController.text,
-                      chassisNumber: chassisNumberController.text,
-                      pieceType: [piecetypeController.text],
-                      pieceDetail: [piecedetailsController.text],
-                      images: _images
-                          .expand((xFiles) => xFiles)
-                          .whereType<XFile>()
-                          .toList(),
-                      birthDate: dateController.text,
+                      pieceType: PieceTypes,
+                      pieceDetail: DetailTypes,
+                    
                       latitude: locationController.text.split(',')[0].trim(),
                       longitude: locationController.text.split(',')[1].trim(),
                       forGovernment: "1",
