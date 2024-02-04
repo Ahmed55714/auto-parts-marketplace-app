@@ -22,11 +22,15 @@ class VenforProfile extends StatefulWidget {
 
 class _VenforProfileState extends State<VenforProfile> {
   late Future<VendorProfile> vendorProfileFuture;
+    bool showChatButton = false; // Add this line
+
 
   @override
   void initState() {
     super.initState();
     vendorProfileFuture = fetchVendorProfile(widget.userId);
+      fetchChatSetting(); // Add this line
+
   }
 
   Future<VendorProfile> fetchVendorProfile(int userId) async {
@@ -56,6 +60,29 @@ class _VenforProfileState extends State<VenforProfile> {
       throw Exception('Failed to load vendor profile: $e');
     }
   }
+  Future<void> fetchChatSetting() async {
+  final Uri apiEndpoint = Uri.parse("https://slfsparepart.com/api/settings/chat");
+  final prefs = await SharedPreferences.getInstance();
+  final String? authToken = prefs.getString('auth_token');
+
+  final response = await http.get(
+    apiEndpoint,
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $authToken',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    setState(() {
+      showChatButton = data['chat'] == 1;
+    });
+  } else {
+    throw Exception('Failed to load chat setting.');
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,169 +110,141 @@ class _VenforProfileState extends State<VenforProfile> {
   Widget buildProfile(VendorProfile profile) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
+        child: Stack(
+          children:[ Column(
             children: [
-              Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          BackButtonDeep(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              BackButtonDeep(),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Text(
+                        S.of(context).Profile,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Stack(
+                        alignment: Alignment.bottomLeft,
+                        children: <Widget>[
+                          Container(
+                            width: 120.0,
+                            height: 120.0,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.deepPurple, width: 2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipOval(
+                              child: Image.network(
+                                profile.imageUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  ),
-                  Text(
-                    S.of(context).Profile,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: deepPurple,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Stack(
-                    alignment: Alignment.bottomLeft,
-                    children: <Widget>[
-                      Container(
-                        width: 120.0,
-                        height: 120.0,
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(color: Colors.deepPurple, width: 2),
-                          shape: BoxShape.circle,
+                      const SizedBox(height: 25),
+                      Text(
+                        profile.name,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: deepPurple,
                         ),
-                        child: ClipOval(
-                          child: Image.network(
-                            profile.imageUrl,
-                            fit: BoxFit.cover,
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              S.of(context).AreCancel37,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 350,
+                        child: Text(
+                          profile.summary ?? S.of(context).AreCancel38,
+                          style: TextStyle(
+                            color: greyColor,
+                            fontFamily: 'Roboto',
+                            fontSize: 16,
                           ),
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              S.of(context).AreCancel39,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      HorizontalReviewList(
+                        ratings: profile.ratings,
+                      ),
+                    
+                     
+                
+                      
+                      
                     ],
                   ),
-                  const SizedBox(height: 25),
-                  Text(
-                    profile.name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: deepPurple,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          S.of(context).AreCancel37,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 350,
-                    child: Text(
-                      profile.summary ?? S.of(context).AreCancel38,
-                      style: TextStyle(
-                        color: greyColor,
-                        fontFamily: 'Roboto',
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  // const SizedBox(height: 10),
-                  // Padding(
-                  //   padding: EdgeInsets.all(8.0),
-                  //   child: Row(
-                  //     children: [
-                  //       Text(
-                  //         S.of(context).Location,
-                  //         style: TextStyle(
-                  //           fontSize: 18,
-                  //           fontWeight: FontWeight.w500,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Container(
-                  //   width: 350,
-                  //   height: 200, // Set a height for the map container
-                  //   decoration: BoxDecoration(
-                  //     borderRadius:
-                  //         BorderRadius.circular(20), // Rounded corners
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.grey.withOpacity(0.5),
-                  //         spreadRadius: 5,
-                  //         blurRadius: 7,
-                  //         offset: Offset(0, 3), // changes position of shadow
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: ClipRRect(
-                  //     borderRadius:
-                  //         BorderRadius.circular(20), // Rounded corners
-                  //     child: GoogleMap(
-                  //       initialCameraPosition: CameraPosition(
-                  //         target: LatLng(profile.lat, profile.long),
-                  //         zoom: 15,
-                  //       ),
-                  //       markers: {
-                  //         Marker(
-                  //           markerId: MarkerId('vendorLocation'),
-                  //           position: LatLng(profile.lat, profile.long),
-                  //         ),
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          S.of(context).AreCancel39,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  HorizontalReviewList(
-                    ratings: profile.ratings,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomButton(
-                      text: S.of(context).AreCancel40,
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                              builder: (context) => MobileChatScreen(
-                                    userId: widget.userId,
-                                    name: profile.name,
-                                    pic: profile.imageUrl,
-                                  )),
-                        );
-                      }),
-                ],
+                ),
               ),
             ],
           ),
+          if (showChatButton) 
+                    Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CustomButton(
+                                text: S.of(context).AreCancel40,
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => MobileChatScreen(
+                                        userId: widget.userId,
+                                        name: profile.name,
+                                        pic: profile.imageUrl,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),]
         ),
       ),
     );

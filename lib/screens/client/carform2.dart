@@ -78,10 +78,7 @@ class _CarForm2State extends State<CarForm2> {
 
   void resetFormFields() {
     pieceCarController.clear();
-    carTypeController.clear();
     carModelController.clear();
-    chassisNumberController.clear();
-    locationController.clear();
     piecetypeController.clear();
     piecedetailsController.clear();
     dateController.clear();
@@ -89,7 +86,10 @@ class _CarForm2State extends State<CarForm2> {
     _images = [[], [], []]; // Reset images list
 
     // Reset any other states you have
-    setState(() {});
+    setState(() {
+      PieceTypes = []; // Clear PieceTypes list
+      DetailTypes = [];
+    });
   }
 
   String? validateField1() {
@@ -493,7 +493,7 @@ class _CarForm2State extends State<CarForm2> {
             });
           },
           validator: (value) {
-            if (_isPieceTypeValid) {
+            if (!_isPieceTypeValid) {
               return S.of(context).AreCancel77;
             }
             return null;
@@ -534,7 +534,7 @@ class _CarForm2State extends State<CarForm2> {
             });
           },
           validator: (value) {
-            if (_isPieceTypeValid1) {
+            if (!_isPieceTypeValid1) {
               return S.of(context).AreCancel78;
             }
             return null;
@@ -903,6 +903,7 @@ class _CarForm2State extends State<CarForm2> {
                             for_government: "0",
                           );
                           resetFormFields();
+                           setState(() {});
                         } catch (e) {
                           print('Error submitting car form: $e');
                         } finally {

@@ -272,9 +272,11 @@ class _CustomGoogleMappState extends State<CustomGoogleMapp> {
         target: LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
         zoom: 17.0,
       ),
-      myLocationEnabled: true,
-      myLocationButtonEnabled: true,
-      zoomControlsEnabled: false,
+    myLocationEnabled: true,
+  myLocationButtonEnabled: true,
+  zoomGesturesEnabled: true, 
+  scrollGesturesEnabled: true, 
+  zoomControlsEnabled: false, 
     );
   }
 }

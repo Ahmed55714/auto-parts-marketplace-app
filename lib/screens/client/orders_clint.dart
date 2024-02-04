@@ -235,7 +235,7 @@ class _OrdersClientState extends State<OrdersClient> {
                           icon: Stack(
                             children: <Widget>[
                               Icon(
-                                Icons.notifications,
+                                Icons.message,
                                 color: deepPurple,
                                 size: 35,
                               ),
