@@ -36,7 +36,7 @@ class _CarForm2State extends State<CarForm2> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   List<List<XFile?>> _images = [[], [], []];
-   String chassisType = '';
+  String chassisType = '';
   String chassis = '';
 
   // Text editing controllers
@@ -49,8 +49,8 @@ class _CarForm2State extends State<CarForm2> {
   final piecedetailsController = TextEditingController();
   final dateController = TextEditingController();
   final locationdoneController = TextEditingController();
-   List<String> PieceTypes = []; // List to store car types
- List<String> DetailTypes= []; 
+  List<String> PieceTypes = []; // List to store car types
+  List<String> DetailTypes = [];
 
   @override
   void dispose() {
@@ -76,19 +76,35 @@ class _CarForm2State extends State<CarForm2> {
     }
   }
 
+  void resetFormFields() {
+    pieceCarController.clear();
+    carTypeController.clear();
+    carModelController.clear();
+    chassisNumberController.clear();
+    locationController.clear();
+    piecetypeController.clear();
+    piecedetailsController.clear();
+    dateController.clear();
+    locationdoneController.clear();
+    _images = [[], [], []]; // Reset images list
+
+    // Reset any other states you have
+    setState(() {});
+  }
+
   String? validateField1() {
     if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
       return S.of(context).AreCancel8;
     }
     return null;
   }
-    String? validateField2() {
+
+  String? validateField2() {
     if (_images[0].isEmpty || _images[0].any((xFile) => xFile == null)) {
       return S.of(context).AreCancel71;
     }
     return null;
   }
-
 
   void _removeImage(int fieldIndex, XFile image) {
     setState(() {
@@ -188,8 +204,7 @@ class _CarForm2State extends State<CarForm2> {
     }
   }
 
-
-    @override
+  @override
   Widget build(BuildContext context) {
     var textDirection = Directionality.of(context);
 
@@ -285,9 +300,7 @@ class _CarForm2State extends State<CarForm2> {
                                             ),
                                           ),
                                         ),
-SizedBox(height: 10),
-                                       
-                                        
+                                        SizedBox(height: 10),
                                         if (chassisType == "text")
                                           buildTextField(
                                               S.of(context).Chassis,
@@ -315,7 +328,6 @@ SizedBox(height: 10),
                                               ),
                                             ],
                                           ),
-
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: ElevatedButton(
@@ -341,9 +353,7 @@ SizedBox(height: 10),
                   SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: buildPieceTypeField1(
-                                  
-                    ),
+                    child: buildPieceTypeField1(),
                   ),
                   const SizedBox(height: 10),
                   Padding(
@@ -448,12 +458,15 @@ SizedBox(height: 10),
         regesterController.isLoading, regesterController.carTypes);
   }
 
-   Widget buildPieceTypeField1() {
+  bool _isPieceTypeValid = true; // Validation state for PieceTypes
+  bool _isPieceTypeValid1 = true; // Validation state for PieceTypes
+
+  Widget buildPieceTypeField1() {
     final OrdersController ordersController = Get.find<OrdersController>();
     return Obx(() => MultiSelectDialogField(
           items: ordersController.PieceTypes.map(
               (type) => MultiSelectItem(type['id'], type['name'])).toList(),
-          title: Text("Select Piece Types"),
+          title: Text(S.of(context).AreCancel74),
           selectedColor: Colors.blue,
           decoration: BoxDecoration(
             color: Colors.blue.withOpacity(0.1),
@@ -468,18 +481,23 @@ SizedBox(height: 10),
             color: Colors.blue,
           ),
           buttonText: Text(
-            "Piece Types",
+            S.of(context).AreCancel73,
             style: TextStyle(
               color: Colors.blue[800],
               fontSize: 16,
             ),
           ),
           onConfirm: (List results) {
-           setState(() {
-                    PieceTypes = results.map((e) => e.toString()).toList();
-                  });
+            setState(() {
+              PieceTypes = results.map((e) => e.toString()).toList();
+            });
           },
-          
+          validator: (value) {
+            if (_isPieceTypeValid) {
+              return S.of(context).AreCancel77;
+            }
+            return null;
+          },
         ));
   }
 
@@ -489,7 +507,7 @@ SizedBox(height: 10),
           items: ordersController.PieceDeltals.map(
                   (detail) => MultiSelectItem(detail['id'], detail['name']))
               .toList(),
-          title: Text("Select Piece Details"),
+          title: Text(S.of(context).AreCancel76),
           selectedColor: Colors.green,
           decoration: BoxDecoration(
             color: Colors.green.withOpacity(0.1),
@@ -504,7 +522,7 @@ SizedBox(height: 10),
             color: Colors.green,
           ),
           buttonText: Text(
-            "Piece Details",
+            S.of(context).AreCancel75,
             style: TextStyle(
               color: Colors.green[800],
               fontSize: 16,
@@ -512,74 +530,81 @@ SizedBox(height: 10),
           ),
           onConfirm: (List results) {
             setState(() {
-                                  DetailTypes = results.map((e) => e.toString()).toList();
-
+              DetailTypes = results.map((e) => e.toString()).toList();
             });
-
+          },
+          validator: (value) {
+            if (_isPieceTypeValid1) {
+              return S.of(context).AreCancel78;
+            }
+            return null;
           },
         ));
   }
 
+  Widget buildDropdownField(String text, String hint,
+      TextEditingController controller, RxBool isLoading, List<dynamic> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          text: text,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        const SizedBox(height: 8),
+        Obx(() {
+          if (isLoading.isTrue) {
+            // Show loading indicator when data is being fetched
+            return Center(child: CircularProgressIndicator());
+          } else {
+            // Ensure controller's text matches one of the items, or is null
+            String? dropdownValue =
+                items.any((item) => item['id'].toString() == controller.text)
+                    ? controller.text
+                    : null;
 
-  Widget buildDropdownField(String text, String hint, TextEditingController controller, RxBool isLoading, List<dynamic> items) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CustomText(
-        text: text,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
-      const SizedBox(height: 8),
-      Obx(() {
-        if (isLoading.isTrue) {
-          // Show loading indicator when data is being fetched
-          return Center(child: CircularProgressIndicator());
-        } else {
-          // Ensure controller's text matches one of the items, or is null
-          String? dropdownValue = items.any((item) => item['id'].toString() == controller.text) ? controller.text : null;
-
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: hint,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+            return Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: hint,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                    ),
+                    value: dropdownValue,
+                    onChanged: (String? newValue) {
+                      controller.text = newValue ?? '';
+                    },
+                    items: items.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item['id'].toString(),
+                        child: Text(item['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '${S.of(context).valid4} $text';
+                      }
+                      return null;
+                    },
                   ),
-                  value: dropdownValue,
-                  onChanged: (String? newValue) {
-                    controller.text = newValue ?? '';
-                  },
-                  items: items.map((item) {
-                    return DropdownMenuItem<String>(
-                      value: item['id'].toString(),
-                      child: Text(item['name']),
-                    );
-                  }).toList(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '${S.of(context).valid4} $text';
-                    }
-                    return null;
-                  },
                 ),
               ),
-            ),
-          );
-        }
-      }),
-      const SizedBox(height: 8),
-    ],
-  );
-}
+            );
+          }
+        }),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
 
   Widget buildDateFieldDate(String label, TextEditingController controller,
       {String? initialText}) {
@@ -612,8 +637,9 @@ SizedBox(height: 10),
           child: AbsorbPointer(
             // Prevents keyboard from showing
             child: CustomTextField(
-              labelText:
-                  controller.text.isEmpty ? S.of(context).sucess3 : controller.text,
+              labelText: controller.text.isEmpty
+                  ? S.of(context).sucess3
+                  : controller.text,
               controller: controller,
               keyboardType: TextInputType.datetime,
               validator: (value) {
@@ -660,13 +686,12 @@ SizedBox(height: 10),
 
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle this case
-        return Future.error(
-            S.of(context).registerLocation2);
+        return Future.error(S.of(context).registerLocation2);
       }
 
       // When permissions are granted, get the current location
       Position position = await Geolocator.getCurrentPosition();
-        if (!mounted) return; 
+      if (!mounted) return;
       setState(() {
         // Update the locationController with latitude and longitude
         locationController.text = '${position.latitude}, ${position.longitude}';
@@ -798,18 +823,19 @@ SizedBox(height: 10),
   }
 
   Widget buildAgreementSwitch() {
-     var textDirection = Directionality.of(context);
+    var textDirection = Directionality.of(context);
 
-  // Adjust padding based on text direction
-  var errorPadding = textDirection == ui.TextDirection.ltr
-      ? const EdgeInsets.only(left: 16)
-      : const EdgeInsets.only(right: 16);
+    // Adjust padding based on text direction
+    var errorPadding = textDirection == ui.TextDirection.ltr
+        ? const EdgeInsets.only(left: 16)
+        : const EdgeInsets.only(right: 16);
     return Row(
       children: [
         InkWell(
           onTap: () {
             setState(() {
-              isAgreed = isAgreed == 0 ? 1 : 0; // Toggle isAgreed between 0 and 1
+              isAgreed =
+                  isAgreed == 0 ? 1 : 0; // Toggle isAgreed between 0 and 1
             });
           },
           child: Padding(
@@ -836,73 +862,112 @@ SizedBox(height: 10),
     );
   }
 
-   Widget buildSubmitButton(BuildContext context) {
+  Widget buildSubmitButton(BuildContext context) {
     final OrdersController ordersController = Get.find<OrdersController>();
 
     return Column(
       children: [
         const SizedBox(height: 10),
         if (isAgreed == 0)
-          CustomButton(
-            text: S.of(context).Orders,
-            onPressed: () async {
-              if (_formKey.currentState!.validate() &&
-                  validateField1() == null) {
-                setState(() {
-                  _isLoading = true; // Start loading
-                });
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomButton4(
+                    text: S.of(context).AreCancel72,
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          _isLoading = true; // Start loading
+                        });
 
-                var latLong = locationController.text.split(',');
-                if (latLong.length != 2) {
-                  // Handle error
+                        var latLong = locationController.text.split(',');
+                        if (latLong.length != 2) {
+                          // Handle error
 
-                  return;
-                }
-                try {
-                  await ordersController.carFormClient(
-                    carPiece: pieceCarController.text,
-                    carTypeIds: [
-                      carTypeController.text
-                    ], // Assuming single selection
-                    carModelIds: carModelController.text,
-                    pieceType: PieceTypes, // Assuming single selection
-                    pieceDetail:  DetailTypes, // Assuming single selection
-                    // images: _images
-                    //     .expand((xFiles) => xFiles)
-                    //     .whereType<XFile>()
-                    //     .toList(),
-                    // birthDate: dateController.text,
-                    latitude: latLong[0].trim(),
-                    longitude: latLong[1].trim(),
-                    for_government: "0",
-                  );
+                          return;
+                        }
+                        try {
+                          await ordersController.carFormClient(
+                            carPiece: pieceCarController.text,
+                            carTypeIds: [
+                              carTypeController.text
+                            ], // Assuming single selection
+                            carModelIds: carModelController.text,
+                            pieceType: PieceTypes,
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Directionality(
-                          textDirection: ui.TextDirection.ltr,
-                          
-                        child: TrueOrderClinetScreen2()),
-                    ),
-                  );
-                } catch (e) {
-                  // Handle error
-                } finally {
-                  setState(() {
-                    _isLoading = false; // Stop loading
-                  });
-                }
-              }
-            },
+                            pieceDetail: DetailTypes,
+                            latitude: latLong[0].trim(),
+                            longitude: latLong[1].trim(),
+                            for_government: "0",
+                          );
+                          resetFormFields();
+                        } catch (e) {
+                          print('Error submitting car form: $e');
+                        } finally {
+                          setState(() {
+                            _isLoading = false; // Stop loading
+                          });
+                        }
+                      }
+                    }),
+                SizedBox(width: 10),
+                CustomButton3(
+                  text: S.of(context).Orders,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        _isLoading = true; // Start loading
+                      });
+
+                      var latLong = locationController.text.split(',');
+                      if (latLong.length != 2) {
+                        // Handle error
+
+                        return;
+                      }
+                      try {
+                        await ordersController.carFormClient(
+                          carPiece: pieceCarController.text,
+                          carTypeIds: [
+                            carTypeController.text
+                          ], // Assuming single selection
+                          carModelIds: carModelController.text,
+                          pieceType: PieceTypes,
+
+                          pieceDetail: DetailTypes,
+                          latitude: latLong[0].trim(),
+                          longitude: latLong[1].trim(),
+                          for_government: "0",
+                        );
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Directionality(
+                                textDirection: ui.TextDirection.ltr,
+                                child: TrueOrderClinetScreen()),
+                          ),
+                        );
+                      } catch (e) {
+                        print('Error submitting car form: $e');
+                      } finally {
+                        setState(() {
+                          _isLoading = false; // Stop loading
+                        });
+                      }
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
-                  if (isAgreed == 1)
-
+        if (isAgreed == 1)
           CustomButton(
             text: S.of(context).button,
             onPressed: () {
-              if (_formKey.currentState!.validate() &&
-                  validateField1() == null) {
+              if (_formKey.currentState!.validate()) {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => PaymentOfferCheck2(
@@ -911,7 +976,6 @@ SizedBox(height: 10),
                       carModelIds: carModelController.text,
                       pieceType: PieceTypes,
                       pieceDetail: DetailTypes,
-                    
                       latitude: locationController.text.split(',')[0].trim(),
                       longitude: locationController.text.split(',')[1].trim(),
                       forGovernment: "1",

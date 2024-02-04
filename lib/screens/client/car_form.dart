@@ -38,6 +38,7 @@ class _CarFormState extends State<CarForm> {
 
   String chassisType = '';
   String chassis = '';
+  
 
   // Text editing controllers
   final pieceCarController = TextEditingController();
@@ -50,7 +51,7 @@ class _CarFormState extends State<CarForm> {
   final dateController = TextEditingController();
   final locationdoneController = TextEditingController();
   List<String> PieceTypes = []; // List to store car types
- List<String> DetailTypes= []; 
+  List<String> DetailTypes = [];
   @override
   void dispose() {
     pieceCarController.dispose();
@@ -73,6 +74,22 @@ class _CarFormState extends State<CarForm> {
         _images[fieldIndex].add(image);
       });
     }
+  }
+
+  void resetFormFields() {
+    pieceCarController.clear();
+    carTypeController.clear();
+    carModelController.clear();
+    chassisNumberController.clear();
+    locationController.clear();
+    piecetypeController.clear();
+    piecedetailsController.clear();
+    dateController.clear();
+    locationdoneController.clear();
+    _images = [[], [], []]; // Reset images list
+
+    // Reset any other states you have
+    setState(() {});
   }
 
   String? validateField1() {
@@ -239,15 +256,13 @@ class _CarFormState extends State<CarForm> {
                         TextInputType.text,
                         "Chassis Number"),
                   if (chassisType == "file")
-                    // Display image from URL stored in 'chassis'
                     Column(
                       children: [
                         SizedBox(height: 10),
                         if (chassis.isNotEmpty)
-                          Image.network(chassis,
-                              width: 100, height: 100, fit: BoxFit.cover),
-                        // If you need to pick and display images, keep this
+                          
                         buildImagePicker(S.of(context).Chassis, 0),
+                        Image.network(chassis, width: 100, height: 100),
                         SizedBox(height: 10),
                         Row(
                           children: [
@@ -256,6 +271,7 @@ class _CarFormState extends State<CarForm> {
                         ),
                       ],
                     ),
+
                   Padding(
                     padding: const EdgeInsets.only(left: 16, right: 16),
                     child: Row(
@@ -291,19 +307,20 @@ class _CarFormState extends State<CarForm> {
                                               TextInputType.text,
                                               "Chassis Number"),
                                         if (chassisType == "file")
-                                          // Display image from URL stored in 'chassis'
                                           Column(
                                             children: [
                                               SizedBox(height: 10),
+                                              // Display image from URL if available
                                               if (chassis.isNotEmpty)
                                                 Image.network(chassis,
                                                     width: 100,
                                                     height: 100,
                                                     fit: BoxFit.cover),
-                                              // If you need to pick and display images, keep this
+                                              // Picker for a new image
                                               buildImagePicker(
                                                   S.of(context).Chassis, 0),
                                               SizedBox(height: 10),
+                                              // Display picked images
                                               Row(
                                                 children: [
                                                   buildImagesDisplay(0),
@@ -441,12 +458,15 @@ class _CarFormState extends State<CarForm> {
         regesterController.isLoading, regesterController.carTypes);
   }
 
+  bool _isPieceTypeValid = true; // Validation state for PieceTypes
+  bool _isPieceTypeValid1 = true; // Validation state for PieceTypes
+
   Widget buildPieceTypeField1() {
     final OrdersController ordersController = Get.find<OrdersController>();
     return Obx(() => MultiSelectDialogField(
           items: ordersController.PieceTypes.map(
               (type) => MultiSelectItem(type['id'], type['name'])).toList(),
-          title: Text("Select Piece Types"),
+          title: Text(S.of(context).AreCancel74),
           selectedColor: Colors.blue,
           decoration: BoxDecoration(
             color: Colors.blue.withOpacity(0.1),
@@ -461,18 +481,25 @@ class _CarFormState extends State<CarForm> {
             color: Colors.blue,
           ),
           buttonText: Text(
-            "Piece Types",
+            S.of(context).AreCancel73,
             style: TextStyle(
               color: Colors.blue[800],
               fontSize: 16,
             ),
           ),
           onConfirm: (List results) {
-           setState(() {
-                    PieceTypes = results.map((e) => e.toString()).toList();
-                  });
+            setState(() {
+              PieceTypes = results.map((e) => e.toString()).toList();
+              _isPieceTypeValid =
+                  PieceTypes.isNotEmpty; // Validate on selection
+            });
           },
-          
+          validator: (value) {
+            if (_isPieceTypeValid) {
+              return S.of(context).AreCancel77;
+            }
+            return null;
+          },
         ));
   }
 
@@ -482,7 +509,7 @@ class _CarFormState extends State<CarForm> {
           items: ordersController.PieceDeltals.map(
                   (detail) => MultiSelectItem(detail['id'], detail['name']))
               .toList(),
-          title: Text("Select Piece Details"),
+          title: Text(S.of(context).AreCancel76),
           selectedColor: Colors.green,
           decoration: BoxDecoration(
             color: Colors.green.withOpacity(0.1),
@@ -497,7 +524,7 @@ class _CarFormState extends State<CarForm> {
             color: Colors.green,
           ),
           buttonText: Text(
-            "Piece Details",
+            S.of(context).AreCancel75,
             style: TextStyle(
               color: Colors.green[800],
               fontSize: 16,
@@ -505,10 +532,16 @@ class _CarFormState extends State<CarForm> {
           ),
           onConfirm: (List results) {
             setState(() {
-                                  DetailTypes = results.map((e) => e.toString()).toList();
-
+              DetailTypes = results.map((e) => e.toString()).toList();
+              _isPieceTypeValid1 =
+                  PieceTypes.isNotEmpty; // Validate on selection
             });
-
+          },
+          validator: (value) {
+            if (_isPieceTypeValid1) {
+              return S.of(context).AreCancel78;
+            }
+            return null;
           },
         ));
   }
@@ -858,52 +891,99 @@ class _CarFormState extends State<CarForm> {
       children: [
         const SizedBox(height: 10),
         if (isAgreed == 0)
-          CustomButton(
-            text: S.of(context).Orders,
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                setState(() {
-                  _isLoading = true; // Start loading
-                });
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomButton4(
+                    text: S.of(context).AreCancel72,
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          _isLoading = true; // Start loading
+                        });
 
-                var latLong = locationController.text.split(',');
-                if (latLong.length != 2) {
-                  // Handle error
+                        var latLong = locationController.text.split(',');
+                        if (latLong.length != 2) {
+                          // Handle error
 
-                  return;
-                }
-                try {
-                  await ordersController.carFormClient(
-                    carPiece: pieceCarController.text,
-                    carTypeIds: [
-                      carTypeController.text
-                    ], // Assuming single selection
-                    carModelIds: carModelController.text,
-                    pieceType: PieceTypes,
- 
-                    pieceDetail:DetailTypes,
-                    latitude: latLong[0].trim(),
-                    longitude: latLong[1].trim(),
-                    for_government: "0",
-                  );
+                          return;
+                        }
+                        try {
+                          await ordersController.carFormClient(
+                            carPiece: pieceCarController.text,
+                            carTypeIds: [
+                              carTypeController.text
+                            ], // Assuming single selection
+                            carModelIds: carModelController.text,
+                            pieceType: PieceTypes,
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Directionality(
-                          textDirection: ui.TextDirection.ltr,
-                          child: TrueOrderClinetScreen()),
-                    ),
-                  );
-                } catch (e) {
-                  print('Error submitting car form: $e');
-                } finally {
-                  setState(() {
-                    _isLoading = false; // Stop loading
-                  });
-                }
-              }
-            },
+                            pieceDetail: DetailTypes,
+                            latitude: latLong[0].trim(),
+                            longitude: latLong[1].trim(),
+                            for_government: "0",
+                          );
+                          resetFormFields();
+                        } catch (e) {
+                          print('Error submitting car form: $e');
+                        } finally {
+                          setState(() {
+                            _isLoading = false; // Stop loading
+                          });
+                        }
+                      }
+                    }),
+                SizedBox(width: 10),
+                CustomButton3(
+                  text: S.of(context).Orders,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        _isLoading = true; // Start loading
+                      });
+
+                      var latLong = locationController.text.split(',');
+                      if (latLong.length != 2) {
+                        // Handle error
+
+                        return;
+                      }
+                      try {
+                        await ordersController.carFormClient(
+                          carPiece: pieceCarController.text,
+                          carTypeIds: [
+                            carTypeController.text
+                          ], // Assuming single selection
+                          carModelIds: carModelController.text,
+                          pieceType: PieceTypes,
+
+                          pieceDetail: DetailTypes,
+                          latitude: latLong[0].trim(),
+                          longitude: latLong[1].trim(),
+                          for_government: "0",
+                        );
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Directionality(
+                                textDirection: ui.TextDirection.ltr,
+                                child: TrueOrderClinetScreen()),
+                          ),
+                        );
+                      } catch (e) {
+                        print('Error submitting car form: $e');
+                      } finally {
+                        setState(() {
+                          _isLoading = false; // Stop loading
+                        });
+                      }
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         if (isAgreed == 1)
           CustomButton(

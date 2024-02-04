@@ -69,7 +69,7 @@ class _OrdersClientState extends State<OrdersClient> {
         List<dynamic> jsonList = jsonDecode(response.body);
         return jsonList.map((json) {
           bool rated = prefs.getBool('order_rated_${json['id']}') ?? false;
-          return Order.fromJson(json).copyWith(rated: rated);
+          return Order.fromJson(json);
         }).toList();
       } else {
         // Handle error
@@ -356,32 +356,26 @@ class _OrdersClientState extends State<OrdersClient> {
                 ),
                 OrderDetailLine(
                   title: S.of(context).CarModel,
-                  placeholder: order.carModel,
+                  placeholder: order.carModel.toString(),
                 ),
                 OrderDetailLine(
                   title: S.of(context).Chassis,
-                  placeholder: order.chassisNumber,
+                  placeholder: order.chassis.number,
                 ),
                 OrderDetailLine(
                   title: S.of(context).pieceType,
-                  placeholder: order.pieceType,
+                  placeholder: order.pieceTypes
+                      .map((pieceType) => pieceType.name)
+                      .join(', '),
                 ),
                 OrderDetailLine(
                   title: S.of(context).pieceDetails,
-                  placeholder: order.pieceDetail,
+                  placeholder: order.pieceDetails
+                      .map((pieceDetail) => pieceDetail.name)
+                      .join(', '),
                 ),
-                OrderDetailLine(
-                  title: S.of(context).Date,
-                  placeholder: DateFormat('yyyy-MM-dd').format(order.date),
-                ),
-                OrderDetailLine(
-                  title: S.of(context).carLicence,
-                  placeholder: 'Show Image',
-                  imageUrl:
-                      order.files.isNotEmpty ? order.files[0].fileUrl : null,
-                  imageUrl2:
-                      order.files.length > 1 ? order.files[1].fileUrl : null,
-                ),
+               
+                
                 OrderDetailLine(
                   title: S.of(context).nearPlaces,
                   placeholder: 'Show Location',
@@ -767,109 +761,108 @@ class CustomContainerButton extends StatelessWidget {
 class Order {
   final int id;
   final String carPiece;
-  final String carModel;
-  final String chassisNumber;
-  final DateTime date;
-  final String status;
-  final String pieceType;
-  final String pieceDetail;
+  final int carModel;
   final bool forGovernment;
+  final String status;
   final double latitude;
   final double longitude;
-  final String carName;
-  final String pieceTypeName;
-  final String pieceDetailName;
+  final Chassis chassis;
+  final List<PieceType> pieceTypes;
+  final List<PieceDetail> pieceDetails;
+  final Car car;
   final String? address;
-  final List<File> files;
-  bool bottomSheetShown = false;
+  final dynamic rating; // Assuming rating can be different types or null
   bool rated;
 
   Order({
     required this.id,
     required this.carPiece,
     required this.carModel,
-    required this.chassisNumber,
-    required this.date,
-    required this.status,
-    required this.pieceType,
-    required this.pieceDetail,
     required this.forGovernment,
+    required this.status,
     required this.latitude,
     required this.longitude,
-    required this.carName,
-    required this.pieceTypeName,
-    required this.pieceDetailName,
+    required this.chassis,
+    required this.pieceTypes,
+    required this.pieceDetails,
+    required this.car,
     this.address,
-    required this.files,
-    this.bottomSheetShown = false,
+    this.rating,
     this.rated = false,
-  
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'],
-      carPiece: json['car_piece'].toString(),
-      carModel: json['car_model'].toString(),
-      chassisNumber: json['chassis_number'],
-      date: DateTime.parse(json['date']),
+      carPiece: json['car_piece'],
+      carModel: json['car_model'],
+      forGovernment: json['for_government'] == 1,
       status: json['status'],
-      pieceType: json['piece_type']['name'],
-      pieceDetail: json['piece_detail']['name'],
-      forGovernment: json['for_government'] == "1",
       latitude: double.parse(json['lat']),
       longitude: double.parse(json['long']),
-      carName: json['car']['name'],
-      pieceTypeName: json['piece_type']['name'],
-      pieceDetailName: json['piece_detail']['name'],
+      chassis: Chassis.fromJson(json['chassis']),
+      pieceTypes: List<PieceType>.from(json['piece_types'].map((x) => PieceType.fromJson(x))),
+      pieceDetails: List<PieceDetail>.from(json['piece_details'].map((x) => PieceDetail.fromJson(x))),
+      car: Car.fromJson(json['car']),
       address: json['address'],
-      files: (json['files'] as List)
-          .map((fileJson) => File.fromJson(fileJson))
-          .toList(),
-      bottomSheetShown: false,
-      rated: json['rated'] ?? false,
-    );
-  }
-  Order copyWith({
-    bool? rated,
- 
-  }) {
-    return Order(
-      id: this.id,
-      carPiece: this.carPiece,
-      carModel: this.carModel,
-      chassisNumber: this.chassisNumber,
-      date: this.date,
-      status: this.status,
-      pieceType: this.pieceType,
-      pieceDetail: this.pieceDetail,
-      forGovernment: this.forGovernment,
-      latitude: this.latitude,
-      longitude: this.longitude,
-      carName: this.carName,
-      pieceTypeName: this.pieceTypeName,
-      pieceDetailName: this.pieceDetailName,
-      address: this.address,
-      files: this.files,
-      rated: rated ?? this.rated, // Update the rated field
-      
+      rating: json['rating'],
+      rated: false, // Default to false, adjust based on your logic
     );
   }
 }
 
-class File {
+class Chassis {
+  final String type;
+  final String number;
+
+  Chassis({required this.type, required this.number});
+
+  factory Chassis.fromJson(Map<String, dynamic> json) {
+    return Chassis(
+      type: json['type'],
+      number: json['number'],
+    );
+  }
+}
+
+class PieceType {
   final int id;
-  final String fileUrl;
+  final String name;
 
-  File({
-    required this.id,
-    required this.fileUrl,
-  });
+  PieceType({required this.id, required this.name});
 
-  factory File.fromJson(Map<String, dynamic> json) {
-    return File(
+  factory PieceType.fromJson(Map<String, dynamic> json) {
+    return PieceType(
       id: json['id'],
-      fileUrl: json['file_url'],
+      name: json['name'],
+    );
+  }
+}
+
+class PieceDetail {
+  final int id;
+  final String name;
+
+  PieceDetail({required this.id, required this.name});
+
+  factory PieceDetail.fromJson(Map<String, dynamic> json) {
+    return PieceDetail(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
+}
+
+class Car {
+  final int id;
+  final String name;
+
+  Car({required this.id, required this.name});
+
+  factory Car.fromJson(Map<String, dynamic> json) {
+    return Car(
+      id: json['id'],
+      name: json['name'],
     );
   }
 }

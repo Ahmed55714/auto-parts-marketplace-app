@@ -10,7 +10,7 @@
     
     <application
       android:usesCleartextTraffic="true"
-        android:label="work2"
+        android:label="SLF"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">

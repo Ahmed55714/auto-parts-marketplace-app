@@ -259,7 +259,15 @@
     "AreCancel69": "Could not connect to the server. Please check your internet connection.",
     "AreCancel70": "Failed to load vendor profile.",
     "AreCancel71": "Please upload an image for Chassis number",
-    "chassisValidationErrorMessage": "Please upload an image for Chassis or Number"
+    "chassisValidationErrorMessage": "Please upload an image for Chassis or Number",
+    "AreCancel72": "Add new order",
+    "AreCancel73": "Piece Types",
+    "AreCancel74": "Select Piece Types",
+    "AreCancel75": "Piece Details",
+    "AreCancel76": "Select Piece Details",
+    "AreCancel77": "Please select at least one piece type",
+    "AreCancel78": "Please select at least one piece detail"
+
 
 
 

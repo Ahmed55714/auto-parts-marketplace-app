@@ -2429,6 +2429,76 @@ class S {
       args: [],
     );
   }
+
+  /// `Add new order`
+  String get AreCancel72 {
+    return Intl.message(
+      'Add new order',
+      name: 'AreCancel72',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece Types`
+  String get AreCancel73 {
+    return Intl.message(
+      'Piece Types',
+      name: 'AreCancel73',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Piece Types`
+  String get AreCancel74 {
+    return Intl.message(
+      'Select Piece Types',
+      name: 'AreCancel74',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Piece Details`
+  String get AreCancel75 {
+    return Intl.message(
+      'Piece Details',
+      name: 'AreCancel75',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Piece Details`
+  String get AreCancel76 {
+    return Intl.message(
+      'Select Piece Details',
+      name: 'AreCancel76',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select at least one piece type`
+  String get AreCancel77 {
+    return Intl.message(
+      'Please select at least one piece type',
+      name: 'AreCancel77',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select at least one piece detail`
+  String get AreCancel78 {
+    return Intl.message(
+      'Please select at least one piece detail',
+      name: 'AreCancel78',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -132,6 +132,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("فشل تحميل ملف تعريف البائع"),
         "AreCancel71":
             MessageLookupByLibrary.simpleMessage("يرجى تحميل صورة لرقم الهيكل"),
+        "AreCancel72": MessageLookupByLibrary.simpleMessage("إضافة أمر جديد"),
+        "AreCancel73": MessageLookupByLibrary.simpleMessage("أنواع القطع"),
+        "AreCancel74": MessageLookupByLibrary.simpleMessage("حدد أنواع القطع"),
+        "AreCancel75": MessageLookupByLibrary.simpleMessage("تفاصيل القطعة"),
+        "AreCancel76":
+            MessageLookupByLibrary.simpleMessage("حدد تفاصيل القطعة"),
+        "AreCancel77": MessageLookupByLibrary.simpleMessage(
+            "الرجاء تحديد نوع قطعة واحدة على الأقل"),
+        "AreCancel78": MessageLookupByLibrary.simpleMessage(
+            "يرجى تحديد تفاصيل قطعة واحدة على الأقل"),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(
             "يرجى تحميل صورة للحصول على الترخيص"),
         "AreCancel9": MessageLookupByLibrary.simpleMessage("فشل في رفض العرض"),

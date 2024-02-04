@@ -136,6 +136,17 @@ class MessageLookup extends MessageLookupByLibrary {
             "Failed to load vendor profile."),
         "AreCancel71": MessageLookupByLibrary.simpleMessage(
             "Please upload an image for Chassis number"),
+        "AreCancel72": MessageLookupByLibrary.simpleMessage("Add new order"),
+        "AreCancel73": MessageLookupByLibrary.simpleMessage("Piece Types"),
+        "AreCancel74":
+            MessageLookupByLibrary.simpleMessage("Select Piece Types"),
+        "AreCancel75": MessageLookupByLibrary.simpleMessage("Piece Details"),
+        "AreCancel76":
+            MessageLookupByLibrary.simpleMessage("Select Piece Details"),
+        "AreCancel77": MessageLookupByLibrary.simpleMessage(
+            "Please select at least one piece type"),
+        "AreCancel78": MessageLookupByLibrary.simpleMessage(
+            "Please select at least one piece detail"),
         "AreCancel8": MessageLookupByLibrary.simpleMessage(
             "Please upload an image for license"),
         "AreCancel9":
