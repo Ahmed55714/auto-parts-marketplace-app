@@ -28,7 +28,7 @@ class OnboardingScreen extends StatelessWidget {
       backgroundColor: deepPurple,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: 63.49),
+          padding: const EdgeInsets.only(top: 15),
           child: Column(
             children: [
               Align(
@@ -92,7 +92,7 @@ class OnboardingScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 37.84),
+              const SizedBox(height: 30.84),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment:
