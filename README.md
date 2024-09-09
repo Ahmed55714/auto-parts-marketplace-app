@@ -77,7 +77,7 @@ lib/
 ### Prerequisites
 
 To run this project locally, ensure you have the following installed:
-- **Flutter** (latest stable version)
+- **Flutter**
 - **Dart SDK**
 - **PHP** (for the backend)
 - **MySQL** (locally installed or a cloud-based MySQL service)
